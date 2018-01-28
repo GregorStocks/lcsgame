@@ -33,6 +33,7 @@
 // it out for yourself.
 
 #include <externs.h>
+#include <functional>
 
 ShopOption::ShopOption() : description_("UNDEFINED"), letter_(0), letter_defined_(false)
 { }
