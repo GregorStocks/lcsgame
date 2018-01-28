@@ -8,3 +8,5 @@
 *.obj
 *.pdb
 *.log
+/workspaces/gamelog.txt
+/workspaces/xmllog
