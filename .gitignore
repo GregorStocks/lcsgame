@@ -10,3 +10,4 @@
 *.log
 /workspaces/gamelog.txt
 /workspaces/xmllog
+*.swp
