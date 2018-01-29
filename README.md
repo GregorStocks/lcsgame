@@ -1,3 +1,7 @@
+## What is this?
+
+Liberal Crime Squad. This version has everything from https://sourceforge.net/projects/lcsgame/, which became inactive in 2015. It's been updated to compile, for me, in Visual Studio 2017. I might keep adding features.
+
 ## Compiling
 
 ### Windows
