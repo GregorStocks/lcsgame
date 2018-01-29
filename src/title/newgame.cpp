@@ -491,27 +491,27 @@ void makecharacter()
 
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - the Polish priest Popieluszko was kidnapped by government agents.");
+               addstr("A - the Polish priest Popieluszko was kidnapped by government agents. (+2 AGI)");
             //ATTRIBUTE_AGILITY 2
             // Oct. 19, 1984
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - was the 3rd anniversary of the assassination attempt on Ronald Reagan.");
+               addstr("B - was the 3rd anniversary of the assassination attempt on Ronald Reagan. (+2 STR)");
             //ATTRIBUTE_STRENGTH 2
             // Mar. 3, 1984
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - the Macintosh was introduced.");
+               addstr("C - the Macintosh was introduced. (+2 INT)");
             //ATTRIBUTE_INTELLIGENCE 2
             // Jan. 24, 1984
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - the Nobel Peace Prize went to Desmond Tutu for opposition to apartheid.");
+               addstr("D - the Nobel Peace Prize went to Desmond Tutu for opposition to apartheid. (+2 HRT)");
             //ATTRIBUTE_HEART 2
             // Oct. 16, 1984
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - the Sandanista Front won the elections in Nicaragua.");
+               addstr("E - the Sandanista Front won the elections in Nicaragua. (+2 CHA)");
             //ATTRIBUTE_CHARISMA 2
             // Sept. 4, 1984
                         //move(14,0);
@@ -560,27 +560,27 @@ void makecharacter()
             move(2,0);addstr("When I was bad...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - my parents grounded me and hid my toys, but I knew where they put them."); // Toy box
+               addstr("A - my parents grounded me and hid my toys, but I knew where they put them. (+1 AGI, +1 Security)"); // Toy box
             //SKILL_SECURITY 1
             //ATTRIBUTE_AGILITY 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - my father beat me.  I learned to take a punch earlier than most.");
+               addstr("B - my father beat me.  I learned to take a punch earlier than most. (+1 STR, +1 Martial Args)");
             //SKILL_HANDTOHAND 1
             //ATTRIBUTE_HEALTH 1
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - I was sent to my room, where I studied quietly by myself, alone.");
+               addstr("C - I was sent to my room, where I studied quietly by myself, alone. (+1 INT, +1 Writing)");
             //SKILL_WRITING 1
             //ATTRIBUTE_INTELLIGENCE 1
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - my parents argued with each other about me, but I was never punished.");
+               addstr("D - my parents argued with each other about me, but I was never punished. (+1 HRT, +1 Persuasion)");
             //SKILL_PERSUASION 1
             //ATTRIBUTE_HEART 1
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - my father lectured me endlessly, trying to make me think like him.");
+               addstr("E - my father lectured me endlessly, trying to make me think like him. (+1 CHA, +1 Psychology)");
             //SKILL_PSYCHOLOGY 1
             //ATTRIBUTE_CHARISMA 1
 
@@ -606,29 +606,29 @@ void makecharacter()
             move(2,0);addstr("In elementary school...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - I was mischievous, and always up to something.");
+               addstr("A - I was mischievous, and always up to something. (+1 AGI, +1 Disguise)");
             //SKILL_DISGUISE 1
             //ATTRIBUTE_AGILITY 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - I had a lot of repressed anger.  I hurt animals.");
+               addstr("B - I had a lot of repressed anger.  I hurt animals. (+1 STR, +1 AGI, -1 HRT, +1 Psychology");
             //SKILL_PSYCHOLOGY 1
             //ATTRIBUTE_STRENGTH 1
             //ATTRIBUTE_AGILITY 1
             //ATTRIBUTE_HEART -1 <--- !
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - I was at the head of the class, and I worked very hard.");
+               addstr("C - I was at the head of the class, and I worked very hard. (+1 INT, +1 Writing)");
             //ATTRIBUTE_INTELLIGENCE 1
             //SKILL_WRITING 1
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - I was unruly and often fought with the other children.");
+               addstr("D - I was unruly and often fought with the other children. (+1 STR, +1 Martial Arts)");
             //SKILL_HANDTOHAND 1
             //ATTRIBUTE_STRENGTH 1
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - I was the class clown.  I even had some friends.");
+               addstr("E - I was the class clown.  I even had some friends. (+1 CHA, +1 Persuasion)");
             //SKILL_PERSUASION 1
             //ATTRIBUTE_CHARISMA 1
             break;
@@ -636,50 +636,50 @@ void makecharacter()
             move(2,0);addstr("When I turned 10...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - my parents divorced.  Whenever I talked, they argued, so I stayed quiet.");
+               addstr("A - my parents divorced.  Whenever I talked, they argued, so I stayed quiet. (+1 Stealth)");
             //SKILL_STEALTH 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - my parents divorced.  Violently.");
+               addstr("B - my parents divorced.  Violently. (+1 Martial Arts)");
             //SKILL_HANDTOHAND 1
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - my parents divorced.  Acrimoniously.  I once tripped over the paperwork!");
+               addstr("C - my parents divorced.  Acrimoniously.  I once tripped over the paperwork! (+1 Law)");
             //SKILL_LAW 1
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - my parents divorced.  Mom slept with the divorce lawyer.");
+               addstr("D - my parents divorced.  Mom slept with the divorce lawyer. (+1 Seduction)");
             //SKILL_SEDUCTION 1
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - my parents divorced.  It still hurts to read my old diary.");
+               addstr("E - my parents divorced.  It still hurts to read my old diary. (+1 Writing)");
             //SKILL_WRITING 1
             break;
          case 4:
             move(2,0);addstr("In junior high school...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - I was into chemistry.  I wanted to know what made the world tick.");
+               addstr("A - I was into chemistry.  I wanted to know what made the world tick. (+2 INT, +2 Science)");
             //SKILL_SCIENCE 2
             //ATTRIBUTE_INTELLIGENCE 2
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - I played guitar in a grunge band.  We sucked, but so did life.");
+               addstr("B - I played guitar in a grunge band.  We sucked, but so did life. (+2 CHA, +2 Music)");
             //SKILL_MUSIC 2
             //ATTRIBUTE_CHARISMA 2
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - I drew things, a lot.  I was drawing a world better than this.");
+               addstr("C - I drew things, a lot.  I was drawing a world better than this. (+2 HRT, +2 Art)");
             //SKILL_ART 2
             //ATTRIBUTE_HEART 2
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - I played violent video games at home.  I was a total outcast.");
+               addstr("D - I played violent video games at home.  I was a total outcast. (+2 AGI, +2 Computers)");
             //SKILL_COMPUTERS 2
             //ATTRIBUTE_AGILITY 2
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - I was obsessed with swords, and started lifting weights.");
+               addstr("E - I was obsessed with swords, and started lifting weights. (+2 STR, +2 Swords");
             //SKILL_SWORD 2
             //ATTRIBUTE_STRENGTH 2
             break;
@@ -687,56 +687,56 @@ void makecharacter()
             move(2,0);addstr("Things were getting really bad...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - when I stole my first car.  I got a few blocks before I totaled it.");
+               addstr("A - when I stole my first car.  I got a few blocks before I totaled it. (+1 Driving, +1 Security)");
             //SKILL_DRIVING 1
             //SKILL_SECURITY 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - and I went to live with my dad.  He had been in Nam and he still drank.");
+               addstr("B - and I went to live with my dad.  He had been in Nam and he still drank. (+1 Shotgun, +1 Rifle, +1 Psychology)");
             //SKILL_SHOTGUN 1
             //SKILL_RIFLE 1
             //SKILL_PSYCHOLOGY 1
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - and I went completely goth.  I had no friends and made costumes by myself.");
+               addstr("C - and I went completely goth.  I had no friends and made costumes by myself. (+2 Tailoring)");
             //SKILL_TAILORING 2
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - when I was sent to religious counseling, just stressing me out more.");
+               addstr("D - when I was sent to religious counseling, just stressing me out more. (+1 Religion, +1 Psychology)");
             //SKILL_RELIGION 1
             //SKILL_PSYCHOLOGY 1
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - and I tried being a teacher's assistant.  It just made me a target.");
+               addstr("E - and I tried being a teacher's assistant.  It just made me a target. (+2 Teaching)");
             //SKILL_TEACHING 2
             break;
          case 6:
             move(2,0);addstr("Well, I knew it had reached a crescendo when...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - I stole a cop car when I was only 14.  I went to juvie for 6 months.");
+               addstr("A - I stole a cop car when I was only 14.  I went to juvie for 6 months. (+1 INT, +1 Driving, +1 Security)");
             //SKILL_DRIVING 1
             //SKILL_SECURITY 1
             //ATTRIBUTE_INTELLIGENCE 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - my step mom shot her ex-husband, my dad, with a shotgun.  She got off.");//XXX: Sounds... Sexual...
+               addstr("B - my step mom shot her ex-husband, my dad, with a shotgun.  She got off. (+1 AGI, +2 Shotgun)");//XXX: Sounds... Sexual...
             //SKILL_SHOTGUN 2
             //ATTRIBUTE_AGILITY 1
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - I tried wrestling for a quarter, desperate to fit in.");
+               addstr("C - I tried wrestling for a quarter, desperate to fit in. (+1 STR, +2 Martial Arts)");
             //ATTRIBUTE_STRENGTH 1
             //SKILL_HANDTOHAND 2
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - I got caught making out, and now I needed to be 'cured' of homosexuality.");
+               addstr("D - I got caught making out, and now I needed to be 'cured' of homosexuality. (+1 HRT, +1 Seduction, +1 Religion)");
             //SKILL_SEDUCTION 1
             //SKILL_RELIGION 1
             //ATTRIBUTE_HEART 1
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - I resorted to controlling people.  Had my own clique of outcasts.");
+               addstr("E - I resorted to controlling people.  Had my own clique of outcasts. (+1 CHA, +2 Persuasion)");
             //SKILL_PERSUASION 2
             //ATTRIBUTE_CHARISMA 1
             break;
@@ -744,29 +744,29 @@ void makecharacter()
             move(2,0);addstr("I was only 15 when I ran away, and...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - I started robbing houses:  rich people only.  I was fed up with their crap.");
+               addstr("A - I started robbing houses:  rich people only.  I was fed up with their crap. (+1 AGI, +1 Stealth, +1 Security)");
             //SKILL_SECURITY 1
             //SKILL_STEALTH 1
             //ATTRIBUTE_AGILITY 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - I hung out with thugs and beat the shit out of people.");
+               addstr("B - I hung out with thugs and beat the shit out of people. (+1 STR, +2 Martial Arts)");
             //ATTRIBUTE_STRENGTH 1
             //SKILL_HANDTOHAND 2
             move(9,0);
             if(choices || selection == 2)
-               addstr("C - I got a horrible job working fast food, smiling as people fed the man.");
+               addstr("C - I got a horrible job working fast food, smiling as people fed the man. (+1 CHA, +2 Business)");
             //ATTRIBUTE_CHARISMA 1
             //SKILL_BUSINESS 2
             move(11,0);
             if(choices || selection == 3)
-               addstr("D - I let people pay me for sex.  I needed the money to survive.");
+               addstr("D - I let people pay me for sex.  I needed the money to survive. (+2 CHA, -1 HRT, +2 Seduction)");
             //ATTRIBUTE_HEART -1
             //ATTRIBUTE_CHARISMA 2
             //SKILL_SEDUCTION 2
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - I volunteered for a left-wing candidate. It wasn't *real*, though, you know?");
+               addstr("E - I volunteered for a left-wing candidate. It wasn't *real*, though, you know? (+1 INT, +1 Law, +1 Persuasion)");
             //ATTRIBUTE_INTELLIGENCE 1
             //SKILL_LAW 1
             //SKILL_PERSUASION 1
@@ -775,7 +775,7 @@ void makecharacter()
             move(2,0);addstr("Life went on.  On my 18th birthday...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - I got my hands on a sports car. The owner must have been pissed.");
+               addstr("A - I got my hands on a sports car. The owner must have been pissed. ");
             move(7,0);
             if(choices || selection == 1)
                addstr("B - I bought myself an assault rifle.");
@@ -793,16 +793,16 @@ void makecharacter()
             move(2,0);addstr("For the past few years, I've been...");
             move(5,0);
             if(choices || selection == 0)
-               addstr("A - stealing from Corporations.  I know they're still keeping more secrets.");
+               addstr("A - stealing from Corporations.  I know they're still keeping more secrets. (+2 INT, +2 AGI, +2 Security, +2 Stealth, Downtown Apartment, $500)");
             //ATTRIBUTE_INTELLIGENCE 2
             //ATTRIBUTE_AGILITY 2
             //SKILL_SECURITY 2
             //SKILL_STEALTH 2
             // +Downtown apartment
             // +$500 (one month rent)
-            move(7,0);
+            move(8,0);
             if(choices || selection == 1)
-               addstr("B - a violent criminal.  Nothing can change me, or stand in my way.");
+               addstr("B - a violent criminal.  Nothing can change me, or stand in my way. (+2 AGI, +2 HTH, +2 STR, +2 Rifle, +2 Pistol, +2 Street Sense, Crack House, 4 armed gang members)");
             //SKILL_RIFLE 2
             //SKILL_PISTOL 2
             //SKILL_STREETSENSE 2
@@ -811,9 +811,9 @@ void makecharacter()
             //ATTRIBUTE_STRENGTH 2
             // +Crack house (with stockpiled rations)
             // +A crew (four gang members with knives and pistols)
-            move(9,0);
+            move(11,0);
             if(choices || selection == 2)
-               addstr("C - taking college courses.  I can see how much the country needs help.");
+               addstr("C - taking college courses.  I can see how much the country needs help. (+4 INT, +2 Science, +2 Computers, +2 Writing, +2 Teaching, +1 Business, +1 Law, University Apartment, $200)");
             //SKILL_SCIENCE 2
             //SKILL_COMPUTERS 2
             //SKILL_WRITING 2
@@ -823,9 +823,9 @@ void makecharacter()
             //ATTRIBUTE_INTELLIGENCE 4
             // +University apartment
             // +$200 (one month rent)
-            move(11,0);
+            move(14,0);
             if(choices || selection == 3)
-               addstr("D - surviving alone, just like anyone.  But we can't go on like this.");
+               addstr("D - surviving alone, just like anyone.  But we can't go on like this. (+1 INT, +1 AGI, +2 HTH, +2 First Aid, +2 Street Sense, Homeless Shelter, additional +1 all stats except Wisdom)");
             //SKILL_FIRSTAID 2
             //SKILL_STREETSENSE 2
             //ATTRIBUTE_INTELLIGENCE 1
@@ -833,9 +833,9 @@ void makecharacter()
             //ATTRIBUTE_HEALTH 2
             // +Homeless shelter
             // +1 all stats (except Wisdom)
-            move(13,0);
+            move(17,0);
             if(choices || selection == 4)
-               addstr("E - writing my manifesto and refining my image.  I'm ready to lead.");
+               addstr("E - writing my manifesto and refining my image.  I'm ready to lead. (+2 CHA, +2 INT, +1 Law, +2 Persuasion, +1 Writing, Industrial Apartment, $100, +50 Juice)");
             //ATTRIBUTE_CHARISMA 2
             //ATTRIBUTE_INTELLIGENCE 2
             //SKILL_LAW 1
@@ -844,7 +844,7 @@ void makecharacter()
             // +Industrial apartment
             // +$100 (one month rent)
             // +50 juice
-            move(17,0);
+            move(22,0);
             addstr("I live in ");
             if(!multipleCityMode) addstr(lcityname);
             else addstr("Seattle, WA");
