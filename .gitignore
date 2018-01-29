@@ -23,6 +23,7 @@
 /compile
 /config.h
 /config.h.in
+/config.h.in~
 /config.status
 /configure
 /depcomp
