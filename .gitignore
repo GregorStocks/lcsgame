@@ -14,5 +14,21 @@
 /workspaces/Debug/crimesquad.exe
 
 .deps/
-.dirstamp/
+.dirstamp
 *.o
+/Makefile
+/Makefile.in
+/aclocal.m4
+/autom4te.cache/
+/compile
+/config.h
+/config.h.in
+/config.status
+/configure
+/depcomp
+/install-sh
+/missing
+/src/Makefile
+/src/Makefile.in
+/src/crimesquad
+/stamp-h1
