@@ -611,7 +611,7 @@ void makecharacter()
             //ATTRIBUTE_AGILITY 1
             move(7,0);
             if(choices || selection == 1)
-               addstr("B - I had a lot of repressed anger.  I hurt animals. (+1 STR, +1 AGI, -1 HRT, +1 Psychology");
+               addstr("B - I had a lot of repressed anger.  I hurt animals. (+1 STR, +1 AGI, -1 HRT, +1 Psychology)");
             //SKILL_PSYCHOLOGY 1
             //ATTRIBUTE_STRENGTH 1
             //ATTRIBUTE_AGILITY 1
@@ -679,7 +679,7 @@ void makecharacter()
             //ATTRIBUTE_AGILITY 2
             move(13,0);
             if(choices || selection == 4)
-               addstr("E - I was obsessed with swords, and started lifting weights. (+2 STR, +2 Swords");
+               addstr("E - I was obsessed with swords, and started lifting weights. (+2 STR, +2 Swords)");
             //SKILL_SWORD 2
             //ATTRIBUTE_STRENGTH 2
             break;
