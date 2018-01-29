@@ -26,9 +26,3 @@ dist_art_DATA = art/abort.cmv art/anchor.cmv art/glamshow.cmv art/lacops.cmv\
 
 dist_app_DATA = crimesquad.desktop
 
-#man_MANS = man/crimesquad.6
-dist_man_MANS = man/crimesquad.6
-EXTRA_DIST = TODO workspaces/game.dsp workspaces/game.dsw workspaces/game.ncb\
- workspaces/game.sln workspaces/game.suo workspaces/game.vcxproj\
- LINUX_README.txt docs/CrimeSquadManual.txt workspaces/game.cbp\
- docs/cpcimageformat.txt docs/conventions.txt README COPYING
