@@ -1,10 +1,10 @@
-== Compiling ==
+## Compiling
 
-=== Windows ===
+### Windows
 
 Open the solution file in workspaces/ in Visual Studio 2017.
 
-=== Ubuntu ===
+### Ubuntu
 
 ```
 sudo apt-get install build-essential autoconf libncurses5-dev
@@ -16,6 +16,6 @@ make
 
 You can ignore the warnings. The binary will be in `src/crimesquad` and your savefile is in `~/.lcs`.
 
-=== OSX ===
+### OSX
 
 Try the Ubuntu instructions, good luck! You might be better off running Ubuntu in Vagrant.
