@@ -12,3 +12,6 @@
 /workspaces/xmllog
 *.swp
 /workspaces/Debug/crimesquad.exe
+
+.deps/
+.dirstamp/
