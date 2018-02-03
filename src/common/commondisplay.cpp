@@ -390,25 +390,13 @@ void printparty()
             if(party[p]->has_thrown_weapon && len(party[p]->extra_throwing_weapons))
                addstr(party[p]->extra_throwing_weapons[0]->get_shortname(0));
             else addstr(party[p]->get_weapon().get_shortname(0));
-            //set_color(COLOR_WHITE,COLOR_BLACK,0);
-            if(party[p]->get_weapon().get_ammoamount()>0)
+            if(party[p]->get_weapon().uses_ammo())
             {
-               //set_color(COLOR_WHITE,COLOR_BLACK,0);
-               addstr(" (");
-               addstr(party[p]->get_weapon().get_ammoamount());
-               addstr(")");
-            }
-            else if(party[p]->get_weapon().uses_ammo())
-            {
-               set_color(COLOR_BLACK,COLOR_BLACK,1);
-               if(len(party[p]->clips))
-               {
-                  addstr(" (");
-                  addstr(party[p]->count_clips());
-                  addstr(")");
-               }
-               else
-                  addstr(" (XX)");
+                addstr(" (");
+                addstr(party[p]->get_weapon().get_ammoamount());
+                addstr(",");
+                addstr(party[p]->count_clips());
+                addstr(")");
             }
             else if(party[p]->get_weapon().is_throwable() && !party[p]->has_thrown_weapon)
                addstr(" (1)");
