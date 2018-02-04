@@ -3,8 +3,7 @@
 #include "alignment.h"
 #include "lcscommon.h"
 
-creature::creature(int UniqueID) : ID(UniqueID)
-{
+creature::creature(int UniqueID) : ID(UniqueID) {
   //enum creature_type      Type;
   Type = CREATURE_BUM;
   //signed char             Align;
@@ -128,8 +127,7 @@ creature::creature(int UniqueID) : ID(UniqueID)
 }
 
 template <class Archive>
-void creature::serialize(Archive &ar, const unsigned int /* file_version */)
-{
+void creature::serialize(Archive &ar, const unsigned int /* file_version */) {
   ar &Name &ProperName;
   ar &ID &SquadID &HireID &JoinDate &CriminalRecord;
   ar &Type &Align &Species &Gender &BirthGender;
@@ -147,8 +145,7 @@ void creature::serialize(Archive &ar, const unsigned int /* file_version */)
   ar &Flags;
 }
 
-char creature::CanWalk(void)
-{
+char creature::CanWalk(void) {
   if (!Alive()) return 0;
   int legok = 2;
   if (Wound[BODYPART_LEG_RIGHT].IsGone()) legok--;
@@ -161,8 +158,7 @@ char creature::CanWalk(void)
   return 1;
 }
 
-int creature::Attribute(short a, char usejuice)
-{
+int creature::Attribute(short a, char usejuice) {
   return Attributes[a];
 }
 

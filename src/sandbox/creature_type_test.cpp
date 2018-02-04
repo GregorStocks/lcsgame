@@ -5,8 +5,7 @@
 #include <map>
 #include <string>
 
-class creaturetype
-{
+class creaturetype {
   std::string name;
   std::map<std::string, int> information;
   char possible_work_location[SITENUM]; // verifyworklocation

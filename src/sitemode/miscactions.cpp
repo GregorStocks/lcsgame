@@ -29,13 +29,11 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* unlock attempt */
-char unlock(short type, char &actual)
-{
+char unlock(short type, char &actual) {
   int p;
   int difficulty = 0;
 
-  switch (type)
-  {
+  switch (type) {
   case UNLOCK_DOOR:
     if (securityable(location[cursite]->type) == 1)
       difficulty = DIFFICULTY_CHALLENGING;
@@ -66,14 +64,10 @@ char unlock(short type, char &actual)
 
   int maxattack = -1;
 
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
-      if (activesquad->squad[p]->alive)
-      {
-        if (activesquad->squad[p]->get_skill(SKILL_SECURITY) > maxattack)
-        {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
+      if (activesquad->squad[p]->alive) {
+        if (activesquad->squad[p]->get_skill(SKILL_SECURITY) > maxattack) {
           maxattack = activesquad->squad[p]->get_skill(SKILL_SECURITY);
         }
       }
@@ -82,32 +76,24 @@ char unlock(short type, char &actual)
 
   vector<int> goodp;
 
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
-      if (activesquad->squad[p]->alive)
-      {
-        if (activesquad->squad[p]->get_skill(SKILL_SECURITY) == maxattack)
-        {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
+      if (activesquad->squad[p]->alive) {
+        if (activesquad->squad[p]->get_skill(SKILL_SECURITY) == maxattack) {
           goodp.push_back(p);
         }
       }
     }
   }
 
-  if (len(goodp))
-  {
+  if (len(goodp)) {
     int p = pickrandom(goodp);
 
     //lock pick succeeded.
-    if (activesquad->squad[p]->skill_check(SKILL_SECURITY, difficulty))
-    {
+    if (activesquad->squad[p]->skill_check(SKILL_SECURITY, difficulty)) {
       //skill goes up in proportion to the chance of you failing.
-      if (maxattack <= difficulty)
-      {
-        switch (fieldskillrate)
-        {
+      if (maxattack <= difficulty) {
+        switch (fieldskillrate) {
         case FIELDSKILLRATE_FAST:
           activesquad->squad[p]->train(SKILL_SECURITY, 10 * difficulty);
           break;
@@ -124,8 +110,7 @@ char unlock(short type, char &actual)
       move(16, 1);
       addstr(activesquad->squad[p]->name, gamelog);
       addstr(" ", gamelog);
-      switch (type)
-      {
+      switch (type) {
       case UNLOCK_DOOR:
         addstr("unlocks the door", gamelog);
         break;
@@ -153,12 +138,9 @@ char unlock(short type, char &actual)
         if (j == p) continue;
         if (activesquad->squad[j] != NULL &&
             activesquad->squad[j]->alive &&
-            activesquad->squad[j]->get_skill(SKILL_SECURITY) < difficulty)
-        {
-          if (activesquad->squad[j]->alive)
-          {
-            switch (fieldskillrate)
-            {
+            activesquad->squad[j]->get_skill(SKILL_SECURITY) < difficulty) {
+          if (activesquad->squad[j]->alive) {
+            switch (fieldskillrate) {
             case FIELDSKILLRATE_FAST:
               activesquad->squad[j]->train(SKILL_SECURITY, 5 * difficulty);
               break;
@@ -177,21 +159,16 @@ char unlock(short type, char &actual)
 
       actual = 1;
       return 1;
-    }
-    else
-    {
+    } else {
       clearmessagearea(false);
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(16, 1);
 
       int i;
       //gain some experience for failing only if you could have succeeded.
-      for (i = 0; i < 3; i++)
-      {
-        if (activesquad->squad[p]->skill_check(SKILL_SECURITY, difficulty))
-        {
-          switch (fieldskillrate)
-          {
+      for (i = 0; i < 3; i++) {
+        if (activesquad->squad[p]->skill_check(SKILL_SECURITY, difficulty)) {
+          switch (fieldskillrate) {
           case FIELDSKILLRATE_FAST:
             activesquad->squad[p]->train(SKILL_SECURITY, 50);
             break;
@@ -210,8 +187,7 @@ char unlock(short type, char &actual)
         }
       }
 
-      if (i == 3)
-      {
+      if (i == 3) {
         addstr(activesquad->squad[p]->name, gamelog);
         addstr(" can't figure the lock out.", gamelog);
         gamelog.newline();
@@ -222,9 +198,7 @@ char unlock(short type, char &actual)
       actual = 1;
       return 0;
     }
-  }
-  else
-  {
+  } else {
     clearmessagearea();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
@@ -239,43 +213,33 @@ char unlock(short type, char &actual)
 }
 
 /* bash attempt */
-char bash(short type, char &actual)
-{
+char bash(short type, char &actual) {
   int difficulty = 0, p = 0;
   bool crowable = false;
 
-  switch (type)
-  {
+  switch (type) {
   case BASH_DOOR:
-    if (!securityable(location[cursite]->type))
-    {
+    if (!securityable(location[cursite]->type)) {
       difficulty = DIFFICULTY_EASY; // Run down dump
       crowable = true;
-    }
-    else if (location[cursite]->type != SITE_GOVERNMENT_PRISON &&
-             location[cursite]->type != SITE_GOVERNMENT_INTELLIGENCEHQ)
-    {
+    } else if (location[cursite]->type != SITE_GOVERNMENT_PRISON &&
+               location[cursite]->type != SITE_GOVERNMENT_INTELLIGENCEHQ) {
       difficulty = DIFFICULTY_CHALLENGING; // Respectable place
       crowable = true;
-    }
-    else
-    {
+    } else {
       difficulty = DIFFICULTY_FORMIDABLE; // Very high security
       crowable = false;
     }
     break;
   }
 
-  if (crowable)
-  {
+  if (crowable) {
     //if(!squadhasitem(*activesquad,ITEM_WEAPON,WEAPON_CROWBAR))
     //{
     crowable = false;
 
-    for (int p = 0; p < 6; p++)
-    {
-      if (activesquad->squad[p] != NULL)
-      {
+    for (int p = 0; p < 6; p++) {
+      if (activesquad->squad[p] != NULL) {
         if (activesquad->squad[p]->get_weapon().auto_breaks_locks())
           crowable = true;
       }
@@ -283,10 +247,8 @@ char bash(short type, char &actual)
 
     if (!crowable) //didn't find in hands of any squad member
     {
-      for (int l = 0; l < len(activesquad->loot); l++)
-      {
-        if (activesquad->loot[l]->is_weapon())
-        {
+      for (int l = 0; l < len(activesquad->loot); l++) {
+        if (activesquad->loot[l]->is_weapon()) {
           Weapon *w = static_cast<Weapon *>(activesquad->loot[l]); //cast -XML
           if (w->auto_breaks_locks())
             crowable = true;
@@ -298,18 +260,13 @@ char bash(short type, char &actual)
 
   int maxattack = 0, maxp = 0;
 
-  if (!crowable)
-  {
-    for (p = 0; p < 6; p++)
-    {
-      if (activesquad->squad[p] != NULL)
-      {
-        if (activesquad->squad[p]->alive)
-        {
+  if (!crowable) {
+    for (p = 0; p < 6; p++) {
+      if (activesquad->squad[p] != NULL) {
+        if (activesquad->squad[p]->alive) {
           if (activesquad->squad[p]->get_attribute(ATTRIBUTE_STRENGTH, true) *
                   activesquad->squad[p]->get_weapon().get_bashstrengthmod() >
-              maxattack)
-          {
+              maxattack) {
             maxattack = static_cast<int>(activesquad->squad[p]->get_attribute(ATTRIBUTE_STRENGTH, true) *
                                          activesquad->squad[p]->get_weapon().get_bashstrengthmod());
             maxp = p;
@@ -321,15 +278,13 @@ char bash(short type, char &actual)
 
   difficulty = static_cast<int>(difficulty / activesquad->squad[maxp]->get_weapon().get_bashstrengthmod());
 
-  if (crowable || activesquad->squad[maxp]->attribute_check(ATTRIBUTE_STRENGTH, difficulty))
-  {
+  if (crowable || activesquad->squad[maxp]->attribute_check(ATTRIBUTE_STRENGTH, difficulty)) {
     clearmessagearea(false);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr(activesquad->squad[maxp]->name, gamelog);
     addstr(" ", gamelog);
-    switch (type)
-    {
+    switch (type) {
     case BASH_DOOR:
       if (crowable)
         addstr("uses a crowbar on the door", gamelog);
@@ -357,8 +312,7 @@ char bash(short type, char &actual)
     //Bashing doors in secure areas sets off alarms
     if ((location[cursite]->type == SITE_GOVERNMENT_PRISON ||
          location[cursite]->type == SITE_GOVERNMENT_INTELLIGENCEHQ) &&
-        sitealarm == 0)
-    {
+        sitealarm == 0) {
       sitealarm = 1;
       move(17, 1);
       set_color(COLOR_RED, COLOR_BLACK, 1);
@@ -370,15 +324,12 @@ char bash(short type, char &actual)
 
     actual = 1;
     return 1;
-  }
-  else
-  {
+  } else {
     clearmessagearea(false);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr(activesquad->squad[maxp]->name, gamelog);
-    switch (type)
-    {
+    switch (type) {
     case BASH_DOOR:
       if (activesquad->squad[maxp]->flag & CREATUREFLAG_WHEELCHAIR)
         addstr(" rams into the door", gamelog);
@@ -407,13 +358,11 @@ char bash(short type, char &actual)
 }
 
 /* computer hack attempt */
-char hack(short type, char &actual)
-{
+char hack(short type, char &actual) {
   int difficulty = 0;
   int p;
 
-  switch (type)
-  {
+  switch (type) {
   case HACK_SUPERCOMPUTER:
     difficulty = DIFFICULTY_HEROIC;
     break;
@@ -426,18 +375,14 @@ char hack(short type, char &actual)
 
   for (p = 0; p < 6; p++)
     if (activesquad->squad[p] != NULL)
-      if (activesquad->squad[p]->alive && activesquad->squad[p]->get_skill(SKILL_COMPUTERS))
-      {
+      if (activesquad->squad[p]->alive && activesquad->squad[p]->get_skill(SKILL_COMPUTERS)) {
         int roll = activesquad->squad[p]->skill_roll(SKILL_COMPUTERS);
         if (!activesquad->squad[p]->special[SPECIALWOUND_RIGHTEYE] &&
-            !activesquad->squad[p]->special[SPECIALWOUND_LEFTEYE])
-        {                                                              // we got a blind person here
+            !activesquad->squad[p]->special[SPECIALWOUND_LEFTEYE]) {   // we got a blind person here
           roll -= 3;                                                   // blindness handicaps you by 3, highest roll you can get is 15 instead of 18
           if (roll > maxblindattack) maxblindattack = roll, blind = p; // best blind hacker so far
-        }
-        else
-        {                                                     // we got someone who can see here
-          if (roll > maxattack) maxattack = roll, hacker = p; // best hacker with eyeballs so far
+        } else {                                                       // we got someone who can see here
+          if (roll > maxattack) maxattack = roll, hacker = p;          // best hacker with eyeballs so far
         }
       }
 
@@ -448,19 +393,16 @@ char hack(short type, char &actual)
   else
     blind = false; // either our hacker has eyeballs or there is no hacker at all
 
-  if (hacker > -1)
-  {
+  if (hacker > -1) {
     activesquad->squad[hacker]->train(SKILL_COMPUTERS, difficulty);
 
-    if (maxattack > difficulty)
-    {
+    if (maxattack > difficulty) {
       clearmessagearea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(16, 1);
       addstr(activesquad->squad[hacker]->name, gamelog);
       if (!blind) addstr(" has", gamelog);
-      switch (type)
-      {
+      switch (type) {
       case HACK_SUPERCOMPUTER:
         addstr(" burned a disk of top secret files", gamelog);
         break;
@@ -477,17 +419,14 @@ char hack(short type, char &actual)
 
       actual = 1;
       return 1;
-    }
-    else
-    {
+    } else {
       clearmessagearea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(16, 1);
       addstr(activesquad->squad[hacker]->name, gamelog);
       addstr(" couldn't", gamelog);
       if (blind) addstr(" see how to", gamelog);
-      switch (type)
-      {
+      switch (type) {
       case HACK_SUPERCOMPUTER:
         addstr(" bypass the supercomputer security.", gamelog);
         break;
@@ -502,16 +441,13 @@ char hack(short type, char &actual)
       actual = 1;
       return 0;
     }
-  }
-  else
-  {
+  } else {
     clearmessagearea();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr("You can't find anyone to do the job.", gamelog);
     gamelog.newline();
-    if (blind)
-    { // your only hacker was blind and had a skill roll, after the handicap, of 0 or less
+    if (blind) { // your only hacker was blind and had a skill roll, after the handicap, of 0 or less
       getkey();
 
       move(17, 1);
@@ -527,21 +463,17 @@ char hack(short type, char &actual)
 }
 
 /* run a radio broadcast */
-char radio_broadcast()
-{
+char radio_broadcast() {
   sitealarm = 1;
 
   int enemy = 0;
-  for (int e = 0; e < ENCMAX; e++)
-  {
-    if (encounter[e].exists && encounter[e].alive)
-    {
+  for (int e = 0; e < ENCMAX; e++) {
+    if (encounter[e].exists && encounter[e].alive) {
       if (encounter[e].align == -1) enemy++;
     }
   }
 
-  if (enemy > 0)
-  {
+  if (enemy > 0) {
     clearmessagearea();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
@@ -562,8 +494,7 @@ char radio_broadcast()
   addstr("The Squad takes control of the microphone and ", gamelog);
   move(17, 1);
   int viewhit = LCSrandom(VIEWNUM);
-  switch (viewhit)
-  {
+  switch (viewhit) {
   case VIEW_GAY:
     addstr("discusses homosexual rights.", gamelog);
     break;
@@ -654,10 +585,8 @@ char radio_broadcast()
 
   int segmentpower = 0, partysize = squadalive(activesquad), p = 0;
 
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
       if (!activesquad->squad[p]->alive) continue;
 
       segmentpower += activesquad->squad[p]->get_attribute(ATTRIBUTE_INTELLIGENCE, true);
@@ -713,14 +642,10 @@ char radio_broadcast()
     change_public_opinion(viewhit, segmentpower / 2);
 
   //PRISONER PARTS
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
-      if (activesquad->squad[p]->prisoner != NULL && activesquad->squad[p]->prisoner->alive)
-      {
-        if (activesquad->squad[p]->prisoner->type == CREATURE_RADIOPERSONALITY)
-        {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
+      if (activesquad->squad[p]->prisoner != NULL && activesquad->squad[p]->prisoner->alive) {
+        if (activesquad->squad[p]->prisoner->type == CREATURE_RADIOPERSONALITY) {
           viewhit = LCSrandom(VIEWNUM);
           clearmessagearea();
 
@@ -730,8 +655,7 @@ char radio_broadcast()
           addstr(activesquad->squad[p]->prisoner->name, gamelog);
           addstr(" is forced on to ", gamelog);
           move(17, 1);
-          switch (viewhit)
-          {
+          switch (viewhit) {
           case VIEW_GAY:
             addstr("discuss homosexual rights.", gamelog);
             break;
@@ -832,9 +756,7 @@ char radio_broadcast()
           segmentpower += usegmentpower;
 
           getkey();
-        }
-        else
-        {
+        } else {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -849,8 +771,7 @@ char radio_broadcast()
     }
   }
 
-  if (sitealienate >= 1 && segmentpower >= 40)
-  {
+  if (sitealienate >= 1 && segmentpower >= 40) {
     sitealienate = 0;
 
     clearmessagearea();
@@ -867,8 +788,7 @@ char radio_broadcast()
   }
 
   //POST-SECURITY BLITZ IF IT SUCKED
-  if (segmentpower < 90)
-  {
+  if (segmentpower < 90) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -881,18 +801,14 @@ char radio_broadcast()
     getkey();
 
     int numleft = LCSrandom(8) + 2;
-    for (int e = 0; e < ENCMAX; e++)
-    {
-      if (!encounter[e].exists)
-      {
+    for (int e = 0; e < ENCMAX; e++) {
+      if (!encounter[e].exists) {
         makecreature(encounter[e], CREATURE_SECURITYGUARD);
         numleft--;
       }
       if (numleft == 0) break;
     }
-  }
-  else
-  {
+  } else {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -909,22 +825,18 @@ char radio_broadcast()
 }
 
 /* run a tv broadcast */
-char news_broadcast()
-{
+char news_broadcast() {
   sitealarm = 1;
   int p;
 
   int enemy = 0;
-  for (int e = 0; e < ENCMAX; e++)
-  {
-    if (encounter[e].exists && encounter[e].alive)
-    {
+  for (int e = 0; e < ENCMAX; e++) {
+    if (encounter[e].exists && encounter[e].alive) {
       if (encounter[e].align == -1) enemy++;
     }
   }
 
-  if (enemy > 0)
-  {
+  if (enemy > 0) {
     clearmessagearea();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
@@ -946,8 +858,7 @@ char news_broadcast()
   addstr("The Squad steps in front of the cameras and ", gamelog);
   move(17, 1);
   int viewhit = LCSrandom(VIEWNUM);
-  switch (viewhit)
-  {
+  switch (viewhit) {
   case VIEW_GAY:
     addstr("discusses homosexual rights.", gamelog);
     break;
@@ -1037,10 +948,8 @@ char news_broadcast()
   getkey();
 
   int segmentpower = 0, partysize = squadalive(activesquad);
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
       if (!activesquad->squad[p]->alive) continue;
 
       segmentpower += activesquad->squad[p]->get_attribute(ATTRIBUTE_INTELLIGENCE, true);
@@ -1096,14 +1005,10 @@ char news_broadcast()
     change_public_opinion(viewhit, segmentpower / 10);
 
   //PRISONER PARTS
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
-      if (activesquad->squad[p]->prisoner != NULL && activesquad->squad[p]->prisoner->alive)
-      {
-        if (activesquad->squad[p]->prisoner->type == CREATURE_NEWSANCHOR)
-        {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
+      if (activesquad->squad[p]->prisoner != NULL && activesquad->squad[p]->prisoner->alive) {
+        if (activesquad->squad[p]->prisoner->type == CREATURE_NEWSANCHOR) {
           viewhit = LCSrandom(VIEWNUM);
           clearmessagearea();
 
@@ -1113,8 +1018,7 @@ char news_broadcast()
           addstr(activesquad->squad[p]->prisoner->name, gamelog);
           addstr(" is forced on to ", gamelog);
           move(17, 1);
-          switch (viewhit)
-          {
+          switch (viewhit) {
           case VIEW_GAY:
             addstr("discuss homosexual rights.", gamelog);
             break;
@@ -1215,9 +1119,7 @@ char news_broadcast()
           segmentpower += usegmentpower;
 
           getkey();
-        }
-        else
-        {
+        } else {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1232,8 +1134,7 @@ char news_broadcast()
     }
   }
 
-  if (sitealienate >= 1 && segmentpower >= 40)
-  {
+  if (sitealienate >= 1 && segmentpower >= 40) {
     sitealienate = 0;
 
     clearmessagearea();
@@ -1250,8 +1151,7 @@ char news_broadcast()
   }
 
   //POST - SECURITY BLITZ IF IT SUCKED
-  if (segmentpower < 85 && segmentpower >= 25)
-  {
+  if (segmentpower < 85 && segmentpower >= 25) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1264,18 +1164,14 @@ char news_broadcast()
     getkey();
 
     int numleft = LCSrandom(8) + 2;
-    for (int e = 0; e < ENCMAX; e++)
-    {
-      if (!encounter[e].exists)
-      {
+    for (int e = 0; e < ENCMAX; e++) {
+      if (!encounter[e].exists) {
         makecreature(encounter[e], CREATURE_SECURITYGUARD);
         numleft--;
       }
       if (numleft == 0) break;
     }
-  }
-  else
-  {
+  } else {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1297,28 +1193,22 @@ char news_broadcast()
 }
 
 /* rescues people held at the activeparty's current location */
-void partyrescue(short special)
-{
+void partyrescue(short special) {
   int freeslots = 0, p, pl;
-  for (p = 0; p < 6; p++)
-  {
+  for (p = 0; p < 6; p++) {
     if (activesquad->squad[p] == NULL) freeslots++;
   }
   int hostslots = 0;
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
-      if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner == NULL)
-      {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
+      if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner == NULL) {
         hostslots++;
       }
     }
   }
 
   vector<Creature *> waiting_for_rescue;
-  for (pl = 0; pl < len(pool); pl++)
-  {
+  for (pl = 0; pl < len(pool); pl++) {
     if (pool[pl]->location == cursite &&
         !(pool[pl]->flag & CREATUREFLAG_SLEEPER) &&
         !(special == SPECIAL_PRISON_CONTROL_LOW && !(pool[pl]->sentence > 0 && !pool[pl]->deathpenalty)) &&    //Low is for normal time-limited sentences.
@@ -1327,14 +1217,10 @@ void partyrescue(short special)
       waiting_for_rescue.push_back(pool[pl]);
   }
 
-  for (pl = 0; pl < len(waiting_for_rescue); pl++)
-  {
-    if (LCSrandom(2) && freeslots)
-    {
-      for (int p = 0; p < 6; p++)
-      {
-        if (activesquad->squad[p] == NULL)
-        {
+  for (pl = 0; pl < len(waiting_for_rescue); pl++) {
+    if (LCSrandom(2) && freeslots) {
+      for (int p = 0; p < 6; p++) {
+        if (activesquad->squad[p] == NULL) {
           activesquad->squad[p] = waiting_for_rescue[pl];
           activesquad->squad[p]->squadid = activesquad->id;
           criminalize(*activesquad->squad[p], LAWFLAG_ESCAPED);
@@ -1365,16 +1251,11 @@ void partyrescue(short special)
       --pl;
     }
   }
-  for (pl = 0; pl < len(waiting_for_rescue); pl++)
-  {
-    if (hostslots)
-    {
-      for (int p = 0; p < 6; p++)
-      {
-        if (activesquad->squad[p] != NULL)
-        {
-          if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner == NULL)
-          {
+  for (pl = 0; pl < len(waiting_for_rescue); pl++) {
+    if (hostslots) {
+      for (int p = 0; p < 6; p++) {
+        if (activesquad->squad[p] != NULL) {
+          if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner == NULL) {
             activesquad->squad[p]->prisoner = waiting_for_rescue[pl];
             waiting_for_rescue[pl]->squadid = activesquad->id;
             criminalize(*waiting_for_rescue[pl], LAWFLAG_ESCAPED);
@@ -1395,8 +1276,7 @@ void partyrescue(short special)
             move(16, 1);
             addstr(waiting_for_rescue[pl]->name, gamelog);
             addstr(" ", gamelog);
-            switch (LCSrandom(3))
-            {
+            switch (LCSrandom(3)) {
             case 0:
               addstr("was tortured recently ", gamelog);
               break;
@@ -1432,8 +1312,7 @@ void partyrescue(short special)
     if (!hostslots) break;
   }
 
-  if (len(waiting_for_rescue) == 1)
-  {
+  if (len(waiting_for_rescue) == 1) {
     clearmessagearea();
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     move(16, 1);
@@ -1447,9 +1326,7 @@ void partyrescue(short special)
     gamelog.newline();
 
     getkey();
-  }
-  else if (len(waiting_for_rescue) > 1)
-  {
+  } else if (len(waiting_for_rescue) > 1) {
     clearmessagearea();
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     move(16, 1);
@@ -1465,19 +1342,14 @@ void partyrescue(short special)
 }
 
 /* everybody reload! */
-void reloadparty(bool wasteful)
-{
-  for (int p = 0; p < 6; p++)
-  {
+void reloadparty(bool wasteful) {
+  for (int p = 0; p < 6; p++) {
     if (activesquad->squad[p] == NULL) continue;
     if (!activesquad->squad[p]->alive) continue;
 
-    if (activesquad->squad[p]->has_thrown_weapon)
-    {
+    if (activesquad->squad[p]->has_thrown_weapon) {
       activesquad->squad[p]->ready_another_throwing_weapon();
-    }
-    else if (activesquad->squad[p]->can_reload())
-    {
+    } else if (activesquad->squad[p]->can_reload()) {
       activesquad->squad[p]->reload(wasteful);
     }
   }

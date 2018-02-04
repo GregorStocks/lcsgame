@@ -41,8 +41,7 @@ short curForeground = COLOR_WHITE, curBackground = COLOR_BLACK;
 bool isBright = false, isBlinking = false;
 
 //sets current color to desired setting
-void set_color(short f, short b, bool bright, bool blink)
-{
+void set_color(short f, short b, bool bright, bool blink) {
   // keep track of current color
   curForeground = f, curBackground = b, isBright = bright, isBlinking = blink;
 
@@ -59,8 +58,7 @@ void set_color(short f, short b, bool bright, bool blink)
 }
 
 //IN CASE FUNKY ARROW KEYS ARE SENT IN, TRANSLATE THEM BACK
-void translategetch(int &c)
-{
+void translategetch(int &c) {
   //if(c==-63)c='7';
   //if(c==-62)c='8';
   //if(c==-61)c='9';
@@ -87,8 +85,7 @@ void translategetch(int &c)
    */
 
   // SPECIAL TRANSLATION for AZERTY keyboard
-  if (interface_pgup == '.')
-  {
+  if (interface_pgup == '.') {
     if (c == ';') c = '.';
     if (c == ':') c = '/';
     if (c == '&') c = '1';
@@ -103,8 +100,7 @@ void translategetch(int &c)
     if (c == 0x85) c = '0';
   }
 
-  if (c >= 'A' && c <= 'Z')
-  {
+  if (c >= 'A' && c <= 'Z') {
     c += 'a' - 'A';
   }
 
@@ -115,8 +111,7 @@ void translategetch(int &c)
   //if(c==KEY_DOWN)c='x';
 }
 
-void translategetch_cap(int &c)
-{
+void translategetch_cap(int &c) {
   //if(c==-63)c='7';
   //if(c==-62)c='8';
   //if(c==-61)c='9';
@@ -144,8 +139,7 @@ void translategetch_cap(int &c)
 }
 
 /* Refreshes the screen, empties the keyboard buffer, waits for a new key to be pressed, and returns the key pressed */
-int getkey()
-{
+int getkey() {
   refresh();
   nodelay(stdscr, TRUE);
   while (getch() != ERR)
@@ -157,8 +151,7 @@ int getkey()
 }
 
 /* Variant of getkey() that doesn't make all letters lowercase */
-int getkey_cap()
-{
+int getkey_cap() {
   refresh();
   nodelay(stdscr, TRUE);
   while (getch() != ERR)
@@ -170,12 +163,10 @@ int getkey_cap()
 }
 
 /* Empties the keyboard buffer, and returns most recent key pressed, if any */
-int checkkey()
-{
+int checkkey() {
   int c = ERR, ret = ERR;
   nodelay(stdscr, TRUE);
-  do
-  {
+  do {
     ret = c;
     c = getch();
     translategetch(c);
@@ -185,12 +176,10 @@ int checkkey()
 }
 
 /* Variant of checkkey() that doesn't make all letters lowercase */
-int checkkey_cap()
-{
+int checkkey_cap() {
   int c = ERR, ret = ERR;
   nodelay(stdscr, TRUE);
-  do
-  {
+  do {
     ret = c;
     c = getch();
     translategetch_cap(c);
@@ -202,8 +191,7 @@ int checkkey_cap()
 #ifdef CH_USE_UNICODE
 bool unicode_enabled = false;
 
-bool setup_unicode()
-{
+bool setup_unicode() {
 #ifdef WIN32
 #ifdef PDC_WIDE
   unicode_enabled = true; // We're using a version of PDCurses with UTF-8 support (e.g. from pdc34dllu.zip)
@@ -217,8 +205,7 @@ bool setup_unicode()
   return unicode_enabled;
 }
 
-int lookup_unicode_hack(int c)
-{
+int lookup_unicode_hack(int c) {
   for (int i = 0; i < len(unicode_hacks); i++)
     if (unicode_hacks[i].unicode_char == c)
       return unicode_hacks[i].hack_char;
@@ -228,29 +215,24 @@ int lookup_unicode_hack(int c)
 
 #ifndef CH_USE_CP437
 // This function's for both UTF-8 and the ASCII hack (only disabled in pure CP437 mode)
-int addch_unicode(int c)
-{
+int addch_unicode(int c) {
 #ifdef CH_USE_UNICODE
   // This part here is for Unicode only, not the ASCII hack
   wchar_t wch;
   cchar_t cch;
 
-  if (unicode_enabled)
-  {
+  if (unicode_enabled) {
     // We can do this because we've already verified
     // that __STDC_ISO_10646__ is set.
     wch = c;
 
     setcchar(&cch, &wch, 0, 0, NULL);
     return add_wch(&cch);
-  }
-  else
-  {
+  } else {
     c = lookup_unicode_hack(c);
 #endif
     // Now this code will run on both Unicode AND the ASCII hack
-    if (c & A_REVERSE)
-    {                                                                // we need to reverse the colors
+    if (c & A_REVERSE) {                                             // we need to reverse the colors
       c &= ~A_REVERSE;                                               // unset A_REVERSE for the character, curses does it wrong
       set_color(curBackground, curForeground, isBlinking, isBright); // reverse colors
       int ret = addch(c);                                            // add the character
@@ -265,11 +247,9 @@ int addch_unicode(int c)
 }
 #endif
 
-void set_title(char *s)
-{
+void set_title(char *s) {
 #ifdef NCURSES
-  if (tgetflag("hs"))
-  { // terminal has status line support
+  if (tgetflag("hs")) { // terminal has status line support
     char buf[255] = {0};
     char *p = buf; // tgetstr modifies its second argument, let buf keep pointing to the beginning
     char *ok;      // tgetstr's return value is apparently undocumented, except that it's NULL on errors
@@ -290,8 +270,7 @@ void set_title(char *s)
 }
 
 // Initialize the console, depending on the OS and language/code page settings
-void init_console()
-{
+void init_console() {
 #ifdef WIN32
   // This has to be set to Code Page 437 in Windows regardless of Unicode, that's just how PDCurses works on Windows, even the UTF-8 version of PDCurses
   SetConsoleOutputCP(437); // use Code Page 437 (US English code page for DOS) for output, regardless of anything else
@@ -335,8 +314,7 @@ void begin_cleartype_fix() // execute this function after loading settings from 
     //     that is the case, to ensure that the user's original font smoothing settings will be restored when they exit the game
     FILE *h;
     h = LCSOpenFile("cleartype.dat", "rb", LCSIO_PRE_HOME);
-    if (h != NULL)
-    {
+    if (h != NULL) {
       fread(&FontSmoothingEnabled, sizeof(BOOL), 1, h);
       fread(&TypeOfFontSmoothing, sizeof(UINT), 1, h);
       LCSCloseFile(h);
@@ -345,8 +323,7 @@ void begin_cleartype_fix() // execute this function after loading settings from 
     // TypeOfFontSmoothing are guaranteed to be the original settings prior to any modifications by this game, we can
     // back the original settings up to disk, in case the game crashes or is exited prematurely
     h = LCSOpenFile("cleartype.dat", "wb", LCSIO_PRE_HOME);
-    if (h != NULL)
-    {
+    if (h != NULL) {
       fwrite(&FontSmoothingEnabled, sizeof(BOOL), 1, h);
       fwrite(&TypeOfFontSmoothing, sizeof(UINT), 1, h);
       LCSCloseFile(h);

@@ -65,10 +65,8 @@ the bottom of includes.h in the top src folder.
 // Sets the text color to the thematic color for the given alignment
 // extended_range forces colors to be set on a 5 point scale instead
 // of just basic liberal-moderate-conservative
-void set_alignment_color(signed char alignment, bool extended_range)
-{
-  switch (alignment)
-  {
+void set_alignment_color(signed char alignment, bool extended_range) {
+  switch (alignment) {
   case ALIGN_ARCHCONSERVATIVE:
     set_color(COLOR_RED, COLOR_BLACK, 1);
     break;
@@ -100,10 +98,8 @@ void set_alignment_color(signed char alignment, bool extended_range)
 }
 
 // Sets the text color per activity type
-void set_activity_color(long activity_type)
-{
-  switch (activity_type)
-  {
+void set_activity_color(long activity_type) {
+  switch (activity_type) {
   // Liberal actvism
   case ACTIVITY_SLEEPER_LIBERAL:
   case ACTIVITY_TROUBLE:
@@ -224,50 +220,35 @@ void set_activity_color(long activity_type)
 }
 
 /* location and squad header */
-void locheader()
-{
-  if (activesquad != NULL && activesquad->squad[0]->location != -1)
-  {
-    if (location[activesquad->squad[0]->location]->siege.siege)
-    {
+void locheader() {
+  if (activesquad != NULL && activesquad->squad[0]->location != -1) {
+    if (location[activesquad->squad[0]->location]->siege.siege) {
       if (location[activesquad->squad[0]->location]->siege.underattack)
         set_color(COLOR_RED, COLOR_BLACK, 1);
       else
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
-    }
-    else
+    } else
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  }
-  else if (selectedsiege != -1)
-  {
-    if (location[selectedsiege]->siege.siege)
-    {
+  } else if (selectedsiege != -1) {
+    if (location[selectedsiege]->siege.siege) {
       if (location[selectedsiege]->siege.underattack)
         set_color(COLOR_RED, COLOR_BLACK, 1);
       else
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
-    }
-    else
+    } else
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  }
-  else
+  } else
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
   move(0, 0);
 
-  if (activesquad != NULL && activesquad->squad[0]->location != -1)
-  {
+  if (activesquad != NULL && activesquad->squad[0]->location != -1) {
     addstr(location[activesquad->squad[0]->location]->getname(false, true));
     addstr(", ");
-  }
-  else
-  {
-    if (selectedsiege == -1)
-    {
+  } else {
+    if (selectedsiege == -1) {
       addstr("No Squad Selected");
       addstr(", ");
-    }
-    else
-    {
+    } else {
       addstr(location[selectedsiege]->getname(false, true));
       addstr(", ");
     }
@@ -279,8 +260,7 @@ void locheader()
   addstr(", ");
   addstr(year);
 
-  if (activesquad == NULL && selectedsiege == -1)
-  {
+  if (activesquad == NULL && selectedsiege == -1) {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     move(3, 6);
     addstr("To form a new squad:");
@@ -293,23 +273,19 @@ void locheader()
 
   printfunds();
 
-  if (activesquad != NULL)
-  {
+  if (activesquad != NULL) {
     std::string str = getactivity(activesquad->activity);
     set_activity_color(activesquad->activity.type);
-    if (activesquad->activity.type == ACTIVITY_NONE)
-    {
+    if (activesquad->activity.type == ACTIVITY_NONE) {
       bool haveact = false, multipleact = false;
-      for (int p = 0; p < 6; p++)
-      {
+      for (int p = 0; p < 6; p++) {
         if (activesquad->squad[p] == NULL) continue;
         const std::string str2 = getactivity(activesquad->squad[p]->activity);
         set_activity_color(activesquad->squad[p]->activity.type);
         if (haveact && str != str2) multipleact = true;
         str = str2, haveact = true;
       }
-      if (multipleact)
-      {
+      if (multipleact) {
         str = "Acting Individually";
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
       }
@@ -319,8 +295,7 @@ void locheader()
 }
 
 /* party info at top of screen */
-void printparty()
-{
+void printparty() {
   Creature *party[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
   if (activesquad != NULL)
     for (int p = 0; p < 6; p++)
@@ -328,38 +303,32 @@ void printparty()
 
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
-  for (int i = 2; i < 8; i++)
-  {
+  for (int i = 2; i < 8; i++) {
     move(i, 0);
     addstr("                                                                                "); // 80 spaces
   }
 
   if (party_status != -1 && party[party_status] == NULL) party_status = -1;
 
-  if (party_status != -1)
-  {
+  if (party_status != -1) {
     printcreatureinfo(party[party_status]);
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(1, 0);
     addstr(party_status + 1);
-  }
-  else
-  {
+  } else {
     char str[200];
 
     move(1, 0);
     addstr("#횮ODE NAME컴컴컴컴컴컴SKILL컴훇EAPON컴컴컴컴횫RMOR컴컴컴컴컴HEALTH컴훂RANSPORT�"); // 80 characters
 
-    for (int p = 0; p < 6; p++)
-    {
+    for (int p = 0; p < 6; p++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(p + 2, 0);
       addstr("                                                                                "); // 80 spaces
       mvaddchar(p + 2, 0, '1' + p);
 
-      if (party[p] != NULL)
-      {
+      if (party[p] != NULL) {
         if (party[p]->prisoner != NULL)
           set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         else
@@ -370,8 +339,7 @@ void printparty()
 
         int skill = 0;
         char bright = 0;
-        for (int sk = 0; sk < SKILLNUM; sk++)
-        {
+        for (int sk = 0; sk < SKILLNUM; sk++) {
           skill += (int)party[p]->get_skill(sk);
           if (party[p]->get_skill_ip(sk) >= 100 + (10 * party[p]->get_skill(sk)) &&
               party[p]->get_skill(sk) < party[p]->skill_cap(sk, true)) bright = 1;
@@ -394,8 +362,7 @@ void printparty()
         if (mode != GAMEMODE_SITE)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
-          switch (weaponcheck(*party[p]))
-          {
+          switch (weaponcheck(*party[p])) {
           case -1:
           case 0:
             set_color(COLOR_GREEN, COLOR_BLACK, 1);
@@ -411,56 +378,43 @@ void printparty()
           addstr(party[p]->extra_throwing_weapons[0]->get_shortname(0));
         else
           addstr(party[p]->get_weapon().get_shortname(0));
-        if (party[p]->get_weapon().uses_ammo())
-        {
+        if (party[p]->get_weapon().uses_ammo()) {
           addstr(" (");
           addstr(party[p]->get_weapon().get_ammoamount());
           addstr(",");
           addstr(party[p]->count_clips());
           addstr(")");
-        }
-        else if (party[p]->get_weapon().is_throwable() && !party[p]->has_thrown_weapon)
+        } else if (party[p]->get_weapon().is_throwable() && !party[p]->has_thrown_weapon)
           addstr(" (1)");
-        else if (party[p]->has_thrown_weapon && len(party[p]->extra_throwing_weapons))
-        {
+        else if (party[p]->has_thrown_weapon && len(party[p]->extra_throwing_weapons)) {
           set_color(COLOR_BLACK, COLOR_BLACK, 1);
           addstr(" (");
           addstr(party[p]->count_weapons() - party[p]->is_armed());
           addstr(")");
         }
 
-        if (mode != GAMEMODE_SITE)
-        {
+        if (mode != GAMEMODE_SITE) {
           int fg = COLOR_WHITE;
           int bg = COLOR_BLACK;
           int in = 1;
-          if (party[p]->get_armor().is_bloody())
-          {
+          if (party[p]->get_armor().is_bloody()) {
             bg = COLOR_RED;
             in = 1;
           }
-          if (party[p]->get_armor().get_quality() > party[p]->get_armor().get_quality_levels())
-          {
+          if (party[p]->get_armor().get_quality() > party[p]->get_armor().get_quality_levels()) {
             fg = COLOR_BLACK;
-          }
-          else if (party[p]->get_armor().is_damaged())
-          {
+          } else if (party[p]->get_armor().is_damaged()) {
             fg = COLOR_YELLOW;
             in = 1;
-          }
-          else if (party[p]->get_armor().get_quality() > 1)
-          {
+          } else if (party[p]->get_armor().get_quality() > 1) {
             fg = COLOR_YELLOW;
             in = (bg == COLOR_RED);
           }
           if (fg == COLOR_WHITE && bg == COLOR_BLACK)
             in = 0;
           set_color(fg, bg, in);
-        }
-        else
-        {
-          switch (hasdisguise(*party[p]))
-          {
+        } else {
+          switch (hasdisguise(*party[p])) {
           case 1:
             set_color(COLOR_GREEN, COLOR_BLACK, 1);
             break;
@@ -490,13 +444,10 @@ void printparty()
           v = id_getcar(party[p]->pref_carid);
         else
           v = id_getcar(party[p]->carid);
-        if (v != -1 && showcarprefs != -1)
-        {
+        if (v != -1 && showcarprefs != -1) {
           strcpy(str, vehicle[v]->shortname());
           if (showcarprefs == 1 ? party[p]->pref_is_driver : party[p]->is_driver) strcat(str, "-D");
-        }
-        else
-        {
+        } else {
           int legok = 2;
           if ((party[p]->wound[BODYPART_LEG_RIGHT] & WOUND_NASTYOFF) ||
               (party[p]->wound[BODYPART_LEG_RIGHT] & WOUND_CLEANOFF)) legok--;
@@ -518,20 +469,14 @@ void printparty()
 }
 
 /* location info at top of screen */
-void printlocation(long loc)
-{
-  if (location[loc]->siege.siege)
-  {
-    if (!location[loc]->siege.underattack)
-    {
+void printlocation(long loc) {
+  if (location[loc]->siege.siege) {
+    if (!location[loc]->siege.underattack) {
       set_color(COLOR_YELLOW, COLOR_BLACK, 1);
       mvaddstr(2, 1, "The police have surrounded this location.");
-    }
-    else
-    {
+    } else {
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (location[loc]->siege.siegetype)
-      {
+      switch (location[loc]->siege.siegetype) {
       case SIEGE_POLICE:
         mvaddstr(2, 1, "The police are raiding this location!");
         break;
@@ -552,28 +497,21 @@ void printlocation(long loc)
         break;
       }
     }
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     mvaddstr(2, 1, "You are not under siege...  yet.");
   }
 
-  if (numbereating(loc) > 0)
-  {
-    if (fooddaysleft(loc))
-    {
-      if (fooddaysleft(loc) < 4)
-      {
+  if (numbereating(loc) > 0) {
+    if (fooddaysleft(loc)) {
+      if (fooddaysleft(loc) < 4) {
         if (!location[loc]->siege.siege)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
           set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         mvaddstr(3, 1, "This location has food for only a few days.");
       }
-    }
-    else
-    {
+    } else {
       if (!location[loc]->siege.siege)
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
       else
@@ -582,81 +520,64 @@ void printlocation(long loc)
     }
   }
 
-  if (location[loc]->compound_walls & COMPOUND_BASIC)
-  {
+  if (location[loc]->compound_walls & COMPOUND_BASIC) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(4, 1, "FORTIFIED COMPOUND");
   }
 
-  if (location[loc]->compound_walls & COMPOUND_PRINTINGPRESS)
-  {
+  if (location[loc]->compound_walls & COMPOUND_PRINTINGPRESS) {
     set_color(COLOR_BLUE, COLOR_BLACK, 1);
     mvaddstr(4, 31, "PRINTING PRESS");
   }
 
-  if (location[loc]->front_business != -1)
-  {
+  if (location[loc]->front_business != -1) {
     set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
     mvaddstr(4, 54, "BUSINESS FRONT");
   }
 
-  if (location[loc]->compound_walls & COMPOUND_CAMERAS)
-  {
-    if (location[loc]->siege.siege && location[loc]->siege.cameras_off)
-    {
+  if (location[loc]->compound_walls & COMPOUND_CAMERAS) {
+    if (location[loc]->siege.siege && location[loc]->siege.cameras_off) {
       set_color(COLOR_RED, COLOR_BLACK, 0);
       mvaddstr(5, 1, "CAMERAS OFF");
-    }
-    else
-    {
+    } else {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       mvaddstr(5, 1, "CAMERAS ON");
     }
   }
 
-  if (location[loc]->compound_walls & COMPOUND_TRAPS)
-  {
+  if (location[loc]->compound_walls & COMPOUND_TRAPS) {
     set_color(COLOR_RED, COLOR_BLACK, 1);
     mvaddstr(5, 16, "BOOBY TRAPS");
   }
 
-  if (location[loc]->compound_walls & COMPOUND_AAGUN)
-  {
+  if (location[loc]->compound_walls & COMPOUND_AAGUN) {
     set_color(COLOR_CYAN, COLOR_BLACK, 1);
     mvaddstr(5, 33, "AA GUN");
   }
 
-  if (location[loc]->compound_walls & COMPOUND_TANKTRAPS)
-  {
+  if (location[loc]->compound_walls & COMPOUND_TANKTRAPS) {
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     mvaddstr(5, 46, "TANK TRAPS");
   }
 
-  if (location[loc]->siege.siege && location[loc]->siege.lights_off)
-  {
+  if (location[loc]->siege.siege && location[loc]->siege.lights_off) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     mvaddstr(5, 60, "LIGHTS OUT");
-  }
-  else if (location[loc]->compound_walls & COMPOUND_GENERATOR)
-  {
+  } else if (location[loc]->compound_walls & COMPOUND_GENERATOR) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(5, 61, "GENERATOR");
   }
 
   int eaters = numbereating(loc), days = fooddaysleft(loc);
 
-  if (eaters > 0)
-  {
-    if (days >= 1)
-    {
+  if (eaters > 0) {
+    if (days >= 1) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddstr(6, 50, days);
       addstr(" Day");
       if (days != 1) addchar('s');
       addstr(" of Food Left");
-    }
-    else if (days == 0)
-    {
+    } else if (days == 0) {
       set_color(COLOR_RED, COLOR_BLACK, 0);
       mvaddstr(6, 50, "Not Enough Food");
     }
@@ -672,8 +593,7 @@ void printlocation(long loc)
 }
 
 /* character info at top of screen */
-void printcreatureinfo(Creature *cr, unsigned char knowledge)
-{
+void printcreatureinfo(Creature *cr, unsigned char knowledge) {
   char str[200];
 
   makedelimiter(1);
@@ -683,11 +603,9 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
   addstr(", ");
   addstr(gettitle(*cr));
 
-  if (cr->prisoner != NULL)
-  {
+  if (cr->prisoner != NULL) {
     addstr(", holding ");
-    switch (cr->prisoner->type)
-    {
+    switch (cr->prisoner->type) {
     case CREATURE_POLITICIAN:
       addstr("a cursing Politician");
       break;
@@ -753,8 +671,7 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
     v = id_getcar(cr->pref_carid);
   else
     v = id_getcar(cr->carid);
-  if (v != -1 && showcarprefs != -1)
-  {
+  if (v != -1 && showcarprefs != -1) {
     strcpy(str, vehicle[v]->shortname());
     char d;
     if (showcarprefs == 1)
@@ -762,9 +679,7 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
     else
       d = cr->is_driver;
     if (d) strcat(str, "-D");
-  }
-  else
-  {
+  } else {
     int legok = 2;
     if ((cr->wound[BODYPART_LEG_RIGHT] & WOUND_NASTYOFF) ||
         (cr->wound[BODYPART_LEG_RIGHT] & WOUND_CLEANOFF)) legok--;
@@ -782,8 +697,7 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
   if (mode != GAMEMODE_SITE)
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
   else
-    switch (weaponcheck(*cr))
-    {
+    switch (weaponcheck(*cr)) {
     case -1:
     case 0:
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
@@ -799,38 +713,28 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
   addstr(cr->get_weapon_string(1));
 
   move(7, 0);
-  if (mode != GAMEMODE_SITE)
-  {
+  if (mode != GAMEMODE_SITE) {
     int fg = COLOR_WHITE;
     int bg = COLOR_BLACK;
     int in = 1;
-    if (cr->get_armor().is_bloody())
-    {
+    if (cr->get_armor().is_bloody()) {
       bg = COLOR_RED;
       in = 0;
     }
-    if (cr->get_armor().get_quality() > cr->get_armor().get_quality_levels())
-    {
+    if (cr->get_armor().get_quality() > cr->get_armor().get_quality_levels()) {
       fg = COLOR_BLACK;
-    }
-    else if (cr->get_armor().is_damaged())
-    {
+    } else if (cr->get_armor().is_damaged()) {
       fg = COLOR_YELLOW;
       in = 1;
-    }
-    else if (cr->get_armor().get_quality() > 1)
-    {
+    } else if (cr->get_armor().get_quality() > 1) {
       fg = COLOR_YELLOW;
       in = (bg == COLOR_RED);
     }
     if (fg == COLOR_WHITE && bg == COLOR_BLACK)
       in = 0;
     set_color(fg, bg, in);
-  }
-  else
-  {
-    switch (hasdisguise(*cr))
-    {
+  } else {
+    switch (hasdisguise(*cr)) {
     case 1:
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       break;
@@ -858,23 +762,19 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
   int snum = 5;
   char printed = 1;
 
-  while (snum > 0 && printed)
-  {
+  while (snum > 0 && printed) {
     printed = 0;
 
     int max = 0;
     long maxs = -1;
-    for (int s = 0; s < SKILLNUM; s++)
-    {
-      if ((cr->get_skill(s) * 10000 + cr->get_skill_ip(s)) > max && !used[s])
-      {
+    for (int s = 0; s < SKILLNUM; s++) {
+      if ((cr->get_skill(s) * 10000 + cr->get_skill_ip(s)) > max && !used[s]) {
         max = (cr->get_skill(s) * 10000 + cr->get_skill_ip(s));
         maxs = s;
       }
     }
 
-    if (maxs != -1)
-    {
+    if (maxs != -1) {
       used[maxs] = 1;
       printed = 1;
 
@@ -902,8 +802,7 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
       else
         addchar('?');
 
-      if (snum == 5 && printed)
-      {
+      if (snum == 5 && printed) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         move(2, 31);
         addstr("Top Skills:");
@@ -919,18 +818,15 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
 
   printhealthstat(*cr, 1, 49, FALSE);
 
-  if (woundsum > 0)
-  {
-    for (int w = 0; w < BODYPARTNUM; w++)
-    {
+  if (woundsum > 0) {
+    for (int w = 0; w < BODYPARTNUM; w++) {
       if (cr->wound[w] & WOUND_BLEEDING)
         set_color(COLOR_RED, COLOR_BLACK, 1);
       else
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
       move(2 + w, 49);
-      switch (w)
-      {
+      switch (w) {
       case BODYPART_HEAD:
         addstr("Head:");
         break;
@@ -956,8 +852,7 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
         addstr("Ripped off");
       else if (cr->wound[w] & WOUND_CLEANOFF)
         addstr("Clean sever");
-      else
-      {
+      else {
         int sum = 0;
 
         if (cr->wound[w] & WOUND_SHOT) sum++;
@@ -966,8 +861,7 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
         if (cr->wound[w] & WOUND_BURNED) sum++;
         if (cr->wound[w] & WOUND_TORN) sum++;
 
-        if (sum == 0)
-        {
+        if (sum == 0) {
           set_color(COLOR_GREEN, COLOR_BLACK, 1);
           if (cr->animalgloss == ANIMALGLOSS_ANIMAL)
             addstr("Animal");
@@ -975,32 +869,27 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
             addstr("Liberal");
         }
 
-        if (cr->wound[w] & WOUND_SHOT)
-        {
+        if (cr->wound[w] & WOUND_SHOT) {
           addstr("Sht");
           sum--;
           if (sum > 0) addstr(",");
         }
-        if (cr->wound[w] & WOUND_BRUISED)
-        {
+        if (cr->wound[w] & WOUND_BRUISED) {
           addstr("Brs");
           sum--;
           if (sum > 0) addstr(",");
         }
-        if (cr->wound[w] & WOUND_CUT)
-        {
+        if (cr->wound[w] & WOUND_CUT) {
           addstr("Cut");
           sum--;
           if (sum > 0) addstr(",");
         }
-        if (cr->wound[w] & WOUND_TORN)
-        {
+        if (cr->wound[w] & WOUND_TORN) {
           addstr("Trn");
           sum--;
           if (sum > 0) addstr(",");
         }
-        if (cr->wound[w] & WOUND_BURNED)
-        {
+        if (cr->wound[w] & WOUND_BURNED) {
           addstr("Brn");
           sum--;
           if (sum > 0) addstr(",");
@@ -1012,15 +901,13 @@ void printcreatureinfo(Creature *cr, unsigned char knowledge)
 }
 
 /* full character sheet (with surrounding interface) */
-void fullstatus(int p)
-{
+void fullstatus(int p) {
   if (activesquad == NULL) return;
 
   const int pagenum = 3;
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_GREEN, COLOR_BLACK, 1);
@@ -1044,46 +931,35 @@ void fullstatus(int p)
 
     int c = getkey();
 
-    if (activesquad->squad[1] != NULL && ((c == KEY_LEFT) || (c == KEY_RIGHT)))
-    {
+    if (activesquad->squad[1] != NULL && ((c == KEY_LEFT) || (c == KEY_RIGHT))) {
       int sx = (c == KEY_LEFT) ? -1 : 1;
       do
         p = (p + 6 + sx) % 6;
       while (activesquad->squad[p] == NULL);
-    }
-    else if (c == KEY_DOWN)
-    {
+    } else if (c == KEY_DOWN) {
       page++;
       page %= pagenum;
-    }
-    else if (c == KEY_UP)
-    {
+    } else if (c == KEY_UP) {
       page--;
       if (page < 0) page = pagenum - 1;
       page %= pagenum;
-    }
-    else if (c == 'n')
-    {
+    } else if (c == 'n') {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddstr(23, 0, "What is the new code name?                                                      "); // 80 characters
       mvaddstr(24, 0, "                                                                                "); // 80 spaces
 
       enter_name(24, 0, activesquad->squad[p]->name, CREATURE_NAMELEN, activesquad->squad[p]->propername);
-    }
-    else if (c == 'g')
-    {
+    } else if (c == 'g') {
       activesquad->squad[p]->gender_liberal++;
       if (activesquad->squad[p]->gender_liberal > 2)
         activesquad->squad[p]->gender_liberal = 0;
-    }
-    else
+    } else
       break;
   }
 }
 
 /* Full screen character sheet, skills only edition */
-void printliberalskills(Creature &cr)
-{
+void printliberalskills(Creature &cr) {
   // Add name
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
   move(2, 0);
@@ -1101,10 +977,8 @@ void printliberalskills(Creature &cr)
   addstr(")");
 
   // Add all skills
-  for (int s = 0; s < SKILLNUM; s++)
-  {
-    if (s % 3 == 0 && s < 9)
-    {
+  for (int s = 0; s < SKILLNUM; s++) {
+    if (s % 3 == 0 && s < 9) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(4, 27 * (s / 3));
       addstr("SKILL");
@@ -1130,18 +1004,14 @@ void printliberalskills(Creature &cr)
     addstr(": ");
     move(5 + s / 3, 14 + 27 * (s % 3));
     addstr_f("%2d.", cr.get_skill(s));
-    if (cr.get_skill_ip(s) < 100 + (10 * cr.get_skill(s)))
-    {
-      if ((cr.get_skill_ip(s) * 100) / (100 + (10 * cr.get_skill(s))) != 0)
-      {
+    if (cr.get_skill_ip(s) < 100 + (10 * cr.get_skill(s))) {
+      if ((cr.get_skill_ip(s) * 100) / (100 + (10 * cr.get_skill(s))) != 0) {
         if ((cr.get_skill_ip(s) * 100) / (100 + (10 * cr.get_skill(s))) < 10)
           addstr("0");
         addstr((cr.get_skill_ip(s) * 100) / (100 + (10 * cr.get_skill(s))));
-      }
-      else
+      } else
         addstr("00");
-    }
-    else
+    } else
       addstr("99+");
 
     if (cr.skill_cap(s, true) == 0 || cr.get_skill(s) < cr.skill_cap(s, true))
@@ -1153,8 +1023,7 @@ void printliberalskills(Creature &cr)
 }
 
 /* full screen character sheet */
-void printliberalstats(Creature &cr)
-{
+void printliberalstats(Creature &cr) {
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
   // Add name
@@ -1163,8 +1032,7 @@ void printliberalstats(Creature &cr)
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   addstr(cr.name);
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  if (strcmp(cr.propername, cr.name) != 0)
-  {
+  if (strcmp(cr.propername, cr.name) != 0) {
     //The names do not match, print real name as well
     addstr(" (");
     addstr(cr.propername);
@@ -1211,8 +1079,7 @@ void printliberalstats(Creature &cr)
   move(10, 16);
   addstr("Juice: ");
   addstr(cr.juice);
-  if (cr.juice < 1000)
-  {
+  if (cr.juice < 1000) {
     move(11, 16);
     addstr("Next:  ");
     if (cr.juice < 0)
@@ -1264,23 +1131,19 @@ void printliberalstats(Creature &cr)
   addstr("SKILL");
   move(5, 43);
   addstr("NOW   MAX");
-  for (int skills_shown = 0; skills_shown < skills_max && printed; skills_shown++)
-  {
+  for (int skills_shown = 0; skills_shown < skills_max && printed; skills_shown++) {
     printed = 0;
 
     int max = 0;
     long maxs = -1;
-    for (int s = 0; s < SKILLNUM; s++)
-    {
-      if ((cr.get_skill(s) * 10000 + cr.get_skill_ip(s)) > max && !used[s])
-      {
+    for (int s = 0; s < SKILLNUM; s++) {
+      if ((cr.get_skill(s) * 10000 + cr.get_skill_ip(s)) > max && !used[s]) {
         max = (cr.get_skill(s) * 10000 + cr.get_skill_ip(s));
         maxs = s;
       }
     }
 
-    if (maxs != -1)
-    {
+    if (maxs != -1) {
       used[maxs] = 1;
       printed = 1;
 
@@ -1302,18 +1165,14 @@ void printliberalstats(Creature &cr)
       addstr(": ");
       move(6 + skills_shown, 42);
       addstr_f("%2d.", cr.get_skill(maxs));
-      if (cr.get_skill_ip(maxs) < 100 + (10 * cr.get_skill(maxs)))
-      {
-        if ((cr.get_skill_ip(maxs) * 100) / (100 + (10 * cr.get_skill(maxs))) != 0)
-        {
+      if (cr.get_skill_ip(maxs) < 100 + (10 * cr.get_skill(maxs))) {
+        if ((cr.get_skill_ip(maxs) * 100) / (100 + (10 * cr.get_skill(maxs))) != 0) {
           if ((cr.get_skill_ip(maxs) * 100) / (100 + (10 * cr.get_skill(maxs))) < 10)
             addchar('0');
           addstr((cr.get_skill_ip(maxs) * 100) / (100 + (10 * cr.get_skill(maxs))));
-        }
-        else
+        } else
           addstr("00");
-      }
-      else
+      } else
         addstr("99+");
 
       if (cr.skill_cap(maxs, true) == 0 || cr.get_skill(maxs) < cr.skill_cap(maxs, true))
@@ -1343,8 +1202,7 @@ void printliberalstats(Creature &cr)
     v = id_getcar(cr.pref_carid);
   else
     v = id_getcar(cr.carid);
-  if (v != -1 && showcarprefs != -1)
-  {
+  if (v != -1 && showcarprefs != -1) {
     addstr(vehicle[v]->shortname());
     char d;
     if (showcarprefs == 1)
@@ -1352,9 +1210,7 @@ void printliberalstats(Creature &cr)
     else
       d = cr.is_driver;
     if (d) addstr("-D");
-  }
-  else
-  {
+  } else {
     int legok = 2;
     if ((cr.wound[BODYPART_LEG_RIGHT] & WOUND_NASTYOFF) ||
         (cr.wound[BODYPART_LEG_RIGHT] & WOUND_CLEANOFF)) legok--;
@@ -1369,23 +1225,19 @@ void printliberalstats(Creature &cr)
   }
 
   // Add recruit stats
-  if (cr.flag != CREATUREFLAG_BRAINWASHED)
-  {
+  if (cr.flag != CREATUREFLAG_BRAINWASHED) {
     move(18, 0);
     addstr(maxsubordinates(cr) - subordinatesleft(cr));
     addstr(" Recruits / ");
     addstr(maxsubordinates(cr));
     addstr(" Max");
-  }
-  else
-  {
+  } else {
     move(18, 0);
     addstr("Enlightened ");
     addstr("Can't Recruit");
   }
   // Any meetings with potential recruits scheduled?
-  if (scheduledmeetings(cr))
-  {
+  if (scheduledmeetings(cr)) {
     move(18, 55);
     addstr("Scheduled Meetings: ");
     addstr(scheduledmeetings(cr));
@@ -1395,31 +1247,27 @@ void printliberalstats(Creature &cr)
   int lovers = loveslaves(cr);
   if (cr.flag & CREATUREFLAG_LOVESLAVE)
     lovers++;
-  if (lovers)
-  {
+  if (lovers) {
     addstr(lovers);
     addstr(" Romantic Interest");
     if (lovers > 1) addstr("s");
   }
   // Any dates with potential love interests scheduled?
-  if (scheduleddates(cr))
-  {
+  if (scheduleddates(cr)) {
     move(19, 55);
     addstr("Scheduled Dates:    ");
     addstr(scheduleddates(cr));
   }
 
   // Add wound status
-  for (int w = 0; w < BODYPARTNUM; w++)
-  {
+  for (int w = 0; w < BODYPARTNUM; w++) {
     if (cr.wound[w] & WOUND_BLEEDING)
       set_color(COLOR_RED, COLOR_BLACK, 1);
     else
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
     move(5 + w, 55);
-    switch (w)
-    {
+    switch (w) {
     case BODYPART_HEAD:
       addstr("Head:");
       break;
@@ -1445,8 +1293,7 @@ void printliberalstats(Creature &cr)
       addstr("Ripped off");
     else if (cr.wound[w] & WOUND_CLEANOFF)
       addstr("Severed");
-    else
-    {
+    else {
       int sum = 0;
 
       if (cr.wound[w] & WOUND_SHOT) sum++;
@@ -1455,8 +1302,7 @@ void printliberalstats(Creature &cr)
       if (cr.wound[w] & WOUND_BURNED) sum++;
       if (cr.wound[w] & WOUND_TORN) sum++;
 
-      if (sum == 0)
-      {
+      if (sum == 0) {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         if (cr.animalgloss == ANIMALGLOSS_ANIMAL)
           addstr("Animal");
@@ -1464,32 +1310,27 @@ void printliberalstats(Creature &cr)
           addstr("Liberal");
       }
 
-      if (cr.wound[w] & WOUND_SHOT)
-      {
+      if (cr.wound[w] & WOUND_SHOT) {
         addstr("Shot");
         sum--;
         if (sum > 0) addstr(",");
       }
-      if (cr.wound[w] & WOUND_BRUISED)
-      {
+      if (cr.wound[w] & WOUND_BRUISED) {
         addstr("Bruised");
         sum--;
         if (sum > 0) addstr(",");
       }
-      if (cr.wound[w] & WOUND_CUT)
-      {
+      if (cr.wound[w] & WOUND_CUT) {
         addstr("Cut");
         sum--;
         if (sum > 0) addstr(",");
       }
-      if (cr.wound[w] & WOUND_TORN)
-      {
+      if (cr.wound[w] & WOUND_TORN) {
         addstr("Torn");
         sum--;
         if (sum > 0) addstr(",");
       }
-      if (cr.wound[w] & WOUND_BURNED)
-      {
+      if (cr.wound[w] & WOUND_BURNED) {
         addstr("Burned");
         sum--;
         if (sum > 0) addstr(",");
@@ -1503,58 +1344,47 @@ void printliberalstats(Creature &cr)
 
   int y = 12;
   int x = 55;
-  if (cr.special[SPECIALWOUND_HEART] != 1)
-  {
+  if (cr.special[SPECIALWOUND_HEART] != 1) {
     move(y++, x);
     addstr("Heart Punctured");
   }
-  if (cr.special[SPECIALWOUND_RIGHTLUNG] != 1)
-  {
+  if (cr.special[SPECIALWOUND_RIGHTLUNG] != 1) {
     move(y++, x);
     addstr("R. Lung Collapsed");
   }
-  if (cr.special[SPECIALWOUND_LEFTLUNG] != 1)
-  {
+  if (cr.special[SPECIALWOUND_LEFTLUNG] != 1) {
     move(y++, x);
     addstr("L. Lung Collapsed");
   }
-  if (cr.special[SPECIALWOUND_NECK] != 1)
-  {
+  if (cr.special[SPECIALWOUND_NECK] != 1) {
     move(y++, x);
     addstr("Broken Neck");
   }
-  if (cr.special[SPECIALWOUND_UPPERSPINE] != 1)
-  {
+  if (cr.special[SPECIALWOUND_UPPERSPINE] != 1) {
     move(y++, x);
     addstr("Broken Up Spine");
   }
-  if (cr.special[SPECIALWOUND_LOWERSPINE] != 1)
-  {
+  if (cr.special[SPECIALWOUND_LOWERSPINE] != 1) {
     move(y++, x);
     addstr("Broken Lw Spine");
   }
-  if (cr.special[SPECIALWOUND_RIGHTEYE] != 1)
-  {
+  if (cr.special[SPECIALWOUND_RIGHTEYE] != 1) {
     move(y++, x);
     addstr("No Right Eye");
   }
-  if (cr.special[SPECIALWOUND_LEFTEYE] != 1)
-  {
+  if (cr.special[SPECIALWOUND_LEFTEYE] != 1) {
     move(y++, x);
     addstr("No Left Eye");
   }
-  if (cr.special[SPECIALWOUND_NOSE] != 1)
-  {
+  if (cr.special[SPECIALWOUND_NOSE] != 1) {
     move(y++, x);
     addstr("No Nose");
   }
-  if (cr.special[SPECIALWOUND_TONGUE] != 1)
-  {
+  if (cr.special[SPECIALWOUND_TONGUE] != 1) {
     move(y++, x);
     addstr("No Tongue");
   }
-  if (cr.special[SPECIALWOUND_TEETH] != TOOTHNUM)
-  {
+  if (cr.special[SPECIALWOUND_TEETH] != TOOTHNUM) {
     move(y++, x);
     if (cr.special[SPECIALWOUND_TEETH] == 0)
       addstr("No Teeth");
@@ -1563,33 +1393,27 @@ void printliberalstats(Creature &cr)
     else if (cr.special[SPECIALWOUND_TEETH] < TOOTHNUM)
       addstr("Missing Teeth");
   }
-  if (cr.special[SPECIALWOUND_LIVER] != 1)
-  {
+  if (cr.special[SPECIALWOUND_LIVER] != 1) {
     move(y++, x);
     addstr("Liver Damaged");
   }
-  if (cr.special[SPECIALWOUND_RIGHTKIDNEY] != 1)
-  {
+  if (cr.special[SPECIALWOUND_RIGHTKIDNEY] != 1) {
     move(y++, x);
     addstr("R. Kidney Damaged");
   }
-  if (cr.special[SPECIALWOUND_LEFTKIDNEY] != 1)
-  {
+  if (cr.special[SPECIALWOUND_LEFTKIDNEY] != 1) {
     move(y++, x);
     addstr("L. Kidney Damaged");
   }
-  if (cr.special[SPECIALWOUND_STOMACH] != 1)
-  {
+  if (cr.special[SPECIALWOUND_STOMACH] != 1) {
     move(y++, x);
     addstr("Stomach Injured");
   }
-  if (cr.special[SPECIALWOUND_SPLEEN] != 1)
-  {
+  if (cr.special[SPECIALWOUND_SPLEEN] != 1) {
     move(y++, x);
     addstr("Busted Spleen");
   }
-  if (cr.special[SPECIALWOUND_RIBS] != RIBNUM)
-  {
+  if (cr.special[SPECIALWOUND_RIBS] != RIBNUM) {
     move(y++, x);
     if (cr.special[SPECIALWOUND_RIBS] == 0)
       addstr("All Ribs Broken");
@@ -1603,8 +1427,7 @@ void printliberalstats(Creature &cr)
 }
 
 /* Full screen character sheet, crime sheet */
-void printliberalcrimes(Creature &cr)
-{
+void printliberalcrimes(Creature &cr) {
   // Add name
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
   if (strcmp(cr.propername, cr.name) != 0)
@@ -1620,24 +1443,19 @@ void printliberalcrimes(Creature &cr)
   addstr(cr.get_type_name());
   addstr(")");
   // Show outstanding convictions in addition to untried crimes
-  if (cr.deathpenalty)
-  {
+  if (cr.deathpenalty) {
     set_color(COLOR_RED, COLOR_BLACK, 1);
     if (location[cr.location]->type == SITE_GOVERNMENT_PRISON)
       mvaddstr(3, 0, "On DEATH ROW");
     else
       mvaddstr(3, 0, "Sentenced to DEATH");
-  }
-  else if (cr.sentence < 0)
-  {
+  } else if (cr.sentence < 0) {
     set_color(COLOR_RED, COLOR_BLACK, 1);
     if (location[cr.location]->type == SITE_GOVERNMENT_PRISON)
       mvaddstr(3, 0, "Serving life in prison");
     else
       mvaddstr(3, 0, "Sentenced to life in prison");
-  }
-  else if (cr.sentence > 0)
-  {
+  } else if (cr.sentence > 0) {
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     if (location[cr.location]->type == SITE_GOVERNMENT_PRISON)
       mvaddstr(3, 0, "Serving ");
@@ -1648,10 +1466,8 @@ void printliberalcrimes(Creature &cr)
   }
 
   // Add all crimes
-  for (int i = 0; i < LAWFLAGNUM; i++)
-  {
-    if (i % 2 == 0 && i < 4)
-    {
+  for (int i = 0; i < LAWFLAGNUM; i++) {
+    if (i % 2 == 0 && i < 4) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddstr(4, 40 * (i / 2), "CRIME");
       mvaddstr(4, 30 + 40 * (i / 2), "NUM");
@@ -1671,8 +1487,7 @@ void printliberalcrimes(Creature &cr)
 }
 
 /* draws a horizontal line across the screen */
-void makedelimiter(int y, int x)
-{
+void makedelimiter(int y, int x) {
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
   if (mode == GAMEMODE_SITE && y == 8 && x == 0 && mapshowing)                                          // special case: there is a map on the right in site mode
     mvaddstr(y, x, "컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컫컴컴컴컴컴컴컴컴컴컴컴컴컫"); // 80 characters
@@ -1681,12 +1496,10 @@ void makedelimiter(int y, int x)
 }
 
 /* prints a character's health description (One Leg, Liberal, NearDETH...) */
-void printhealthstat(Creature &g, int y, int x, char smll)
-{
+void printhealthstat(Creature &g, int y, int x, char smll) {
   short woundsum = 0;
   bool bleeding = false;
-  for (int w = 0; w < BODYPARTNUM; w++)
-  {
+  for (int w = 0; w < BODYPARTNUM; w++) {
     if (g.wound[w] != 0) woundsum++;
     if (g.wound[w] & WOUND_BLEEDING) bleeding = true;
   }
@@ -1706,179 +1519,127 @@ void printhealthstat(Creature &g, int y, int x, char smll)
     set_color(COLOR_RED, COLOR_BLACK, 1);
   else
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
-  if (!g.alive)
-  {
+  if (!g.alive) {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     addstr("Deceased");
-  }
-  else if (g.blood <= 20)
-  {
+  } else if (g.blood <= 20) {
     if (smll)
       addstr("NearDETH");
     else
       addstr("Near Death");
-  }
-  else if (g.blood <= 50)
-  {
+  } else if (g.blood <= 50) {
     if (smll)
       addstr("BadWound");
     else
       addstr("Badly Wounded");
-  }
-  else if (g.blood <= 75)
-  {
+  } else if (g.blood <= 75) {
     addstr("Wounded");
-  }
-  else if (g.blood < 100)
-  {
+  } else if (g.blood < 100) {
     if (smll)
       addstr("LtWound");
     else
       addstr("Lightly Wounded");
-  }
-  else if (g.special[SPECIALWOUND_NECK] == 2)
-  {
+  } else if (g.special[SPECIALWOUND_NECK] == 2) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("NckBroke");
     else
       addstr("Neck Broken");
-  }
-  else if (g.special[SPECIALWOUND_UPPERSPINE] == 2)
-  {
+  } else if (g.special[SPECIALWOUND_UPPERSPINE] == 2) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("Quadpleg");
     else
       addstr("Quadraplegic");
-  }
-  else if (g.special[SPECIALWOUND_LOWERSPINE] == 2)
-  {
+  } else if (g.special[SPECIALWOUND_LOWERSPINE] == 2) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("Parapleg");
     else
       addstr("Paraplegic");
-  }
-  else if (g.special[SPECIALWOUND_RIGHTEYE] == 0 &&
-           g.special[SPECIALWOUND_LEFTEYE] == 0 &&
-           g.special[SPECIALWOUND_NOSE] == 0)
-  {
+  } else if (g.special[SPECIALWOUND_RIGHTEYE] == 0 &&
+             g.special[SPECIALWOUND_LEFTEYE] == 0 &&
+             g.special[SPECIALWOUND_NOSE] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("FaceGone");
     else
       addstr("Face Gone");
-  }
-  else if (legok == 0 && armok == 0)
-  {
+  } else if (legok == 0 && armok == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("No Limbs");
-  }
-  else if ((legok == 1 && armok == 0) || (armok == 1 && legok == 0))
-  {
+  } else if ((legok == 1 && armok == 0) || (armok == 1 && legok == 0)) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("One Limb");
-  }
-  else if (legok == 2 && armok == 0)
-  {
+  } else if (legok == 2 && armok == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("No Arms");
-  }
-  else if (legok == 0 && armok == 2)
-  {
+  } else if (legok == 0 && armok == 2) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("No Legs");
-  }
-  else if (legok == 1 && armok == 1)
-  {
+  } else if (legok == 1 && armok == 1) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("1Arm1Leg");
     else
       addstr("One Arm, One Leg");
-  }
-  else if (armok == 1)
-  {
+  } else if (armok == 1) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("One Arm");
-  }
-  else if (legok == 1)
-  {
+  } else if (legok == 1) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("One Leg");
-  }
-  else if (g.special[SPECIALWOUND_RIGHTEYE] == 0 &&
-           g.special[SPECIALWOUND_LEFTEYE] == 0)
-  {
+  } else if (g.special[SPECIALWOUND_RIGHTEYE] == 0 &&
+             g.special[SPECIALWOUND_LEFTEYE] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("Blind");
-  }
-  else if ((g.special[SPECIALWOUND_RIGHTEYE] == 0 ||
-            g.special[SPECIALWOUND_LEFTEYE] == 0) &&
-           g.special[SPECIALWOUND_NOSE] == 0)
-  {
+  } else if ((g.special[SPECIALWOUND_RIGHTEYE] == 0 ||
+              g.special[SPECIALWOUND_LEFTEYE] == 0) &&
+             g.special[SPECIALWOUND_NOSE] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("FaceMutl");
     else
       addstr("Face Mutilated");
-  }
-  else if (g.special[SPECIALWOUND_NOSE] == 0)
-  {
+  } else if (g.special[SPECIALWOUND_NOSE] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("NoseGone");
     else
       addstr("Missing Nose");
-  }
-  else if (g.special[SPECIALWOUND_RIGHTEYE] == 0 ||
-           g.special[SPECIALWOUND_LEFTEYE] == 0)
-  {
+  } else if (g.special[SPECIALWOUND_RIGHTEYE] == 0 ||
+             g.special[SPECIALWOUND_LEFTEYE] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("One Eye");
     else
       addstr("Missing Eye");
-  }
-  else if (g.special[SPECIALWOUND_TONGUE] == 0)
-  {
+  } else if (g.special[SPECIALWOUND_TONGUE] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("NoTongue");
     else
       addstr("No Tongue");
-  }
-  else if (g.special[SPECIALWOUND_TEETH] == 0)
-  {
+  } else if (g.special[SPECIALWOUND_TEETH] == 0) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     addstr("No Teeth");
-  }
-  else if (g.special[SPECIALWOUND_TEETH] < TOOTHNUM)
-  {
+  } else if (g.special[SPECIALWOUND_TEETH] < TOOTHNUM) {
     if (!bleeding) set_color(COLOR_GREEN, COLOR_BLACK, 0);
     if (smll)
       addstr("MisTeeth");
     else
       addstr("Missing Teeth");
-  }
-  else
-  {
-    if (g.align == -1)
-    {
+  } else {
+    if (g.align == -1) {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       if (smll)
         addstr("Consrvtv");
       else
         addstr("Conservative");
-    }
-    else if (g.align == 0)
-    {
+    } else if (g.align == 0) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       addstr("Moderate");
-    }
-    else
-    {
+    } else {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       if (g.animalgloss == ANIMALGLOSS_ANIMAL)
         addstr("Animal");
@@ -1895,8 +1656,7 @@ well as screen coordinates.
 Please note that offsetx is the offset from the right of the screen, y is
 the offset from the top as always.
 */
-void printfunds(int y, int offsetx, const char *prefix)
-{
+void printfunds(int y, int offsetx, const char *prefix) {
   char moneystr[50], prefixbuffer[50];
 
   if (prefix == NULL)
@@ -1929,8 +1689,7 @@ void printfunds(int y, int offsetx, const char *prefix)
 }
 
 /* prints a short blurb showing how to page forward */
-void addnextpagestr()
-{
+void addnextpagestr() {
   if (interface_pgup == '[')
     addstr("] - Next");
   else if (interface_pgup == '.')
@@ -1940,8 +1699,7 @@ void addnextpagestr()
 }
 
 /* prints a short blurb showing how to page back */
-void addprevpagestr()
-{
+void addprevpagestr() {
   if (interface_pgup == '[')
     addstr("[ - Previous");
   else if (interface_pgup == '.')
@@ -1951,8 +1709,7 @@ void addprevpagestr()
 }
 
 /* prints a long blurb showing how to page forward and back */
-void addpagestr()
-{
+void addpagestr() {
   if (interface_pgup == '[')
     addstr("[] to view other Liberal pages.");
   else if (interface_pgup == '.')
@@ -1969,29 +1726,25 @@ static char sbuf[81]; // used by addstr_f(), mvaddstr_f(), addstr_fl(), and mvad
   va_end(args);
 
 /*	addstr with formatted output	*/
-int addstr_f(const char *format, ...)
-{
+int addstr_f(const char *format, ...) {
   FORMAT_OUTPUT
   return addstr(sbuf);
 }
 
 /*	mvaddstr with formatted output	*/
-int mvaddstr_f(int y, int x, const char *format, ...)
-{
+int mvaddstr_f(int y, int x, const char *format, ...) {
   FORMAT_OUTPUT
   return mvaddstr(y, x, sbuf);
 }
 
 /*	addstr with formatted output and logging	*/
-int addstr_fl(Log &log, const char *format, ...)
-{
+int addstr_fl(Log &log, const char *format, ...) {
   FORMAT_OUTPUT
   return addstr(sbuf, log);
 }
 
 /*	mvaddstr with formatted output and logging	*/
-int mvaddstr_fl(int y, int x, Log &log, const char *format, ...)
-{
+int mvaddstr_fl(int y, int x, Log &log, const char *format, ...) {
   FORMAT_OUTPUT
   return mvaddstr(y, x, sbuf, log);
 }

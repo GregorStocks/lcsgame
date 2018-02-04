@@ -1,19 +1,16 @@
 #include <externs.h>
 
-Item::Item(const ItemType &seed, int number) : number_(number)
-{
+Item::Item(const ItemType &seed, int number) : number_(number) {
   itemtypename_ = seed.get_idname();
   itemtypeid_ = seed.get_id();
 }
 
-Item::Item(const std::string &inputXml)
-{
+Item::Item(const std::string &inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
     if (tag == "itemtypename")
       itemtypename_ = xml.GetData();
@@ -24,8 +21,7 @@ Item::Item(const std::string &inputXml)
   }
 }
 
-void Item::addBaseValues(CMarkup &xml) const
-{
+void Item::addBaseValues(CMarkup &xml) const {
   xml.AddElem("itemtypename", itemtypename_);
   xml.AddElem("itemtypeid", itemtypeid_);
   xml.AddElem("number", tostring(number_));
@@ -41,8 +37,7 @@ void Item::addBaseValues(CMarkup &xml) const
 }*/
 
 /* compares two items (in descending order, hence the flipped arguments), used in sorting gear */
-bool Item::sort_compare(Item *b, Item *a)
-{
+bool Item::sort_compare(Item *b, Item *a) {
   if (a->is_weapon() && !b->is_weapon())
     return false;
   else if (!a->is_weapon() && b->is_weapon())
@@ -63,10 +58,8 @@ bool Item::sort_compare(Item *b, Item *a)
     return a->sort_compare_special(b);
 }
 
-const char *Item::aan() const
-{
-  switch (get_name()[0])
-  {
+const char *Item::aan() const {
+  switch (get_name()[0]) {
   case 'a':
   case 'A':
   case 'e':

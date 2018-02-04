@@ -31,8 +31,7 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* news - major newspaper reporting on lcs and other topics */
-void majornewspaper(char &clearformess, char canseethings)
-{
+void majornewspaper(char &clearformess, char canseethings) {
   clearformess = true;
 
   int n = 0;
@@ -52,23 +51,19 @@ void majornewspaper(char &clearformess, char canseethings)
   delete_and_clear(newsstory);
 }
 
-void display_newspaper()
-{
+void display_newspaper() {
   int writers = liberal_guardian_writing_power();
 
-  for (int n = 0; n < len(newsstory); n++)
-  {
+  for (int n = 0; n < len(newsstory); n++) {
     bool liberalguardian = 0;
     int header = -1;
     if (writers && newsstory[n]->type != NEWSSTORY_MAJOREVENT)
       liberalguardian = 1;
 
-    switch (newsstory[n]->type)
-    {
+    switch (newsstory[n]->type) {
     case NEWSSTORY_SQUAD_SITE:
     case NEWSSTORY_SQUAD_KILLED_SITE:
-      switch (location[newsstory[n]->loc]->type)
-      {
+      switch (location[newsstory[n]->loc]->type) {
       case SITE_LABORATORY_COSMETICS:
         header = VIEW_ANIMALRESEARCH;
         break;
@@ -126,49 +121,40 @@ void display_newspaper()
     case NEWSSTORY_CCS_DEFEATED:
       break;
     }
-    if (liberalguardian)
-    {
+    if (liberalguardian) {
       if (newsstory[n]->type == NEWSSTORY_CCS_SITE ||
-          newsstory[n]->type == NEWSSTORY_CCS_KILLED_SITE)
-      {
+          newsstory[n]->type == NEWSSTORY_CCS_KILLED_SITE) {
         newsstory[n]->positive = 0;
       }
       displaystory(*newsstory[n], liberalguardian, header);
       if (newsstory[n]->positive) newsstory[n]->positive += 1;
-    }
-    else
+    } else
       displaystory(*newsstory[n], 0, -1);
   }
 }
 
-void generate_random_event_news_stories()
-{
+void generate_random_event_news_stories() {
   //Conservative Crime Squad Strikes!
   if (endgamestate < ENDGAME_CCS_DEFEATED &&
-      LCSrandom(30) < endgamestate)
-  {
+      LCSrandom(30) < endgamestate) {
     newsstory.push_back(ccs_strikes_story());
   }
 
   // The slow defeat of the conservative crime squad...
   if (endgamestate < ENDGAME_CCS_DEFEATED &&
       ccsexposure >= CCSEXPOSURE_EXPOSED &&
-      !LCSrandom(60))
-  {
+      !LCSrandom(60)) {
     advance_ccs_defeat_storyline();
   }
 
   // Random major event news stories
-  if (!LCSrandom(60))
-  {
+  if (!LCSrandom(60)) {
     newsstory.push_back(new_major_event());
   }
 }
 
-void advance_ccs_defeat_storyline()
-{
-  switch (ccsexposure)
-  {
+void advance_ccs_defeat_storyline() {
+  switch (ccsexposure) {
   default:
   case CCSEXPOSURE_NONE:
   case CCSEXPOSURE_LCSGOTDATA:
@@ -182,15 +168,12 @@ void advance_ccs_defeat_storyline()
   }
 }
 
-void clean_up_empty_news_stories()
-{
+void clean_up_empty_news_stories() {
   // Delete stories that have no content or shouldn't be reported on
-  for (int n = len(newsstory) - 1; n >= 0; n--)
-  {
+  for (int n = len(newsstory) - 1; n >= 0; n--) {
     // Squad site action stories without crimes
     if (newsstory[n]->type == NEWSSTORY_SQUAD_SITE &&
-        !len(newsstory[n]->crime))
-    {
+        !len(newsstory[n]->crime)) {
       delete_and_remove(newsstory, n);
       continue;
     }
@@ -201,19 +184,15 @@ void clean_up_empty_news_stories()
         newsstory[n]->type == NEWSSTORY_WANTEDARREST ||
         newsstory[n]->type == NEWSSTORY_DRUGARREST ||
         newsstory[n]->type == NEWSSTORY_GRAFFITIARREST ||
-        newsstory[n]->type == NEWSSTORY_BURIALARREST)
-    {
+        newsstory[n]->type == NEWSSTORY_BURIALARREST) {
       char conf = 0;
-      for (int c = 0; c < len(newsstory[n]->crime); c++)
-      {
-        if (newsstory[n]->crime[c] == CRIME_KILLEDSOMEBODY)
-        {
+      for (int c = 0; c < len(newsstory[n]->crime); c++) {
+        if (newsstory[n]->crime[c] == CRIME_KILLEDSOMEBODY) {
           conf = 1;
           break;
         }
       }
-      if (!conf)
-      {
+      if (!conf) {
         delete_and_remove(newsstory, n);
         continue;
       }
@@ -226,25 +205,21 @@ void clean_up_empty_news_stories()
          newsstory[n]->type == NEWSSTORY_SQUAD_BROKESIEGE ||
          newsstory[n]->type == NEWSSTORY_SQUAD_KILLED_SIEGEATTACK ||
          newsstory[n]->type == NEWSSTORY_SQUAD_KILLED_SIEGEESCAPE) &&
-        newsstory[n]->siegetype != SIEGE_POLICE)
-    {
+        newsstory[n]->siegetype != SIEGE_POLICE) {
       delete_and_remove(newsstory, n);
       continue;
     }
   }
 }
 
-void assign_page_numbers_to_newspaper_stories()
-{
-  for (int n = len(newsstory) - 1; n >= 0; n--)
-  {
+void assign_page_numbers_to_newspaper_stories() {
+  for (int n = len(newsstory) - 1; n >= 0; n--) {
     setpriority(*newsstory[n]);
     // Suppress squad actions that aren't worth a story
     if (newsstory[n]->type == NEWSSTORY_SQUAD_SITE &&
         ((newsstory[n]->priority < 50 &&
           newsstory[n]->claimed == 0) ||
-         newsstory[n]->priority < 4))
-    {
+         newsstory[n]->priority < 4)) {
       delete_and_remove(newsstory, n);
       continue;
     }
@@ -252,22 +227,18 @@ void assign_page_numbers_to_newspaper_stories()
   }
   char acted;
   int curpage = 1, curguardianpage = 1;
-  do
-  {
+  do {
     acted = 0;
     // Sort the major newspapers
     int maxn = -1, maxp = -1;
-    for (int n = 0; n < len(newsstory); n++)
-    {
+    for (int n = 0; n < len(newsstory); n++) {
       if (newsstory[n]->priority > maxp &&
-          newsstory[n]->page == -1)
-      {
+          newsstory[n]->page == -1) {
         maxn = n;
         maxp = newsstory[n]->priority;
       }
     }
-    if (maxn != -1)
-    {
+    if (maxn != -1) {
       if (newsstory[maxn]->priority < 30 && curpage == 1) curpage = 2;
       if (newsstory[maxn]->priority < 25 && curpage < 3) curpage = 3 + LCSrandom(2);
       if (newsstory[maxn]->priority < 20 && curpage < 5) curpage = 5 + LCSrandom(5);
@@ -284,8 +255,7 @@ void assign_page_numbers_to_newspaper_stories()
   } while (acted);
 }
 
-void handle_public_opinion_impact(const newsstoryst &ns)
-{
+void handle_public_opinion_impact(const newsstoryst &ns) {
   // Check if this function is meant to handle public opinion impact
   // for this type of news story (primarily deals with squad/site actions)
   int okay_types[] = {NEWSSTORY_SQUAD_SITE, NEWSSTORY_SQUAD_ESCAPED, NEWSSTORY_SQUAD_FLEDATTACK,
@@ -295,8 +265,7 @@ void handle_public_opinion_impact(const newsstoryst &ns)
   int okay_type_num = len(okay_types);
 
   int i;
-  for (i = 0; i < okay_type_num; i++)
-  {
+  for (i = 0; i < okay_type_num; i++) {
     if (okay_types[i] == ns.type)
       break;
   }
@@ -340,16 +309,13 @@ void handle_public_opinion_impact(const newsstoryst &ns)
 
   // Account for squad responsible, rampages, and Liberal Guardian bias
   int impact_direction = ALIGN_LIBERAL;
-  if (ns.type == NEWSSTORY_CCS_SITE || ns.type == NEWSSTORY_CCS_KILLED_SITE)
-  {
+  if (ns.type == NEWSSTORY_CCS_SITE || ns.type == NEWSSTORY_CCS_KILLED_SITE) {
     impact_direction = ALIGN_CONSERVATIVE;
     if (ns.positive)
       change_public_opinion(VIEW_CONSERVATIVECRIMESQUAD, impact, 0);
     else
       change_public_opinion(VIEW_CONSERVATIVECRIMESQUAD, -impact, 0);
-  }
-  else
-  {
+  } else {
     change_public_opinion(VIEW_LIBERALCRIMESQUAD, 2 + impact);
     impact_direction = ALIGN_LIBERAL;
     if (ns.positive)
@@ -368,8 +334,7 @@ void handle_public_opinion_impact(const newsstoryst &ns)
 
   // Location-specific issue impact
   std::vector<int> issues;
-  switch (location[ns.loc]->type)
-  {
+  switch (location[ns.loc]->type) {
   case SITE_LABORATORY_COSMETICS:
     issues.push_back(VIEW_ANIMALRESEARCH);
     issues.push_back(VIEW_WOMEN);
@@ -463,11 +428,9 @@ void handle_public_opinion_impact(const newsstoryst &ns)
 }
 
 /* news - determines the priority of a news story */
-void setpriority(newsstoryst &ns)
-{
+void setpriority(newsstoryst &ns) {
   // Priority is set differently based on the type of the news story
-  switch (ns.type)
-  {
+  switch (ns.type) {
   // Major events always muscle to the front page by having a very high priority
   case NEWSSTORY_MAJOREVENT:
     ns.priority = 30000;
@@ -487,8 +450,7 @@ void setpriority(newsstoryst &ns)
   case NEWSSTORY_WANTEDARREST:
   case NEWSSTORY_DRUGARREST:
   case NEWSSTORY_GRAFFITIARREST:
-  case NEWSSTORY_BURIALARREST:
-  {
+  case NEWSSTORY_BURIALARREST: {
     ns.priority = 0;
 
     int crime[CRIMENUM];
@@ -586,8 +548,7 @@ void setpriority(newsstoryst &ns)
 
     // Add additional priority based on the type of news story
     // and how high profile the LCS is
-    switch (ns.type)
-    {
+    switch (ns.type) {
     case NEWSSTORY_SQUAD_ESCAPED:
       ns.priority += 10 + attitude[VIEW_LIBERALCRIMESQUAD] / 3;
       break;
@@ -612,8 +573,7 @@ void setpriority(newsstoryst &ns)
     default:
       // Suppress actions at CCS safehouses
       if (ns.loc != -1 &&
-          location[ns.loc]->renting == RENTING_CCS)
-      {
+          location[ns.loc]->renting == RENTING_CCS) {
         ns.priority = 0;
       }
       break;
@@ -623,15 +583,12 @@ void setpriority(newsstoryst &ns)
     if (ns.claimed == 2) ns.priority *= 2;
 
     // Modify notability by location
-    if (ns.loc != -1)
-    {
-      switch (location[ns.loc]->type)
-      {
+    if (ns.loc != -1) {
+      switch (location[ns.loc]->type) {
       // Not even reported
       case SITE_BUSINESS_CRACKHOUSE:
         if (ns.type == NEWSSTORY_SQUAD_KILLED_SITE ||
-            ns.type == NEWSSTORY_SQUAD_SITE)
-        {
+            ns.type == NEWSSTORY_SQUAD_SITE) {
           ns.priority = 0;
           break;
         }
@@ -717,8 +674,7 @@ void setpriority(newsstoryst &ns)
     ns.crime.push_back(CRIME_BROKEDOWNDOOR);
     ns.priority = 1;
     ns.politics_level += 20;
-    if (ns.positive == 0)
-    {
+    if (ns.positive == 0) {
       ns.crime.push_back(CRIME_ATTACKED_MISTAKE);
       ns.priority += 7;
       ns.violence_level += 12;
@@ -726,25 +682,21 @@ void setpriority(newsstoryst &ns)
     ns.crime.push_back(CRIME_ATTACKED);
     ns.priority += 4 * (LCSrandom(10) + 1);
     ns.violence_level += LCSrandom(10) * 4;
-    if (LCSrandom(endgamestate + 1))
-    {
+    if (LCSrandom(endgamestate + 1)) {
       ns.crime.push_back(CRIME_KILLEDSOMEBODY);
       ns.priority += LCSrandom(10) * 30;
       ns.violence_level += LCSrandom(10) * 20;
     }
-    if (LCSrandom(endgamestate + 1))
-    {
+    if (LCSrandom(endgamestate + 1)) {
       ns.crime.push_back(CRIME_STOLEGROUND);
       ns.priority += LCSrandom(10);
     }
-    if (!LCSrandom(endgamestate + 4))
-    {
+    if (!LCSrandom(endgamestate + 4)) {
       ns.crime.push_back(CRIME_BREAK_FACTORY);
       ns.priority += LCSrandom(10) * 2;
       ns.politics_level += LCSrandom(10) * 10;
     }
-    if (LCSrandom(2))
-    {
+    if (LCSrandom(2)) {
       ns.crime.push_back(CRIME_CARCHASE);
     }
     break;
@@ -756,8 +708,7 @@ void setpriority(newsstoryst &ns)
 }
 
 /* news - show major news story */
-void displaystory(newsstoryst &ns, bool liberalguardian, int header)
-{
+void displaystory(newsstoryst &ns, bool liberalguardian, int header) {
   music.play(MUSIC_NEWSPAPER);
   int it2;
   preparepage(ns, liberalguardian);
@@ -772,11 +723,9 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
   displayads(ns, liberalguardian, storyx_s, storyx_e, it2);
 
   const char *city;
-  if (multipleCityMode && ns.loc != -1)
-  {
+  if (multipleCityMode && ns.loc != -1) {
     Location *ns_site = find_site_in_city(location[ns.loc]->city, -1);
-    switch (ns_site->type)
-    {
+    switch (ns_site->type) {
     case SITE_CITY_SEATTLE:
       city = "Seattle, WA";
       break;
@@ -804,12 +753,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
     default:
       city = lcityname;
     }
-  }
-  else
+  } else
     city = lcityname;
 
-  switch (ns.type)
-  {
+  switch (ns.type) {
   case NEWSSTORY_MAJOREVENT:
     displaymajoreventstory(ns, story, storyx_s, storyx_e);
     break;
@@ -830,11 +777,9 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
   case NEWSSTORY_WANTEDARREST:
   case NEWSSTORY_DRUGARREST:
   case NEWSSTORY_GRAFFITIARREST:
-  case NEWSSTORY_BURIALARREST:
-  {
+  case NEWSSTORY_BURIALARREST: {
     int y = 2;
-    if ((!liberalguardian && ns.page == 1) || (liberalguardian && ns.guardianpage == 1))
-    {
+    if ((!liberalguardian && ns.page == 1) || (liberalguardian && ns.guardianpage == 1)) {
       y = 21;
 
       displaystoryheader(ns, liberalguardian, y, header);
@@ -843,8 +788,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
     strcpy(story, city);
     strcat(story, " - ");
 
-    switch (ns.type)
-    {
+    switch (ns.type) {
     case NEWSSTORY_CCS_NOBACKERS:
       strcat(story, "The FBI investigation into the Conservative Crime Squad's government connections has led to the arrest of more than ");
       strcat(story, "a dozen elected officials and revealed extensive corruption in law enforcement.");
@@ -873,33 +817,28 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       strcat(story, "&r");
       break;
     case NEWSSTORY_WANTEDARREST:
-    case NEWSSTORY_GRAFFITIARREST:
-    {
+    case NEWSSTORY_GRAFFITIARREST: {
       int crime[CRIMENUM];
       std::memset(crime, 0, sizeof(int) * CRIMENUM);
       for (int c = 0; c < len(ns.crime); c++)
         crime[ns.crime[c]]++;
-      if (crime[CRIME_KILLEDSOMEBODY] > 1)
-      {
+      if (crime[CRIME_KILLEDSOMEBODY] > 1) {
         if (crime[CRIME_KILLEDSOMEBODY] == 2)
           strcat(story, "Two");
         else
           strcat(story, "Several");
         strcat(story, " police officers were");
-      }
-      else
+      } else
         strcat(story, "A police officer was");
       strcat(story, " killed in the line of duty yesterday, ");
       strcat(story, "according to a spokesperson from the police department.");
       strcat(story, "&r");
       strcat(story, "  A suspect, identified only as a member of the ");
       strcat(story, "radical political group known as the Liberal Crime Squad, is believed to have killed ");
-      if (crime[CRIME_KILLEDSOMEBODY] > 1)
-      {
+      if (crime[CRIME_KILLEDSOMEBODY] > 1) {
         strcat(story, crime[CRIME_KILLEDSOMEBODY]);
         strcat(story, " officers ");
-      }
-      else
+      } else
         strcat(story, "the police officer ");
       strcat(story, " while they were attempting to perform an arrest.  ");
       strcat(story, "The names of the officers have not been released pending notification of their families.");
@@ -909,8 +848,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
     case NEWSSTORY_NUDITYARREST:
     case NEWSSTORY_CARTHEFT:
     case NEWSSTORY_DRUGARREST:
-    case NEWSSTORY_BURIALARREST:
-    {
+    case NEWSSTORY_BURIALARREST: {
       int crime[CRIMENUM];
       std::memset(crime, 0, sizeof(int) * CRIMENUM);
       for (int c = 0; c < len(ns.crime); c++)
@@ -920,24 +858,20 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       strcat(story, "&r");
       strcat(story, "  A suspect, whose identity is unclear, ");
       strcat(story, "killed ");
-      if (crime[CRIME_KILLEDSOMEBODY] > 1)
-      {
+      if (crime[CRIME_KILLEDSOMEBODY] > 1) {
         strcat(story, crime[CRIME_KILLEDSOMEBODY]);
         strcat(story, " police officers that were");
-      }
-      else
+      } else
         strcat(story, "a police officer that was");
       strcat(story, " attempting to perform an arrest.  ");
       if (ns.type == NEWSSTORY_NUDITYARREST)
         strcat(story, "The incident apparently occurred as a response to a public nudity complaint.  ");
       else if (ns.type == NEWSSTORY_DRUGARREST)
         strcat(story, "The suspect was allegedly selling \"pot brownies\".  ");
-      else if (ns.type == NEWSSTORY_BURIALARREST)
-      {
+      else if (ns.type == NEWSSTORY_BURIALARREST) {
         strcat(story, "A passerby allegedly called the authorities after seeing the suspect dragging what ");
         strcat(story, "appeared to be a corpse through an empty lot.  ");
-      }
-      else
+      } else
         strcat(story, "A passerby had allegedly spotted the suspect committing a car theft.  ");
 
       if (crime[CRIME_KILLEDSOMEBODY] > 1)
@@ -985,13 +919,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       break;
     case NEWSSTORY_SQUAD_KILLED_SIEGEATTACK:
       strcat(story, "Members of the Liberal Crime Squad were ");
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         strcat(story, "slain during a police raid yesterday, according ");
         strcat(story, "to a spokesperson from the police department.");
-      }
-      else
-      {
+      } else {
         strcat(story, "murdered during a police raid yesterday, according ");
         strcat(story, "to a Liberal Crime Squad spokesperson.");
       }
@@ -999,20 +930,16 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       break;
     case NEWSSTORY_SQUAD_KILLED_SIEGEESCAPE:
       strcat(story, "Members of the Liberal Crime Squad were ");
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         strcat(story, "slain trying to escape from a police siege yesterday, according ");
         strcat(story, "to a spokesperson from the police department.");
-      }
-      else
-      {
+      } else {
         strcat(story, "murdered trying to escape from a police siege yesterday, according ");
         strcat(story, "to a Liberal Crime Squad spokesperson.");
       }
       strcat(story, "&r");
       break;
-    default:
-    {
+    default: {
       bool ccs = 0;
       if (ns.type == NEWSSTORY_CCS_KILLED_SITE || ns.type == NEWSSTORY_CCS_SITE) ccs = 1;
 
@@ -1021,8 +948,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       int crime[CRIMENUM];
       memset(crime, 0, sizeof(int) * CRIMENUM);
       int typesum = 0;
-      for (int c = 0; c < len(ns.crime); c++)
-      {
+      for (int c = 0; c < len(ns.crime); c++) {
         // Count crimes of each type
         crime[ns.crime[c]]++;
 
@@ -1048,224 +974,160 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
         if (crime[ns.crime[c]] == 1) typesum++;
       }
 
-      if (crime[CRIME_SHUTDOWNREACTOR])
-      {
-        if (law[LAW_NUCLEARPOWER] == 2)
-        {
-          if (!liberalguardian)
-          {
+      if (crime[CRIME_SHUTDOWNREACTOR]) {
+        if (law[LAW_NUCLEARPOWER] == 2) {
+          if (!liberalguardian) {
             strcat(story, "  According to sources that were at the scene, ");
             strcat(story, "the Liberal Crime Squad contaminated the state's water supply");
             strcat(story, "yesterday by tampering with equipment on the site.");
             strcat(story, "&r");
-          }
-          else
-          {
+          } else {
             strcat(story, "  The Liberal Crime Squad tampered with the state's water supply yesterday, ");
             strcat(story, "demonstrating the extreme dangers of Nuclear Waste. ");
             strcat(story, "&r");
           }
-        }
-        else
-        {
-          if (!liberalguardian)
-          {
+        } else {
+          if (!liberalguardian) {
             strcat(story, "  According to sources that were at the scene, ");
             strcat(story, "the Liberal Crime Squad nearly caused a catastrophic meltdown of the nuclear ");
             strcat(story, "reactor.");
             strcat(story, "&r");
-          }
-          else
-          {
+          } else {
             strcat(story, "  The Liberal Crime Squad brought the reactor to the verge of a nuclear meltdown, ");
             strcat(story, "demonstrating the extreme vulnerability and danger of Nuclear Power Plants. ");
             strcat(story, "&r");
           }
         }
       }
-      if (crime[CRIME_POLICE_LOCKUP])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_POLICE_LOCKUP]) {
+        if (!liberalguardian) {
           strcat(story, "  According to sources that were at the scene, ");
           strcat(story, "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the police lockup.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad attempted to rescue innocent people from the police lockup, ");
           strcat(story, "saving them from torture and brutality at the hands of Conservative police interrogators.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_BANKVAULTROBBERY])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_BANKVAULTROBBERY]) {
+        if (!liberalguardian) {
           strcat(story, "  According to sources that were at the scene, ");
           strcat(story, "the Liberal Crime Squad opened the bank vault, which held more than $100,000 at the time.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad opened the bank vault, ");
           strcat(story, "showing the triumph of Liberal ideals over Conservative economics.");
           strcat(story, "&r");
         }
-      }
-      else if (crime[CRIME_BANKSTICKUP])
-      {
-        if (!liberalguardian)
-        {
+      } else if (crime[CRIME_BANKSTICKUP]) {
+        if (!liberalguardian) {
           strcat(story, "  According to sources that were at the scene, ");
           strcat(story, "the Liberal Crime Squad threatened innocent bystanders in order to rob the bank vault.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad demanded access to the bank vault, ");
           strcat(story, "hoping to acquire the resources to overcome evil.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_COURTHOUSE_LOCKUP])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_COURTHOUSE_LOCKUP]) {
+        if (!liberalguardian) {
           strcat(story, "  According to sources that were at the scene, ");
           strcat(story, "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the courthouse lockup.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad attempted to rescue innocent people from the courthouse lockup, ");
           strcat(story, "saving them from the highly corrupt Conservative justice system.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_PRISON_RELEASE])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_PRISON_RELEASE]) {
+        if (!liberalguardian) {
           strcat(story, "  According to sources that were at the scene, ");
           strcat(story, "the Liberal Crime Squad allegedly freed prisoners while in the facility.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad attempted to rescue innocent people from the abusive Conservative conditions ");
           strcat(story, "at the prison.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_JURYTAMPERING])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_JURYTAMPERING]) {
+        if (!liberalguardian) {
           strcat(story, "  According to police sources that were at the scene, ");
           strcat(story, "the Liberal Crime Squad allegedly violated the sacred ");
           strcat(story, "trust and attempted to influence a jury.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad has apologized over reports that the operation ");
           strcat(story, "may have interfered with jury deliberations.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_HACK_INTEL])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_HACK_INTEL]) {
+        if (!liberalguardian) {
           strcat(story, "  According to police sources that were at the scene, ");
           strcat(story, "intelligence officials seemed very nervous about something.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  Liberal Crime Squad computer specialists worked to liberate information from CIA computers.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_ARMORY])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_ARMORY]) {
+        if (!liberalguardian) {
           strcat(story, "  According to sources, ");
           strcat(story, "the Liberal Crime Squad attempted to break into the armory.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  Liberal Crime Squad infiltration specialists worked to liberate weapons from the oppressors.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_HOUSE_PHOTOS])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_HOUSE_PHOTOS]) {
+        if (!liberalguardian) {
           strcat(story, "  According to police sources that were at the scene, ");
           strcat(story, "the owner of the house seemed very frantic about some missing property.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad was attempting to uncover the CEO's Conservative corruption.");
           strcat(story, "&r");
         }
       }
-      if (crime[CRIME_CORP_FILES])
-      {
-        if (!liberalguardian)
-        {
+      if (crime[CRIME_CORP_FILES]) {
+        if (!liberalguardian) {
           strcat(story, "  According to police sources that were at the scene, ");
           strcat(story, "executives on the scene seemed very nervous about something.");
           strcat(story, "&r");
-        }
-        else
-        {
+        } else {
           strcat(story, "  The Liberal Crime Squad was attempting to uncover the company's Conservative corruption.");
           strcat(story, "&r");
         }
       }
 
-      if (liberalguardian && !ccs)
-      {
+      if (liberalguardian && !ccs) {
         if (crime[CRIME_ATTACKED_MISTAKE]) typesum--;
         if (crime[CRIME_KILLEDSOMEBODY]) typesum--;
       }
 
-      if (typesum > 0)
-      {
-        if (typesum > 0)
-        {
-          if (!ccs)
-          {
-            if (!liberalguardian)
-            {
+      if (typesum > 0) {
+        if (typesum > 0) {
+          if (!ccs) {
+            if (!liberalguardian) {
               strcat(story, "  Further details are sketchy, but police sources suggest that the LCS ");
               strcat(story, "engaged in ");
-            }
-            else
-            {
+            } else {
               strcat(story, "  The Liberal Crime Squad ");
             }
-          }
-          else
-          {
+          } else {
             strcat(story, "  Further details are sketchy, but police sources suggest that the CCS ");
             strcat(story, "engaged in ");
           }
-          if (crime[CRIME_ARSON])
-          {
-            if (!liberalguardian || ccs)
-            {
+          if (crime[CRIME_ARSON]) {
+            if (!liberalguardian || ccs) {
               strcat(story, "arson");
-            }
-            else
-            {
+            } else {
               strcat(story, "set fire to Conservative property");
             }
 
@@ -1275,10 +1137,8 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               strcat(story, " and ");
             typesum--;
           }
-          if (!liberalguardian || ccs)
-          {
-            if (crime[CRIME_KILLEDSOMEBODY])
-            {
+          if (!liberalguardian || ccs) {
+            if (crime[CRIME_KILLEDSOMEBODY]) {
               strcat(story, "murder");
               if (typesum >= 3)
                 strcat(story, ", ");
@@ -1286,8 +1146,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
                 strcat(story, " and ");
               typesum--;
             }
-            if (crime[CRIME_ATTACKED_MISTAKE])
-            {
+            if (crime[CRIME_ATTACKED_MISTAKE]) {
               strcat(story, "violence");
               if (typesum >= 3)
                 strcat(story, ", ");
@@ -1295,8 +1154,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
                 strcat(story, " and ");
               typesum--;
             }
-            if (crime[CRIME_ATTACKED])
-            {
+            if (crime[CRIME_ATTACKED]) {
               if (crime[CRIME_ATTACKED_MISTAKE])
                 strcat(story, "more violence");
               else
@@ -1307,11 +1165,8 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
                 strcat(story, " and ");
               typesum--;
             }
-          }
-          else
-          {
-            if (crime[CRIME_ATTACKED])
-            {
+          } else {
+            if (crime[CRIME_ATTACKED]) {
               strcat(story, "engaged in combat with Conservative forces");
               if (typesum >= 3)
                 strcat(story, ", ");
@@ -1320,14 +1175,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               typesum--;
             }
           }
-          if (crime[CRIME_STOLEGROUND] || crime[CRIME_BANKTELLERROBBERY])
-          {
-            if (!liberalguardian || ccs)
-            {
+          if (crime[CRIME_STOLEGROUND] || crime[CRIME_BANKTELLERROBBERY]) {
+            if (!liberalguardian || ccs) {
               strcat(story, "theft");
-            }
-            else
-            {
+            } else {
               strcat(story, "liberated enemy resources");
             }
             if (typesum >= 3)
@@ -1336,14 +1187,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               strcat(story, " and ");
             typesum--;
           }
-          if (crime[CRIME_FREE_RABBITS] || crime[CRIME_FREE_BEASTS])
-          {
-            if (!liberalguardian)
-            {
+          if (crime[CRIME_FREE_RABBITS] || crime[CRIME_FREE_BEASTS]) {
+            if (!liberalguardian) {
               strcat(story, "tampering with lab animals");
-            }
-            else
-            {
+            } else {
               strcat(story, "liberated abused animals");
             }
 
@@ -1353,14 +1200,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               strcat(story, " and ");
             typesum--;
           }
-          if (crime[CRIME_BREAK_SWEATSHOP] || crime[CRIME_BREAK_FACTORY] || crime[CRIME_VANDALISM])
-          {
-            if (!liberalguardian || ccs)
-            {
+          if (crime[CRIME_BREAK_SWEATSHOP] || crime[CRIME_BREAK_FACTORY] || crime[CRIME_VANDALISM]) {
+            if (!liberalguardian || ccs) {
               strcat(story, "destruction of private property");
-            }
-            else
-            {
+            } else {
               strcat(story, "damaged enemy infrastructure");
             }
 
@@ -1370,14 +1213,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               strcat(story, " and ");
             typesum--;
           }
-          if (crime[CRIME_TAGGING])
-          {
-            if (!liberalguardian || ccs)
-            {
+          if (crime[CRIME_TAGGING]) {
+            if (!liberalguardian || ccs) {
               strcat(story, "vandalism");
-            }
-            else
-            {
+            } else {
               strcat(story, "marked the site for Liberation");
             }
 
@@ -1387,14 +1226,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               strcat(story, " and ");
             typesum--;
           }
-          if (crime[CRIME_BROKEDOWNDOOR])
-          {
-            if (!liberalguardian || ccs)
-            {
+          if (crime[CRIME_BROKEDOWNDOOR]) {
+            if (!liberalguardian || ccs) {
               strcat(story, "breaking and entering");
-            }
-            else
-            {
+            } else {
               strcat(story, "broke down doors");
             }
 
@@ -1404,14 +1239,10 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
               strcat(story, " and ");
             typesum--;
           }
-          if (crime[CRIME_UNLOCKEDDOOR])
-          {
-            if (!liberalguardian || ccs)
-            {
+          if (crime[CRIME_UNLOCKEDDOOR]) {
+            if (!liberalguardian || ccs) {
               strcat(story, "unlawful entry");
-            }
-            else
-            {
+            } else {
               strcat(story, "picked locks");
             }
 
@@ -1426,34 +1257,26 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
         strcat(story, "&r");
       }
 
-      if (crime[CRIME_CARCHASE])
-      {
-        if (!liberalguardian || ccs)
-        {
+      if (crime[CRIME_CARCHASE]) {
+        if (!liberalguardian || ccs) {
           strcat(story, "  It is known that there was a high-speed chase ");
           strcat(story, "following the incident.  ");
-        }
-        else
-        {
+        } else {
           strcat(story, "  Conservative operatives engaged in a reckless ");
           strcat(story, "pursuit of the LCS.  ");
         }
 
-        if (crime[CRIME_CARCRASH])
-        {
-          if (crime[CRIME_CARCRASH] > 1)
-          {
+        if (crime[CRIME_CARCRASH]) {
+          if (crime[CRIME_CARCRASH] > 1) {
             strcat(story, crime[CRIME_CARCRASH]);
             strcat(story, " vehicles crashed.  ");
-          }
-          else
+          } else
             strcat(story, "One vehicle crashed.  ");
           if (!liberalguardian || ccs)
             strcat(story, "Details about injuries were not released.  "); //XXX: Why not turn them into martyrs?
         }
 
-        if (crime[CRIME_FOOTCHASE])
-        {
+        if (crime[CRIME_FOOTCHASE]) {
           if (!liberalguardian || ccs)
             strcat(story, "There was also a foot chase when the suspect or suspects bailed out after the high-speed pursuit.  ");
           else
@@ -1461,29 +1284,20 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
         }
         strcat(story, "&r");
       }
-      if (!ccs)
-      {
-        if (!LCSrandom(8))
-        {
-          if (crime[CRIME_TAGGING])
-          {
+      if (!ccs) {
+        if (!LCSrandom(8)) {
+          if (crime[CRIME_TAGGING]) {
             strcat(story, "  The slogan, \"");
             strcat(story, slogan);
             strcat(story, "\" was found painted on the walls.");
-          }
-          else
-          {
-            switch (LCSrandom(3))
-            {
+          } else {
+            switch (LCSrandom(3)) {
             case 0:
-              if (ns.type == NEWSSTORY_SQUAD_KILLED_SITE)
-              {
+              if (ns.type == NEWSSTORY_SQUAD_KILLED_SITE) {
                 strcat(story, "  One uttered the words, \"");
                 strcat(story, slogan);
                 strcat(story, "\" before passing out.");
-              }
-              else
-              {
+              } else {
                 strcat(story, "  As they left, they shouted, \"");
                 strcat(story, slogan);
                 strcat(story, "\"");
@@ -1516,23 +1330,16 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
         ns.type == NEWSSTORY_CCS_KILLED_SITE) newscherrybusted = 2;
     break;
   }
-  case NEWSSTORY_MASSACRE:
-  {
+  case NEWSSTORY_MASSACRE: {
     int y = 3;
-    if (ns.page == 1)
-    {
+    if (ns.page == 1) {
       y = 21;
-      if (ns.crime[0] == SIEGE_CCS)
-      {
+      if (ns.crime[0] == SIEGE_CCS) {
         displaycenterednewsfont("CCS MASSACRE", 5);
-      }
-      else if (!liberalguardian)
-      {
+      } else if (!liberalguardian) {
         displaycenterednewsfont("MYSTERIOUS", 5);
         displaycenterednewsfont("MASSACRE", 13);
-      }
-      else
-      {
+      } else {
         displaycenterednewsfont("CONSERVATIVE", 5);
         displaycenterednewsfont("MASSACRE", 13);
       }
@@ -1540,28 +1347,23 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
 
     strcpy(story, city);
     strcat(story, " - ");
-    if (ns.crime[1] > 2)
-    {
+    if (ns.crime[1] > 2) {
       strcat(story, ns.crime[1]);
       strcat(story, " bodies were "); //Gruesome pile, large pile.
-    }
-    else if (ns.crime[1] > 1)
+    } else if (ns.crime[1] > 1)
       strcat(story, " Two bodies were ");
     else
       strcat(story, " A body was ");
     strcat(story, " found in the ");
     strcat(story, location[ns.loc]->name);
     strcat(story, " yesterday.");
-    if (!liberalguardian)
-    {
+    if (!liberalguardian) {
       strcat(story, "  According to a spokesperson for ");
       strcat(story, "the police department, the matter is under investigation as a homicide.");
       strcat(story, "&r");
       strcat(story, "  Privately, sources in the department confide that there aren't any leads.  ");
       strcat(story, "According to one person familiar with the case, \"");
-    }
-    else
-    {
+    } else {
       strcat(story, "  The police have opened an investigation into the massacre, but seem ");
       strcat(story, "unwilling to pursue the case with any serious effort.");
       strcat(story, "&r");
@@ -1573,11 +1375,9 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       strcat(story, "of the LCS targeted simply due to their political beliefs.  ");
       strcat(story, "According to an LCS spokesperson, \"");
     }
-    switch (ns.crime[0])
-    {
+    switch (ns.crime[0]) {
     case SIEGE_CIA:
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         if (ns.crime[1] > 1)
           strcat(story, "The bodies had no faces or ");
         else
@@ -1589,9 +1389,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
           strcat(story, "Damnedest thing I've ever seen");
         else
           strcat(story, "D*mnd*st thing I've ever seen");
-      }
-      else
-      {
+      } else {
         strcat(story, "We have strong evidence that this was an extra-judicial slaughter ");
         strcat(story, "carried out by the Central Intelligence Agency in retaliation for our ");
         strcat(story, "previous actions to uncover human rights abuses and corruption in the ");
@@ -1600,24 +1398,18 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       break;
     case SIEGE_POLICE:
     case SIEGE_HICKS:
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         strcat(story, "Burned...  stabbed with, maybe, pitchforks.  There may have ");
         strcat(story, "been bite marks.  Nothing recognizable left.  Complete carnage.");
-      }
-      else
-      {
+      } else {
         strcat(story, "We have reason to believe that this brutal massacre was ");
         strcat(story, "inspired by the Conservative media's brainwashing propaganda");
       }
       break;
     case SIEGE_CORPORATE:
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         strcat(story, "It was execution style.  Professional.  We've got nothing");
-      }
-      else
-      {
+      } else {
         strcat(story, "This massacre has the signature mark of a group of mercenaries ");
         strcat(story, "known to work with several corporations we've had confrontations ");
         strcat(story, "with in the past.  *When* the police can't figure this one out, they're ");
@@ -1625,20 +1417,16 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
       }
       break;
     case SIEGE_CCS:
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         strcat(story, "Look, it was a Conservative Crime Squad hit, that's all we know, ");
         strcat(story, "no names, no faces, not even where it happened really");
-      }
-      else
-      {
+      } else {
         strcat(story, "This is the doing of the Conservative Crime Squad butchers.  ");
         strcat(story, "They have to be stopped before they kill again");
       }
       break;
     case SIEGE_FIREMEN:
-      if (!liberalguardian)
-      {
+      if (!liberalguardian) {
         if (ns.crime[1] > 1)
           strcat(story, "The recovered bodies were ");
         else
@@ -1647,9 +1435,7 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
         strcat(story, "Scorch marks throughout the site indicate that this was no accident; ");
         strcat(story, "we are working closely with the Fire Department to track down the arsonist.  ");
         strcat(story, "Fortunately, firemen were able to respond before the fire could spread to other buildings");
-      }
-      else
-      {
+      } else {
         if (ns.crime[1] > 1)
           strcat(story, "The murdered were reporters ");
         else
@@ -1665,22 +1451,16 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
     displaynewsstory(story, storyx_s, storyx_e, y);
     break;
   }
-  case NEWSSTORY_KIDNAPREPORT:
-  {
+  case NEWSSTORY_KIDNAPREPORT: {
     int y = 2;
-    if (ns.page == 1)
-    {
+    if (ns.page == 1) {
       y = 21;
-      if (liberalguardian)
-      {
+      if (liberalguardian) {
         displaycenterednewsfont("LCS DENIES", 5);
         displaycenterednewsfont("KIDNAPPING", 13);
         break;
-      }
-      else
-      {
-        switch (ns.cr->type)
-        {
+      } else {
+        switch (ns.cr->type) {
         case CREATURE_CORPORATE_CEO:
           displaycenterednewsfont("CEO", 5);
           displaycenterednewsfont("KIDNAPPED", 13);
@@ -1762,14 +1542,12 @@ void displaystory(newsstoryst &ns, bool liberalguardian, int header)
 }
 
 /* news - graphics */
-void loadgraphics()
-{
+void loadgraphics() {
   int picnum, dimx, dimy;
 
   FILE *h;
 
-  if ((h = LCSOpenFile("largecap.cpc", "rb", LCSIO_PRE_ART)) != NULL)
-  {
+  if ((h = LCSOpenFile("largecap.cpc", "rb", LCSIO_PRE_ART)) != NULL) {
 
     fread(&picnum, sizeof(int), 1, h);
     fread(&dimx, sizeof(int), 1, h);
@@ -1781,8 +1559,7 @@ void loadgraphics()
     LCSCloseFile(h);
   }
 
-  if ((h = LCSOpenFile("newstops.cpc", "rb", LCSIO_PRE_ART)) != NULL)
-  {
+  if ((h = LCSOpenFile("newstops.cpc", "rb", LCSIO_PRE_ART)) != NULL) {
 
     fread(&picnum, sizeof(int), 1, h);
     fread(&dimx, sizeof(int), 1, h);
@@ -1794,8 +1571,7 @@ void loadgraphics()
     LCSCloseFile(h);
   }
 
-  if ((h = LCSOpenFile("newspic.cpc", "rb", LCSIO_PRE_ART)) != NULL)
-  {
+  if ((h = LCSOpenFile("newspic.cpc", "rb", LCSIO_PRE_ART)) != NULL) {
 
     fread(&picnum, sizeof(int), 1, h);
     fread(&dimx, sizeof(int), 1, h);
@@ -1808,12 +1584,10 @@ void loadgraphics()
   }
 }
 
-void displaycenterednewsfont(const std::string &str, int y)
-{
+void displaycenterednewsfont(const std::string &str, int y) {
   int width = -1;
   int s;
-  for (s = 0; s < len(str); s++)
-  {
+  for (s = 0; s < len(str); s++) {
     if (str[s] >= 'A' && str[s] <= 'Z')
       width += 6;
     else if (str[s] == '\'')
@@ -1824,10 +1598,8 @@ void displaycenterednewsfont(const std::string &str, int y)
 
   int x = 39 - width / 2;
 
-  for (s = 0; s < len(str); s++)
-  {
-    if ((str[s] >= 'A' && str[s] <= 'Z') || str[s] == '\'')
-    {
+  for (s = 0; s < len(str); s++) {
+    if ((str[s] >= 'A' && str[s] <= 'Z') || str[s] == '\'') {
       int p;
       if (str[s] >= 'A' && str[s] <= 'Z')
         p = str[s] - 'A';
@@ -1837,8 +1609,7 @@ void displaycenterednewsfont(const std::string &str, int y)
       if (str[s] == '\'') lim = 4;
       if (s == len(str) - 1) lim--;
       for (int x2 = 0; x2 < lim; x2++)
-        for (int y2 = 0; y2 < 7; y2++)
-        {
+        for (int y2 = 0; y2 < 7; y2++) {
           move(y + y2, x + x2);
 
 #ifdef NCURSES
@@ -1848,13 +1619,10 @@ void displaycenterednewsfont(const std::string &str, int y)
           move(y + y2, x + x2);
 #endif
 
-          if (x2 == 5)
-          {
+          if (x2 == 5) {
             set_color(COLOR_WHITE, COLOR_WHITE, 0);
             addchar(' ');
-          }
-          else
-          {
+          } else {
             set_color(translateGraphicsColor(bigletters[p][x2][y2][1]),
                       translateGraphicsColor(bigletters[p][x2][y2][2]),
                       bigletters[p][x2][y2][3]);
@@ -1862,13 +1630,10 @@ void displaycenterednewsfont(const std::string &str, int y)
           }
         }
       x += lim;
-    }
-    else
-    {
+    } else {
       set_color(COLOR_WHITE, COLOR_WHITE, 0);
       for (int x2 = 0; x2 < 3; x2++)
-        for (int y2 = 0; y2 < 7; y2++)
-        {
+        for (int y2 = 0; y2 < 7; y2++) {
           move(y + y2, x + x2);
           addchar(' ');
         }
@@ -1877,19 +1642,16 @@ void displaycenterednewsfont(const std::string &str, int y)
   }
 }
 
-void displaycenteredsmallnews(const std::string &str, int y)
-{
+void displaycenteredsmallnews(const std::string &str, int y) {
   int x = 39 - ((len(str) - 1) >> 1);
   move(y, x);
   set_color(COLOR_BLACK, COLOR_WHITE, 0);
   addstr(str);
 }
 
-void displaynewspicture(int p, int y)
-{
+void displaynewspicture(int p, int y) {
   for (int x2 = 0; x2 < 78; x2++)
-    for (int y2 = 0; y2 < 15; y2++)
-    {
+    for (int y2 = 0; y2 < 15; y2++) {
       if (y + y2 > 24) break;
       move(y + y2, 1 + x2);
       set_color(translateGraphicsColor(newspic[p][x2][y2][1]),
@@ -1900,8 +1662,7 @@ void displaynewspicture(int p, int y)
 }
 
 /* news - draws the specified block of text to the screen */
-void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y)
-{
+void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y) {
   vector<char *> text;
   vector<char> centered;
 
@@ -1918,27 +1679,22 @@ void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y)
   char iscentered = 0;
   int i = 0;
 
-  while (curpos < len(story) && cury < 25)
-  {
+  while (curpos < len(story) && cury < 25) {
     content = 0;
     totalwidth = 0;
     addstrcur = 0;
     length = storyx_e[cury] - storyx_s[cury] + 1;
-    if (length == 0)
-    {
+    if (length == 0) {
       cury++;
       if (endparagraph > 0) endparagraph--;
       continue;
     }
 
-    for (i = curpos; i < len(story); i++)
-    {
-      if (story[i] == '&' && story[i + 1] != '&')
-      {
+    for (i = curpos; i < len(story); i++) {
+      if (story[i] == '&' && story[i + 1] != '&') {
         i++;
         if (story[i] == 'c') iscentered = 1;
-        if (story[i] == 'r')
-        {
+        if (story[i] == 'r') {
           content = 1;
           i++;
           addstrcur += 1;
@@ -1947,17 +1703,14 @@ void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y)
           endparagraph = 1;
           break;
         }
-      }
-      else
-      {
+      } else {
         content = 1;
 
         if (story[i] == '&') i++;
         addstring[addstrcur] = story[i];
         addstring[addstrcur + 1] = '\x0';
         totalwidth++;
-        if (totalwidth > length)
-        {
+        if (totalwidth > length) {
           while (story[i] != ' ')
             i--, addstrcur--;
           while (story[i] == ' ')
@@ -1971,34 +1724,26 @@ void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y)
 
     if (i == len(story)) addstring[addstrcur] = '\x0';
 
-    if (len(addstring) && content)
-    {
+    if (len(addstring) && content) {
       int words = 0;
       char silent = 1;
       vector<int> spacex;
-      for (int s2 = 0; s2 < len(addstring); s2++)
-      {
-        if (addstring[s2] == ' ')
-        {
-          if (!silent)
-          {
+      for (int s2 = 0; s2 < len(addstring); s2++) {
+        if (addstring[s2] == ' ') {
+          if (!silent) {
             silent = 1;
             words++;
             spacex.push_back(s2);
           }
-        }
-        else
-        {
-          if (silent)
-          {
+        } else {
+          if (silent) {
             words++;
             silent = 0;
           }
         }
       }
 
-      while (!endparagraph && words > 1 && len(addstring) < length && !iscentered)
-      {
+      while (!endparagraph && words > 1 && len(addstring) < length && !iscentered) {
         int csp = pickrandom(spacex);
 
         for (int x = 0; x < len(spacex); x++)
@@ -2022,8 +1767,7 @@ void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y)
   }
 
   set_color(COLOR_BLACK, COLOR_WHITE, 0);
-  for (int t = 0; t < len(text); t++)
-  {
+  for (int t = 0; t < len(text); t++) {
     if (y + t >= 25) break;
     if (text[t][len(text[t]) - 1] == ' ') // remove trailing space
       text[t][len(text[t]) - 1] = '\x0';  // (necessary for proper centering and to not overwrite borders around an ad)
@@ -2039,17 +1783,14 @@ void displaynewsstory(char *story, short *storyx_s, short *storyx_e, int y)
 }
 
 /* news - make some filler junk */
-void generatefiller(char *story, int amount)
-{ //TODO: Use text from filler.cpp
+void generatefiller(char *story, int amount) { //TODO: Use text from filler.cpp
   strcat(story, "&r" + cityname() + " - ");
-  for (int par = 0; amount > 0; amount--)
-  {
+  for (int par = 0; amount > 0; amount--) {
     par++;
     for (int i = 0; i < LCSrandom(10) + 3; i++)
       strcat(story, "~");
     if (amount > 1) strcat(story, " ");
-    if (par >= 50 && !LCSrandom(5) && amount > 20)
-    {
+    if (par >= 50 && !LCSrandom(5) && amount > 20) {
       par = 0;
       strcat(story, "&r  ");
     }
@@ -2057,12 +1798,10 @@ void generatefiller(char *story, int amount)
   strcat(story, "&r");
 }
 
-newsstoryst *new_major_event()
-{
+newsstoryst *new_major_event() {
   newsstoryst *ns = new newsstoryst;
   ns->type = NEWSSTORY_MAJOREVENT;
-  while (true)
-  {
+  while (true) {
     ns->view = LCSrandom(VIEWNUM - 3);
     ns->positive = LCSrandom(2);
 
@@ -2077,8 +1816,7 @@ newsstoryst *new_major_event()
     // News stories that don't apply when the law is extreme -- covering
     // nuclear power when it's banned, police corruption when it doesn't
     // exist, out of control pollution when it's under control, etc.
-    if (ns->positive)
-    {
+    if (ns->positive) {
       if (ns->view == VIEW_WOMEN && law[LAW_ABORTION] == -2) continue;               // Abortion banned
       if (ns->view == VIEW_DEATHPENALTY && law[LAW_DEATHPENALTY] == 2) continue;     // Death penalty banned
       if (ns->view == VIEW_NUCLEARPOWER && law[LAW_NUCLEARPOWER] == 2) continue;     // Nuclear power banned
@@ -2089,9 +1827,7 @@ newsstoryst *new_major_event()
       if (ns->view == VIEW_POLLUTION && law[LAW_POLLUTION] >= 1) continue;           // Pollution under control
       if (ns->view == VIEW_CORPORATECULTURE && law[LAW_CORPORATE] == 2) continue;    // Regulation controls corporate corruption
       if (ns->view == VIEW_CEOSALARY && law[LAW_CORPORATE] == 2) continue;           // CEOs aren't rich
-    }
-    else
-    {
+    } else {
       if (ns->view == VIEW_WOMEN && law[LAW_ABORTION] < 2) continue;                 // Partial birth abortion banned
       if (ns->view == VIEW_AMRADIO && law[LAW_FREESPEECH] == -2) continue;           // AM Radio is censored to oblivion
       if (ns->view == VIEW_ANIMALRESEARCH && law[LAW_ANIMALRESEARCH] == 2) continue; // Animal research banned
@@ -2108,29 +1844,23 @@ newsstoryst *new_major_event()
   return ns;
 }
 
-int liberal_guardian_writing_power()
-{
+int liberal_guardian_writing_power() {
   int power = 0;
-  for (int i = 0; i < len(pool); i++)
-  {
-    if (pool[i]->alive && pool[i]->activity.type == ACTIVITY_WRITE_GUARDIAN)
-    {
+  for (int i = 0; i < len(pool); i++) {
+    if (pool[i]->alive && pool[i]->activity.type == ACTIVITY_WRITE_GUARDIAN) {
       if (pool[i]->location != -1 &&
-          location[pool[i]->location]->compound_walls & COMPOUND_PRINTINGPRESS)
-      {
+          location[pool[i]->location]->compound_walls & COMPOUND_PRINTINGPRESS) {
         pool[i]->train(SKILL_WRITING, LCSrandom(3)); // Experience gain
         power += pool[i]->skill_roll(SKILL_WRITING); // Record the writer on this topic
         criminalize(*pool[i], LAWFLAG_SPEECH);       // Record possibly illegal speech activity
-      }
-      else
+      } else
         pool[i]->activity.type = ACTIVITY_NONE;
     }
   }
   return power;
 }
 
-newsstoryst *ccs_strikes_story()
-{
+newsstoryst *ccs_strikes_story() {
   newsstoryst *ns = new newsstoryst;
 
   // Chance of CCS squad wipe
@@ -2142,36 +1872,30 @@ newsstoryst *ccs_strikes_story()
   // Chance of positive CCS story
   ns->positive = true;
 
-  do
-  {
+  do {
     ns->loc = LCSrandom(len(location));
   } while (location[ns->loc]->renting != -1);
 
   return ns;
 }
 
-newsstoryst *ccs_exposure_story()
-{
+newsstoryst *ccs_exposure_story() {
   newsstoryst *ns = new newsstoryst;
   ns->type = NEWSSTORY_CCS_NOBACKERS;
   ns->priority = 8000;
   ccsexposure = CCSEXPOSURE_NOBACKERS;
   // arrest seventeen representatives and eight senators
   int arrestsleft = 8;
-  for (int i = 0; i < SENATENUM; i++)
-  {
-    if ((senate[i] == -2 || senate[i] == -1) && !LCSrandom(4))
-    {
+  for (int i = 0; i < SENATENUM; i++) {
+    if ((senate[i] == -2 || senate[i] == -1) && !LCSrandom(4)) {
       senate[i] = ALIGN_ELITELIBERAL;
       arrestsleft--;
       if (arrestsleft <= 0) break;
     }
   }
   arrestsleft = 17;
-  for (int i = 0; i < HOUSENUM; i++)
-  {
-    if ((house[i] == -2 || house[i] == -1) && !LCSrandom(4))
-    {
+  for (int i = 0; i < HOUSENUM; i++) {
+    if ((house[i] == -2 || house[i] == -1) && !LCSrandom(4)) {
       house[i] = ALIGN_ELITELIBERAL;
       arrestsleft--;
       if (arrestsleft <= 0) break;
@@ -2187,20 +1911,16 @@ newsstoryst *ccs_exposure_story()
   return ns;
 }
 
-newsstoryst *ccs_fbi_raid_story()
-{
+newsstoryst *ccs_fbi_raid_story() {
   newsstoryst *ns = new newsstoryst;
   ns->type = NEWSSTORY_CCS_DEFEATED;
   ns->priority = 8000;
   endgamestate = ENDGAME_CCS_DEFEATED;
   // arrest or kill ccs sleepers
-  for (int p = 0; p < len(pool); p++)
-  {
-    if (pool[p]->flag & CREATUREFLAG_SLEEPER)
-    {
+  for (int p = 0; p < len(pool); p++) {
+    if (pool[p]->flag & CREATUREFLAG_SLEEPER) {
       if (pool[p]->type == CREATURE_CCS_VIGILANTE || pool[p]->type == CREATURE_CCS_ARCHCONSERVATIVE ||
-          pool[p]->type == CREATURE_CCS_MOLOTOV || pool[p]->type == CREATURE_CCS_SNIPER)
-      {
+          pool[p]->type == CREATURE_CCS_MOLOTOV || pool[p]->type == CREATURE_CCS_SNIPER) {
         pool[p]->flag &= ~CREATUREFLAG_SLEEPER;
         criminalize(*pool[p], LAWFLAG_RACKETEERING);
         capturecreature(*pool[p]);
@@ -2208,10 +1928,8 @@ newsstoryst *ccs_fbi_raid_story()
     }
   }
   // hide ccs safehouses
-  for (int l = 0; l < len(location); l++)
-  {
-    if (location[l]->renting == RENTING_CCS)
-    {
+  for (int l = 0; l < len(location); l++) {
+    if (location[l]->renting == RENTING_CCS) {
       location[l]->renting = RENTING_NOCONTROL;
       location[l]->hidden = true;
     }

@@ -1,21 +1,17 @@
 #include <externs.h>
 
-std::string getLastNameForHeadline(char *fullName)
-{
+std::string getLastNameForHeadline(char *fullName) {
   int i = 0;
   int j = -1;
   char lastName[20];
   // Parse through full name to get the last name
-  for (i = 0; fullName[i] != 0; i++)
-  {
+  for (i = 0; fullName[i] != 0; i++) {
     // Start recording last name at the space between first and last
-    if (fullName[i] == ' ')
-    {
+    if (fullName[i] == ' ') {
       j = 0;
     }
     // When recording last name, transcribe in uppercase
-    else if (j >= 0)
-    {
+    else if (j >= 0) {
       lastName[j++] = toupper(fullName[i]);
     }
   }
@@ -26,10 +22,8 @@ std::string getLastNameForHeadline(char *fullName)
   return ret;
 }
 
-void displaystoryheader(newsstoryst &ns, bool liberalguardian, int &y, int header)
-{
-  switch (ns.type)
-  {
+void displaystoryheader(newsstoryst &ns, bool liberalguardian, int &y, int header) {
+  switch (ns.type) {
   case NEWSSTORY_PRESIDENT_IMPEACHED:
     displaycenterednewsfont(getLastNameForHeadline(oldPresidentName), 5);
     displaycenterednewsfont("IMPEACHED", 13);
@@ -87,26 +81,20 @@ void displaystoryheader(newsstoryst &ns, bool liberalguardian, int &y, int heade
     break;
   case NEWSSTORY_SQUAD_KILLED_SIEGEATTACK:
   case NEWSSTORY_SQUAD_KILLED_SIEGEESCAPE:
-    if (!liberalguardian)
-    {
+    if (!liberalguardian) {
       displaycenterednewsfont("LCS SIEGE", 5);
       displaycenterednewsfont("TRAGIC END", 13);
-    }
-    else
-    {
+    } else {
       displaycenterednewsfont("POLICE KILL", 5);
       displaycenterednewsfont("LCS MARTYRS", 13);
     }
     break;
   case NEWSSTORY_CCS_SITE:
   case NEWSSTORY_CCS_KILLED_SITE:
-    if (newscherrybusted < 2)
-    {
+    if (newscherrybusted < 2) {
       displaycenterednewsfont("CONSERVATIVE", 5);
       displaycenterednewsfont("CRIME SQUAD", 13);
-    }
-    else
-    {
+    } else {
       if (ns.positive)
         displaycenterednewsfont("CCS STRIKES", 5); //AGAIN?
       else
@@ -115,32 +103,22 @@ void displaystoryheader(newsstoryst &ns, bool liberalguardian, int &y, int heade
     }
     break;
   default:
-    if (ns.positive)
-    {
-      if (newscherrybusted || liberalguardian)
-      {
+    if (ns.positive) {
+      if (newscherrybusted || liberalguardian) {
 
-        if (!liberalguardian)
-        {
-          if (ns.priority > 250)
-          {
+        if (!liberalguardian) {
+          if (ns.priority > 250) {
             y = 13;
             displaycenterednewsfont("UNSTOPPABLE", 5);
-          }
-          else
-          {
+          } else {
             y = 13;
             displaycenterednewsfont("LCS STRIKES", 5);
           }
-        }
-        else
-        {
+        } else {
           y = 13;
-          if (ns.priority > 150)
-          {
+          if (ns.priority > 150) {
             change_public_opinion(header, 5, 1); // Bonus for big story
-            switch (header)
-            {
+            switch (header) {
             case VIEW_TAXES:
             case VIEW_SWEATSHOPS:
             case VIEW_CEOSALARY:
@@ -182,31 +160,22 @@ void displaystoryheader(newsstoryst &ns, bool liberalguardian, int &y, int heade
             default:
               displaycenterednewsfont("HEROIC STRIKE", 5);
             }
-          }
-          else
-          {
+          } else {
             displaycenterednewsfont("LCS STRIKES", 5);
           }
         }
-      }
-      else
-      {
+      } else {
         displaycenterednewsfont("LIBERAL CRIME", 5);
         displaycenterednewsfont("SQUAD STRIKES", 13);
       }
-    }
-    else
-    {
-      if (newscherrybusted || liberalguardian)
-      {
+    } else {
+      if (newscherrybusted || liberalguardian) {
         if (!liberalguardian)
           displaycenterednewsfont("LCS RAMPAGE", 5);
         else
           displaycenterednewsfont("LCS SORRY", 5);
         y = 13;
-      }
-      else
-      {
+      } else {
         displaycenterednewsfont("LIBERAL CRIME", 5);
         displaycenterednewsfont("SQUAD RAMPAGE", 13);
       }

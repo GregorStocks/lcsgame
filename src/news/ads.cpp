@@ -1,7 +1,6 @@
 #include <externs.h>
 
-void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s, short *storyx_e, int &it2)
-{
+void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s, short *storyx_e, int &it2) {
   int x, y;
   do
     x = LCSrandom(2), y = LCSrandom(3);
@@ -21,8 +20,7 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
   if (y == 2) sy = 18, ey = 24;
 
   int ch = '?';
-  switch (LCSrandom(6))
-  {
+  switch (LCSrandom(6)) {
   case 0:
     ch = CH_LIGHT_SHADE;
     break;
@@ -43,8 +41,7 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
     break;
   }
 
-  for (y = sy; y <= ey; y++)
-  {
+  for (y = sy; y <= ey; y++) {
     if (storyx_s[y] < ex && ex < 43) storyx_s[y] = ex + 2;
     if (storyx_e[y] > sx && sx > 43) storyx_e[y] = sx - 2;
 
@@ -64,10 +61,9 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
       storyx_s[it2] = sx + 1, storyx_e[it2] = ex - 1;
 
     char ad[500];
-    if (!liberalguardian)
-    {                 // regular newspaper (not Liberal Guardian)
-      switch (choice) // should be 6 choices from 1 to 6
-      {               // location[]->name?
+    if (!liberalguardian) { // regular newspaper (not Liberal Guardian)
+      switch (choice)       // should be 6 choices from 1 to 6
+      {                     // location[]->name?
       case 1:
         strcpy(ad, "&cNo Fee&r");
         strcat(ad, "&cConsignment Program&r&r");
@@ -105,11 +101,9 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
         strcat(ad, "&cand Fitness&r&r");
         strcat(ad, "&c7 Days a Week&r");
         break;
-      case 6:
-      {
+      case 6: {
         strcpy(ad, "&c");
-        switch (LCSrandom(5))
-        { // less explicit personals in regular newspaper than Liberal Guardian
+        switch (LCSrandom(5)) { // less explicit personals in regular newspaper than Liberal Guardian
         case 0:
           strcat(ad, "Searching For Love");
           break;
@@ -154,9 +148,7 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
         strcat(ad, "&cA Bug!&r");
         break;
       }
-    }
-    else
-    {                 // Liberal Guardian Ads
+    } else {          // Liberal Guardian Ads
       switch (choice) // should be 6 choices from 1 to 6
       {
       case 1:
@@ -188,11 +180,9 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
         strcat(ad, "&cSubGenius Clench&r");
         strcat(ad, "&cFor More Info&r");
         break;
-      case 6:
-      {
+      case 6: {
         strcpy(ad, "&c");
-        switch (LCSrandom(5))
-        { // more explicit personals in Liberal Guardian than regular newspaper
+        switch (LCSrandom(5)) { // more explicit personals in Liberal Guardian than regular newspaper
         case 0:
           strcat(ad, "Searching For Sex");
           break;
@@ -243,19 +233,15 @@ void displaysinglead(bool liberalguardian, char addplace[2][3], short *storyx_s,
   }
 }
 
-void displayads(newsstoryst &ns, bool liberalguardian, short *storyx_s, short *storyx_e, int &it2)
-{
+void displayads(newsstoryst &ns, bool liberalguardian, short *storyx_s, short *storyx_e, int &it2) {
   int adnumber = 0;
-  if (!liberalguardian)
-  {
+  if (!liberalguardian) {
     if (ns.page >= 10) adnumber++;
     if (ns.page >= 20) adnumber += LCSrandom(2) + 1;
     if (ns.page >= 30) adnumber += LCSrandom(2) + 1;
     if (ns.page >= 40) adnumber += LCSrandom(2) + 1;
     if (ns.page >= 50) adnumber += LCSrandom(2) + 1;
-  }
-  else
-  {
+  } else {
     if (ns.guardianpage >= 2) adnumber++;
     if (ns.guardianpage >= 3) adnumber += LCSrandom(2) + 1;
     if (ns.guardianpage >= 4) adnumber += LCSrandom(2) + 1;

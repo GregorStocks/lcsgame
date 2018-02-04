@@ -28,15 +28,13 @@ This file is part of Liberal Crime Squad.                                       
 
 #include <externs.h>
 
-Skill::Skill(const std::string &inputXml)
-{
+Skill::Skill(const std::string &inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
 
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
 
     if (tag == "associated_attribute")
@@ -48,8 +46,7 @@ Skill::Skill(const std::string &inputXml)
   }
 }
 
-string Skill::showXml() const
-{
+string Skill::showXml() const {
   CMarkup xml;
   xml.AddElem("skill");
   xml.IntoElem();
@@ -60,11 +57,9 @@ string Skill::showXml() const
   return xml.GetDoc();
 }
 
-CreatureAttribute Skill::get_associated_attribute(int skill_type)
-{
+CreatureAttribute Skill::get_associated_attribute(int skill_type) {
   // Initialize associated attribute
-  switch (skill_type)
-  {
+  switch (skill_type) {
   case SKILL_CLUB:
   case SKILL_AXE:
   case SKILL_HEAVYWEAPONS:
@@ -105,10 +100,8 @@ CreatureAttribute Skill::get_associated_attribute(int skill_type)
   }
 }
 
-std::string Skill::get_name(int skill_type)
-{
-  switch (skill_type)
-  {
+std::string Skill::get_name(int skill_type) {
+  switch (skill_type) {
   case SKILL_HANDTOHAND:
     return "Martial Arts";
   case SKILL_KNIFE:
@@ -175,15 +168,13 @@ std::string Skill::get_name(int skill_type)
   return "Error Skill Name";
 }
 
-Attribute::Attribute(const std::string &inputXml)
-{
+Attribute::Attribute(const std::string &inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
 
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
 
     if (tag == "attribute")
@@ -193,8 +184,7 @@ Attribute::Attribute(const std::string &inputXml)
   }
 }
 
-string Attribute::showXml() const
-{
+string Attribute::showXml() const {
   CMarkup xml;
   xml.AddElem("attribute");
   xml.IntoElem();
@@ -204,10 +194,8 @@ string Attribute::showXml() const
   return xml.GetDoc();
 }
 
-std::string Attribute::get_name(int attribute_type)
-{
-  switch (attribute_type)
-  {
+std::string Attribute::get_name(int attribute_type) {
+  switch (attribute_type) {
   case ATTRIBUTE_STRENGTH:
     return "STR";
   case ATTRIBUTE_AGILITY:
@@ -226,10 +214,8 @@ std::string Attribute::get_name(int attribute_type)
   return "Error Attribute Name";
 }
 
-Creature &Creature::operator=(const Creature &rhs)
-{
-  if (this != &rhs)
-  {
+Creature &Creature::operator=(const Creature &rhs) {
+  if (this != &rhs) {
     delete weapon;
     delete armor;
     delete_and_clear(clips);
@@ -239,12 +225,10 @@ Creature &Creature::operator=(const Creature &rhs)
   return *this;
 }
 
-void Creature::copy(const Creature &org)
-{
+void Creature::copy(const Creature &org) {
   for (int i = 0; i < ATTNUM; i++)
     attributes[i] = org.attributes[i];
-  for (int i = 0; i < SKILLNUM; i++)
-  {
+  for (int i = 0; i < SKILLNUM; i++) {
     skills[i] = org.skills[i];
     skill_experience[i] = org.skill_experience[i];
   }
@@ -317,18 +301,15 @@ void Creature::copy(const Creature &org)
   prisoner = NULL; //Not copying prisoner.
 }
 
-Creature::~Creature()
-{
+Creature::~Creature() {
   delete weapon;
   delete armor;
   delete_and_clear(clips);
   delete_and_clear(extra_throwing_weapons);
-  if (prisoner)
-  {
+  if (prisoner) {
     int p;
     for (p = 0; p < len(pool); p++)
-      if (prisoner == pool[p])
-      {
+      if (prisoner == pool[p]) {
         delete_and_remove(pool, p);
         break;
       }
@@ -337,10 +318,8 @@ Creature::~Creature()
   stop_hauling_me();
 }
 
-bool Creature::kidnap_resistant() const
-{
-  switch (type)
-  {
+bool Creature::kidnap_resistant() const {
+  switch (type) {
   case CREATURE_AGENT:
   case CREATURE_COP:
   case CREATURE_GANGUNIT:
@@ -365,10 +344,8 @@ bool Creature::kidnap_resistant() const
   return false;
 }
 
-bool Creature::reports_to_police() const
-{
-  switch (type)
-  {
+bool Creature::reports_to_police() const {
+  switch (type) {
   case CREATURE_AGENT:
   case CREATURE_COP:
   case CREATURE_GANGUNIT:
@@ -382,28 +359,24 @@ bool Creature::reports_to_police() const
   return false;
 }
 
-bool Creature::is_lcs_sleeper() const
-{
+bool Creature::is_lcs_sleeper() const {
   return (alive && align == ALIGN_LIBERAL && clinic == 0 &&
           dating == 0 && hiding == 0 && (flag & CREATUREFLAG_SLEEPER));
 }
 
-bool Creature::is_imprisoned() const
-{
+bool Creature::is_imprisoned() const {
   return (alive && clinic == 0 && dating == 0 && hiding == 0 &&
           !(flag & CREATUREFLAG_SLEEPER) &&
           ::location[this->location]->part_of_justice_system());
 }
 
-bool Creature::is_active_liberal() const
-{
+bool Creature::is_active_liberal() const {
   return (alive && align == ALIGN_LIBERAL && clinic == 0 && dating == 0 &&
           hiding == 0 && !(flag & CREATUREFLAG_SLEEPER) &&
           !::location[this->location]->part_of_justice_system());
 }
 
-bool Creature::canwalk() const
-{
+bool Creature::canwalk() const {
   if (!alive) return false;
   if ((wound[BODYPART_LEG_RIGHT] & (WOUND_NASTYOFF | WOUND_CLEANOFF)) && (wound[BODYPART_LEG_LEFT] & (WOUND_NASTYOFF | WOUND_CLEANOFF))) return false;
   if (special[SPECIALWOUND_NECK] != 1 ||
@@ -412,8 +385,7 @@ bool Creature::canwalk() const
   return true;
 }
 
-void Creature::creatureinit()
-{
+void Creature::creatureinit() {
   dontname = false;
   hireid = -1;
   worklocation = 0;
@@ -422,8 +394,7 @@ void Creature::creatureinit()
   age = 18 + LCSrandom(40);
   gender_liberal = gender_conservative = LCSrandom(2) + 1;
   birthday_month = LCSrandom(12) + 1;
-  switch (birthday_month)
-  {
+  switch (birthday_month) {
   case 4:
   case 6:
   case 9:
@@ -469,23 +440,19 @@ void Creature::creatureinit()
   weapon = NULL;
   has_thrown_weapon = false;
   armor = NULL; //new Armor(*armortype[getarmortype("ARMOR_CLOTHES")]); //Causes crash for global uniqueCreature -XML
-  for (int a = 0; a < ATTNUM; a++)
-  {
+  for (int a = 0; a < ATTNUM; a++) {
     attributes[a].set_type(a);
     attributes[a].value = 1;
   }
   int attnum = 32;
-  while (attnum > 0)
-  {
+  while (attnum > 0) {
     int a = LCSrandom(ATTNUM);
-    if (attributes[a].value < 10)
-    {
+    if (attributes[a].value < 10) {
       attributes[a].value++;
       attnum--;
     }
   }
-  for (int s = 0; s < SKILLNUM; s++)
-  {
+  for (int s = 0; s < SKILLNUM; s++) {
     skills[s].set_type(s);
     skills[s].value = 0;
     skill_experience[s] = 0;
@@ -524,16 +491,14 @@ void Creature::creatureinit()
 }
 
 Creature::Creature(const std::string &inputXml)
-    : weapon(NULL), armor(NULL), prisoner(NULL)
-{
+    : weapon(NULL), armor(NULL), prisoner(NULL) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
 
   int attributesi = 0, skillsi = 0, skill_experiencei = 0, woundi = 0, speciali = 0, crimesi = 0;
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
 
     if (tag == "attribute" && attributesi < ATTNUM)
@@ -542,19 +507,15 @@ Creature::Creature(const std::string &inputXml)
       skills[skillsi++] = Skill(xml.GetSubDoc());
     else if (tag == "skill_experience" && skill_experiencei < SKILLNUM)
       skill_experience[skill_experiencei++] = atoi(xml.GetData());
-    else if (tag == "weapon")
-    {
+    else if (tag == "weapon") {
       Weapon w(xml.GetSubDoc());
       if (getweapontype(w.get_itemtypename()) != -1) //Check weapon is a valid type.
         give_weapon(w, NULL);
-    }
-    else if (tag == "armor")
-    {
+    } else if (tag == "armor") {
       armor = new Armor(xml.GetSubDoc());
       if (getarmortype(armor->get_itemtypename()) == -1) //Check armor is a valid type.
         delete_and_nullify(armor);
-    }
-    else if (tag == "name")
+    } else if (tag == "name")
       strcpy(name, xml.GetData());
     else if (tag == "propername")
       strcpy(propername, xml.GetData());
@@ -596,13 +557,11 @@ Creature::Creature(const std::string &inputXml)
       trainingtime = atoi(xml.GetData());
     else if (tag == "trainingsubject")
       trainingsubject = atoi(xml.GetData());
-    else if (tag == "prisoner")
-    {
+    else if (tag == "prisoner") {
       xml.IntoElem();
       prisoner = new Creature(xml.GetSubDoc());
       xml.OutOfElem();
-    }
-    else if (tag == "sentence")
+    } else if (tag == "sentence")
       sentence = atoi(xml.GetData());
     else if (tag == "confessions")
       confessions = atoi(xml.GetData());
@@ -622,15 +581,13 @@ Creature::Creature(const std::string &inputXml)
       forceinc = atoi(xml.GetData());
     else if (tag == "stunned")
       stunned = atoi(xml.GetData());
-    else if (tag == "clip")
-    {
+    else if (tag == "clip") {
       Clip *c = new Clip(xml.GetSubDoc());
       if (getcliptype(c->get_itemtypename()) != -1)
         clips.push_back(c);
       else
         delete c;
-    }
-    else if (tag == "has_thrown_weapon")
+    } else if (tag == "has_thrown_weapon")
       has_thrown_weapon = atoi(xml.GetData());
     else if (tag == "money")
       money = atoi(xml.GetData());
@@ -656,11 +613,9 @@ Creature::Creature(const std::string &inputXml)
       cantbluff = atoi(xml.GetData());
     else if (tag == "base")
       base = atoi(xml.GetData());
-    else if (tag == "activity")
-    {
+    else if (tag == "activity") {
       xml.IntoElem();
-      while (xml.FindElem())
-      {
+      while (xml.FindElem()) {
         tag = xml.GetTagName();
         if (tag == "type")
           activity.type = atoi(xml.GetData());
@@ -670,8 +625,7 @@ Creature::Creature(const std::string &inputXml)
           activity.arg2 = atoi(xml.GetData());
       }
       xml.OutOfElem();
-    }
-    else if (tag == "carid")
+    } else if (tag == "carid")
       carid = atoi(xml.GetData());
     else if (tag == "is_driver")
       is_driver = atoi(xml.GetData());
@@ -686,8 +640,7 @@ Creature::Creature(const std::string &inputXml)
   }
 }
 
-string Creature::showXml() const
-{
+string Creature::showXml() const {
   CMarkup xml;
   xml.AddElem("creature");
   xml.IntoElem();
@@ -781,13 +734,11 @@ string Creature::showXml() const
   return xml.GetDoc();
 }
 
-int Creature::get_attribute(int attribute, bool usejuice) const
-{
+int Creature::get_attribute(int attribute, bool usejuice) const {
   int ret = attributes[attribute].value;
 
   // Special modifications to attributes based on age
-  switch (attribute)
-  {
+  switch (attribute) {
   case ATTRIBUTE_STRENGTH:
     if (age < 11)
       ret >>= 1; // Strength is lowest at the beginning and end of life
@@ -864,8 +815,7 @@ int Creature::get_attribute(int attribute, bool usejuice) const
   // Physical stats want to know: Are you paralyzed?
   if (attribute == ATTRIBUTE_STRENGTH ||
       attribute == ATTRIBUTE_AGILITY ||
-      attribute == ATTRIBUTE_HEALTH)
-  {
+      attribute == ATTRIBUTE_HEALTH) {
     if (special[SPECIALWOUND_NECK] != 1 ||
         special[SPECIALWOUND_UPPERSPINE] != 1)
       ret = 1;
@@ -874,8 +824,7 @@ int Creature::get_attribute(int attribute, bool usejuice) const
   }
 
   // Agility wants to know: Do you have legs?
-  if (attribute == ATTRIBUTE_AGILITY)
-  {
+  if (attribute == ATTRIBUTE_AGILITY) {
     int legok = 2;
     if ((wound[BODYPART_LEG_RIGHT] & WOUND_NASTYOFF) ||
         (wound[BODYPART_LEG_RIGHT] & WOUND_CLEANOFF)) legok--;
@@ -889,8 +838,7 @@ int Creature::get_attribute(int attribute, bool usejuice) const
   }
 
   // Charisma wants to know: How fucked up does your face look?
-  if (attribute == ATTRIBUTE_CHARISMA)
-  {
+  if (attribute == ATTRIBUTE_CHARISMA) {
     long disfigs = 0;
     if (special[SPECIALWOUND_TEETH] < TOOTHNUM) disfigs++;
     if (special[SPECIALWOUND_TEETH] < TOOTHNUM / 2) disfigs++;
@@ -911,16 +859,14 @@ int Creature::get_attribute(int attribute, bool usejuice) const
   if (attribute == ATTRIBUTE_HEART && align != ALIGN_LIBERAL) usejuice = false;
 
   // Effects of juice on the character's attributes
-  if (usejuice)
-  {
+  if (usejuice) {
     if (juice <= -50)
       ret = 1; // Damn worthless
     else if (juice <= -10)
       ret = static_cast<int>(ret * 0.6); // Society's dregs
     else if (juice < 0)
       ret = static_cast<int>(ret * 0.8); // Punk
-    else if (juice >= 10)
-    {
+    else if (juice >= 10) {
       if (juice < 50)
         ret += 1; // Activist
       else if (juice < 100)
@@ -942,8 +888,7 @@ int Creature::get_attribute(int attribute, bool usejuice) const
     if (attribute == ATTRIBUTE_STRENGTH ||
         attribute == ATTRIBUTE_AGILITY ||
         attribute == ATTRIBUTE_CHARISMA ||
-        attribute == ATTRIBUTE_INTELLIGENCE)
-    {
+        attribute == ATTRIBUTE_INTELLIGENCE) {
       //         if(blood<=20)ret>>=2;
       //         else if(blood<=50){ret>>=1;}
       //         else if(blood<=75){ret*=3;ret>>=2;}
@@ -958,8 +903,7 @@ int Creature::get_attribute(int attribute, bool usejuice) const
   return ret;
 }
 
-int Creature::roll_check(int skill)
-{
+int Creature::roll_check(int skill) {
   // This die rolling system (and the associated difficulty
   // ratings) is adapted from EABA, which uses a system of
   // rolling a number of six-sided dice equal to the ability
@@ -980,8 +924,7 @@ int Creature::roll_check(int skill)
   int total = 0;
   int roll[3] = {0, 0, 0};
 
-  for (int i = 0; i < dice + 1; i++)
-  {
+  for (int i = 0; i < dice + 1; i++) {
     int newroll = 0;
 
     // Roll d6 for every three skill
@@ -996,8 +939,7 @@ int Creature::roll_check(int skill)
       roll[i] = newroll;
     else
       for (int j = 0; j < 3; j++)
-        if (newroll > roll[j])
-        {
+        if (newroll > roll[j]) {
           int temp = roll[j];
           roll[j] = newroll;
           newroll = temp;
@@ -1010,8 +952,7 @@ int Creature::roll_check(int skill)
   return total;
 }
 
-int Creature::attribute_roll(int attribute) const
-{
+int Creature::attribute_roll(int attribute) const {
   int return_value = roll_check(get_attribute(attribute, true));
 #ifdef SHOWMECHANICS
   mvaddstr(8, 1, " AttributeRoll(");
@@ -1028,17 +969,14 @@ int Creature::attribute_roll(int attribute) const
   return return_value;
 }
 
-bool Creature::attribute_check(int attribute, int difficulty) const
-{
+bool Creature::attribute_check(int attribute, int difficulty) const {
 #ifdef SHOWMECHANICS
   mvaddstr(8, 1, " AttributeCheck(");
   addstr(Attribute::get_name(attribute));
-  if (difficulty < 21)
-  {
+  if (difficulty < 21) {
     addstr(", Difficulty ");
     addstr(difficulty);
-  }
-  else
+  } else
     addstr(", IMPOSSIBLE");
   addstr(")");
 
@@ -1047,14 +985,11 @@ bool Creature::attribute_check(int attribute, int difficulty) const
   return (attribute_roll(attribute) >= difficulty);
 }
 
-int Creature::skill_roll(int skill) const
-{
+int Creature::skill_roll(int skill) const {
   int pseudoskill = 0;
   // Handle Pseudoskills
-  if (skill < 0)
-  {
-    switch (skill)
-    {
+  if (skill < 0) {
+    switch (skill) {
     default:
       set_color(COLOR_YELLOW, COLOR_RED, 1);
       addstr("-=ILLEGAL SKILL ROLL=-", gamelog);
@@ -1074,8 +1009,7 @@ int Creature::skill_roll(int skill) const
   int attribute_value = get_attribute(skills[skill].get_attribute(), true);
 
   int adjusted_attribute_value;
-  switch (skill)
-  {
+  switch (skill) {
   // most attributes get halved when applied to skills, capped by relative skill level...
   default:
     adjusted_attribute_value = MIN(attribute_value / 2, skill_value + 3);
@@ -1087,27 +1021,20 @@ int Creature::skill_roll(int skill) const
   }
 
   Vehicle *v = getChaseVehicle(*this);
-  switch (pseudoskill)
-  {
+  switch (pseudoskill) {
   case PSEUDOSKILL_ESCAPEDRIVE:
-    if (v != NULL)
-    {
+    if (v != NULL) {
       skill_value = v->modifieddriveskill(skill_value + adjusted_attribute_value); // combine values and modify by vehicle stats
       adjusted_attribute_value = 0;
-    }
-    else
-    {
+    } else {
       skill_value = adjusted_attribute_value = 0; // Can't drive without a car
     }
     break;
   case PSEUDOSKILL_DODGEDRIVE:
-    if (v != NULL)
-    {
+    if (v != NULL) {
       skill_value = v->modifieddodgeskill(skill_value + adjusted_attribute_value); // combine values and modify by vehicle stats
       adjusted_attribute_value = 0;
-    }
-    else
-    {
+    } else {
       skill_value = adjusted_attribute_value = 0; // Can't drive without a car
     }
     break;
@@ -1117,8 +1044,7 @@ int Creature::skill_roll(int skill) const
   int return_value = roll_check(skill_value + adjusted_attribute_value);
 
   // Special skill handling
-  switch (skill)
-  {
+  switch (skill) {
   // Skills that cannot be used if zero skill:
   case SKILL_PSYCHOLOGY:
   case SKILL_LAW:
@@ -1131,15 +1057,13 @@ int Creature::skill_roll(int skill) const
   case SKILL_BUSINESS:
   case SKILL_TEACHING:
   case SKILL_FIRSTAID:
-    if (skills[skill].value == 0)
-    {
+    if (skills[skill].value == 0) {
       return_value = 0; // Automatic failure
       break;
     }
     break;
   // Skills that should depend on clothing:
-  case SKILL_STEALTH:
-  {
+  case SKILL_STEALTH: {
     float stealth = get_armor().get_stealth_value();
     for (int i = 1; i < get_armor().get_quality(); i++)
       stealth *= 0.8;
@@ -1150,42 +1074,35 @@ int Creature::skill_roll(int skill) const
     // Shredded clothes get you no stealth.
     if (get_armor().get_quality() > get_armor().get_quality_levels())
       return_value = 0;
-  }
-  break;
+  } break;
   case SKILL_SEDUCTION:
   case SKILL_PERSUASION:
     break;
   // Unique disguise handling
-  case SKILL_DISGUISE:
-  {
+  case SKILL_DISGUISE: {
     // Check for appropriate uniform
     char uniformed = hasdisguise(*this);
 
     // Ununiformed disguise checks automatically fail
-    if (!uniformed)
-    {
+    if (!uniformed) {
       return_value = 0;
       break;
     }
     // reduce effectiveness for 'partial' uniforms (police uniforms when trespassing)
-    else
-    {
+    else {
       if (uniformed == 2) return_value >>= 1;
     }
 
     // Bloody, damaged clothing hurts disguise check
-    if (get_armor().is_bloody())
-    {
+    if (get_armor().is_bloody()) {
       return_value >>= 1;
     }
-    if (get_armor().is_damaged())
-    {
+    if (get_armor().is_damaged()) {
       return_value >>= 1;
     }
 
     // Carrying corpses or having hostages is very bad for disguise
-    if (prisoner != NULL)
-    {
+    if (prisoner != NULL) {
       return_value >>= 2;
       break;
     }
@@ -1199,8 +1116,7 @@ int Creature::skill_roll(int skill) const
   addstr(", ");
   if (return_value == 0)
     addstr("automatic failure");
-  else
-  {
+  else {
     addstr("Adjusted Attribute Value ");
     addstr(adjusted_attribute_value);
     addstr(", Outcome of ");
@@ -1213,17 +1129,14 @@ int Creature::skill_roll(int skill) const
   return return_value;
 }
 
-bool Creature::skill_check(int skill, int difficulty) const
-{
+bool Creature::skill_check(int skill, int difficulty) const {
 #ifdef SHOWMECHANICS
   mvaddstr(8, 1, " SkillCheck(");
   addstr(Skill::get_name(skill));
-  if (difficulty < 21)
-  {
+  if (difficulty < 21) {
     addstr(", Difficulty ");
     addstr(difficulty);
-  }
-  else
+  } else
     addstr(", IMPOSSIBLE");
   addstr(")");
 
@@ -1232,14 +1145,12 @@ bool Creature::skill_check(int skill, int difficulty) const
   return (skill_roll(skill) >= difficulty);
 }
 
-void Creature::stop_hauling_me()
-{
+void Creature::stop_hauling_me() {
   for (int p = 0; p < len(pool); p++)
     if (pool[p]->prisoner == this) pool[p]->prisoner = NULL;
 }
 
-void Creature::train(int trainedskill, int experience, int upto)
-{
+void Creature::train(int trainedskill, int experience, int upto) {
   // Do we allow animals to gain skills? Right now, yes
   //if(animalgloss==ANIMALGLOSS_ANIMAL)return;
 
@@ -1260,13 +1171,10 @@ void Creature::train(int trainedskill, int experience, int upto)
   skill_experience[trainedskill] = min(skill_experience[trainedskill], 100 + 10 * skills[trainedskill].value + abovenextlevel);
 }
 
-void Creature::skill_up()
-{
-  for (int s = 0; s < SKILLNUM; s++)
-  {
+void Creature::skill_up() {
+  for (int s = 0; s < SKILLNUM; s++) {
     while (skill_experience[s] >= 100 + 10 * skills[s].value &&
-           skills[s].value < skill_cap(s, true))
-    {
+           skills[s].value < skill_cap(s, true)) {
       skill_experience[s] -= 100 + 10 * skills[s].value;
       skills[s].value++;
     }
@@ -1275,30 +1183,25 @@ void Creature::skill_up()
   }
 }
 
-bool Creature::enemy() const
-{
+bool Creature::enemy() const {
   if (align == ALIGN_CONSERVATIVE)
     return true;
-  else if (type == CREATURE_COP && align == ALIGN_MODERATE)
-  {
+  else if (type == CREATURE_COP && align == ALIGN_MODERATE) {
     for (int i = 0; i < len(pool); i++)
       if (pool[i] == this)
         return false;
     return true;
-  }
-  else
+  } else
     return false;
 }
 
 /* turns a creature into a conservative */
-void conservatise(Creature &cr)
-{
+void conservatise(Creature &cr) {
   if (cr.align == ALIGN_LIBERAL && cr.juice > 0) cr.juice = 0;
 
   cr.align = ALIGN_CONSERVATIVE;
 
-  switch (cr.type)
-  {
+  switch (cr.type) {
   case CREATURE_WORKER_FACTORY_UNION:
     strcpy(cr.name, "Ex-Union Worker");
     break;
@@ -1309,8 +1212,7 @@ void conservatise(Creature &cr)
 }
 
 /* turns a creature into a liberal */
-void liberalize(Creature &cr, bool rename)
-{
+void liberalize(Creature &cr, bool rename) {
   if (cr.align == ALIGN_CONSERVATIVE && cr.juice > 0) cr.juice = 0;
 
   cr.align = ALIGN_LIBERAL;
@@ -1319,8 +1221,7 @@ void liberalize(Creature &cr, bool rename)
     uniqueCreatures.newCEO();
 
   if (rename)
-    switch (cr.type)
-    {
+    switch (cr.type) {
     case CREATURE_WORKER_FACTORY_NONUNION:
       strcpy(cr.name, "New Union Worker");
       break;
@@ -1331,8 +1232,7 @@ void liberalize(Creature &cr, bool rename)
 }
 
 /* gives a CCS member a cover name */
-void nameCCSMember(Creature &cr)
-{
+void nameCCSMember(Creature &cr) {
   if (cr.get_armor().get_itemtypename() == "ARMOR_CIVILLIANARMOR")
     strcpy(cr.name, "Elite Security");
   else if (cr.get_armor().get_itemtypename() == "ARMOR_ARMYARMOR")
@@ -1340,8 +1240,7 @@ void nameCCSMember(Creature &cr)
   else if (cr.get_armor().get_itemtypename() == "ARMOR_HEAVYARMOR")
     strcpy(cr.name, "CCS Heavy");
   else if (cr.get_weapon().get_itemtypename() == "WEAPON_SHOTGUN_PUMP" || LCSrandom(2))
-    switch (LCSrandom(7))
-    {
+    switch (LCSrandom(7)) {
     case 0:
       strcpy(cr.name, "Country Boy");
       break;
@@ -1365,8 +1264,7 @@ void nameCCSMember(Creature &cr)
       break;
     }
   else
-    switch (LCSrandom(10))
-    {
+    switch (LCSrandom(10)) {
     case 0:
       strcpy(cr.name, "Biker");
       break;
@@ -1401,10 +1299,8 @@ void nameCCSMember(Creature &cr)
 }
 
 /* are they interested in talking about the issues? */
-bool Creature::talkreceptive() const
-{
-  switch (type)
-  {
+bool Creature::talkreceptive() const {
+  switch (type) {
   case CREATURE_WORKER_SERVANT:
   case CREATURE_WORKER_JANITOR:
   case CREATURE_WORKER_SWEATSHOP:
@@ -1440,8 +1336,7 @@ bool Creature::talkreceptive() const
 }
 
 /* are the characters close enough in age to date? */
-bool Creature::can_date(const Creature &a) const
-{
+bool Creature::can_date(const Creature &a) const {
 #ifndef ZEROMORAL
   // Assume age appropriate for animals, tanks, etc.
   // (use other restrictions for these, like humorous rejections)
@@ -1456,35 +1351,30 @@ bool Creature::can_date(const Creature &a) const
   return true;
 }
 
-void Creature::die()
-{
+void Creature::die() {
   alive = 0, blood = 0;
   if (id == uniqueCreatures.CEO().id)
     uniqueCreatures.newCEO();
-  if (id == uniqueCreatures.President().id)
-  {
+  if (id == uniqueCreatures.President().id) {
     strcpy(oldPresidentName, execname[EXEC_PRESIDENT]);
     promoteVP();
     uniqueCreatures.newPresident();
   }
 }
 
-void UniqueCreatures::newCEO()
-{
+void UniqueCreatures::newCEO() {
   makecreature(CEO_, CREATURE_CORPORATE_CEO);
   CEO_ID = CEO_.id, CEO_state = UNIQUECREATURE_ALIVE;
 }
 
-void UniqueCreatures::newPresident()
-{
+void UniqueCreatures::newPresident() {
   makecreature(Pres_, CREATURE_POLITICIAN);
   Pres_ID = Pres_.id, Pres_state = UNIQUECREATURE_ALIVE, Pres_.dontname = true;
   //Turn into President (not just random pol)
   std::string pres_name = execname[EXEC_PRESIDENT];
   strcpy(Pres_.name, "President " + pres_name.substr(pres_name.find(' ') + 1));
   strcpy(Pres_.propername, execname[EXEC_PRESIDENT]);
-  switch (exec[EXEC_PRESIDENT])
-  { // we don't do anything for ALIGN_ARCHCONSERVATIVE or ALIGN_CONSERVATIVE so having them here is unnecessary
+  switch (exec[EXEC_PRESIDENT]) { // we don't do anything for ALIGN_ARCHCONSERVATIVE or ALIGN_CONSERVATIVE so having them here is unnecessary
   case ALIGN_MODERATE:
     Pres_.align = ALIGN_MODERATE;
     Pres_.set_attribute(ATTRIBUTE_WISDOM, Pres_.get_attribute(ATTRIBUTE_WISDOM, false) / 2);
@@ -1499,19 +1389,16 @@ void UniqueCreatures::newPresident()
   }
 }
 
-UniqueCreatures::UniqueCreatures(const std::string &inputXml)
-{
+UniqueCreatures::UniqueCreatures(const std::string &inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
 
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
 
-    if (tag == "CEO" || tag == "Pres")
-    {
+    if (tag == "CEO" || tag == "Pres") {
       xml.IntoElem();
       xml.FindElem();
       if (tag == "CEO")
@@ -1519,8 +1406,7 @@ UniqueCreatures::UniqueCreatures(const std::string &inputXml)
       else
         Pres_ = Creature(xml.GetSubDoc());
       xml.OutOfElem();
-    }
-    else if (tag == "CEO_ID")
+    } else if (tag == "CEO_ID")
       CEO_ID = atoi(xml.GetData());
     else if (tag == "CEO_state")
       CEO_state = atoi(xml.GetData());
@@ -1531,8 +1417,7 @@ UniqueCreatures::UniqueCreatures(const std::string &inputXml)
   }
 }
 
-string UniqueCreatures::showXml() const
-{
+string UniqueCreatures::showXml() const {
   CMarkup xml;
   xml.AddElem("uniquecreatures");
   xml.IntoElem();
@@ -1547,10 +1432,8 @@ string UniqueCreatures::showXml() const
   return xml.GetDoc();
 }
 
-const char *Creature::heshe(bool capitalize) const
-{ // subject pronoun (nominative case)
-  switch (gender_liberal)
-  {
+const char *Creature::heshe(bool capitalize) const { // subject pronoun (nominative case)
+  switch (gender_liberal) {
   case GENDER_MALE:
     return capitalize ? "He" : "he";
   case GENDER_FEMALE:
@@ -1573,10 +1456,8 @@ const char *Creature::heshe(bool capitalize) const
   }
 }
 
-const char *Creature::hisher(bool capitalize) const
-{ // pronominal adjective (possessive determiner)
-  switch (gender_liberal)
-  {
+const char *Creature::hisher(bool capitalize) const { // pronominal adjective (possessive determiner)
+  switch (gender_liberal) {
   case GENDER_MALE:
     return capitalize ? "His" : "his";
   case GENDER_FEMALE:
@@ -1591,10 +1472,8 @@ const char *Creature::hisher(bool capitalize) const
     // his -> his, her -> hers, their -> theirs, and likewise xyr -> xyrs... just add "s" at the end if it doesn't already have an "s" at the end
   }
 }
-const char *Creature::himher(bool capitalize) const
-{ // object pronoun (oblique case)
-  switch (gender_liberal)
-  {
+const char *Creature::himher(bool capitalize) const { // object pronoun (oblique case)
+  switch (gender_liberal) {
   case GENDER_MALE:
     return capitalize ? "Him" : "him";
   case GENDER_FEMALE:
@@ -1613,20 +1492,17 @@ const char *Creature::himher(bool capitalize) const
   }
 }
 
-Weapon &Creature::weapon_none()
-{
+Weapon &Creature::weapon_none() {
   static Weapon unarmed(*weapontype[getweapontype("WEAPON_NONE")]);
   return unarmed;
 }
 
-Armor &Creature::armor_none()
-{
+Armor &Creature::armor_none() {
   static Armor naked(*armortype[getarmortype("ARMOR_NONE")]);
   return naked;
 }
 
-bool Creature::will_do_ranged_attack(bool force_ranged, bool force_melee) const
-{
+bool Creature::will_do_ranged_attack(bool force_ranged, bool force_melee) const {
   if (weapon) //Is the creature armed?
   {
     bool reload_allowed = can_reload();
@@ -1634,21 +1510,18 @@ bool Creature::will_do_ranged_attack(bool force_ranged, bool force_melee) const
            && weapon->get_attack(force_ranged, force_melee, reload_allowed)->ranged      //Is the attacked ranged?
            && (!weapon->get_attack(force_ranged, force_melee, reload_allowed)->uses_ammo //Does it not use ammo
                || weapon->get_ammoamount() != 0);                                        //or does it have ammo?
-  }
-  else
+  } else
     return false;
 }
 
-bool Creature::can_reload() const
-{
+bool Creature::can_reload() const {
   //return len(clips); //Can not be sure creature only has appropriate clips.
   for (int i = 0; i < len(clips); i++)
     if (get_weapon().acceptable_ammo(*clips[i])) return true;
   return false;
 }
 
-bool Creature::will_reload(bool force_ranged, bool force_melee) const
-{
+bool Creature::will_reload(bool force_ranged, bool force_melee) const {
   return get_weapon().uses_ammo()                                                 //Does it use ammo?
          && !get_weapon().get_ammoamount()                                        //Is it out of ammo?
          && can_reload()                                                          //Is reloading possible?
@@ -1656,24 +1529,19 @@ bool Creature::will_reload(bool force_ranged, bool force_melee) const
          && get_weapon().get_attack(force_ranged, force_melee, false)->uses_ammo; //Does the attack need ammo?
 }
 
-bool Creature::reload(bool wasteful)
-{
-  if (get_weapon().uses_ammo() && len(clips) && (wasteful || get_weapon().get_ammoamount() == 0))
-  {
+bool Creature::reload(bool wasteful) {
+  if (get_weapon().uses_ammo() && len(clips) && (wasteful || get_weapon().get_ammoamount() == 0)) {
     bool r = weapon->reload(*clips.front());
     if (clips.front()->empty())
       delete_and_remove(clips, 0);
     return r;
-  }
-  else
+  } else
     return false;
 }
 
-bool Creature::ready_another_throwing_weapon()
-{
+bool Creature::ready_another_throwing_weapon() {
   bool r = false;
-  if (len(extra_throwing_weapons))
-  {
+  if (len(extra_throwing_weapons)) {
     weapon = extra_throwing_weapons.front()->split(1);
     if (extra_throwing_weapons.front()->empty())
       delete_and_remove(extra_throwing_weapons, 0);
@@ -1683,124 +1551,96 @@ bool Creature::ready_another_throwing_weapon()
   return r;
 }
 
-int Creature::count_clips() const
-{
+int Creature::count_clips() const {
   int sum = 0;
   for (int i = 0; i < len(clips); i++)
     sum += clips[i]->get_number();
   return sum;
 }
 
-bool Creature::take_clips(Item &clip, int number)
-{
+bool Creature::take_clips(Item &clip, int number) {
   if (clip.is_clip())
     return take_clips(static_cast<Clip &>(clip), number); //cast -XML
   else
     return false;
 }
 
-bool Creature::take_clips(Clip &clip, int number)
-{
+bool Creature::take_clips(Clip &clip, int number) {
   if (number + count_clips() >= 9) number = 9 - count_clips();
   if (number > clip.get_number()) number = clip.get_number();
-  if (number > 0 && get_weapon().acceptable_ammo(clip))
-  {
+  if (number > 0 && get_weapon().acceptable_ammo(clip)) {
     Clip *c = clip.split(number);
     clips.push_back(c);
     return true;
-  }
-  else
+  } else
     return false;
 }
 
-bool Creature::take_clips(const ClipType &ct, int number)
-{
+bool Creature::take_clips(const ClipType &ct, int number) {
   Clip c(ct, number);
   return take_clips(c, number);
 }
 
-void Creature::give_weapon(Weapon &w, vector<Item *> *lootpile)
-{
-  if (weapon && !w.empty())
-  {
-    if (weapon->is_throwable() && weapon->is_same_type(w))
-    {
+void Creature::give_weapon(Weapon &w, vector<Item *> *lootpile) {
+  if (weapon && !w.empty()) {
+    if (weapon->is_throwable() && weapon->is_same_type(w)) {
       int take_number = 10 - count_weapons();
       if (take_number > 0)
         extra_throwing_weapons.push_back(w.split(1));
-    }
-    else
-    {
-      if (!lootpile)
-      {
+    } else {
+      if (!lootpile) {
         delete weapon;
         delete_and_clear(extra_throwing_weapons);
-      }
-      else
-      {
+      } else {
         lootpile->push_back(weapon);
-        while (len(extra_throwing_weapons))
-        {
+        while (len(extra_throwing_weapons)) {
           lootpile->push_back(extra_throwing_weapons.back());
           extra_throwing_weapons.pop_back();
         }
       }
       weapon = w.split(1);
-      if (!lootpile)
-      {
-        for (int i = len(clips) - 1; i >= 0; i--)
-        {
+      if (!lootpile) {
+        for (int i = len(clips) - 1; i >= 0; i--) {
           if (!weapon->acceptable_ammo(*clips[i]))
             delete_and_remove(clips, i);
         }
-      }
-      else
-      {
-        for (int i = len(clips) - 1; i >= 0; i--)
-        {
-          if (!weapon->acceptable_ammo(*clips[i]))
-          {
+      } else {
+        for (int i = len(clips) - 1; i >= 0; i--) {
+          if (!weapon->acceptable_ammo(*clips[i])) {
             lootpile->push_back(clips[i]);
             clips.erase(clips.begin() + i);
           }
         }
       }
     }
-  }
-  else if (!w.empty())
-  {
+  } else if (!w.empty()) {
     drop_weapons_and_clips(lootpile);
     weapon = w.split(1);
   }
 }
 
-void Creature::give_weapon(const WeaponType &wt, vector<Item *> *lootpile)
-{
+void Creature::give_weapon(const WeaponType &wt, vector<Item *> *lootpile) {
   Weapon w(wt);
   give_weapon(w, lootpile);
 }
 
-void Creature::drop_weapons_and_clips(vector<Item *> *lootpile)
-{
+void Creature::drop_weapons_and_clips(vector<Item *> *lootpile) {
   has_thrown_weapon = false;
-  if (weapon)
-  {
+  if (weapon) {
     if (lootpile)
       lootpile->push_back(weapon);
     else
       delete weapon;
     weapon = NULL;
   }
-  while (len(extra_throwing_weapons))
-  {
+  while (len(extra_throwing_weapons)) {
     if (lootpile)
       lootpile->push_back(extra_throwing_weapons.back());
     else
       delete extra_throwing_weapons.back();
     extra_throwing_weapons.pop_back();
   }
-  while (len(clips))
-  {
+  while (len(clips)) {
     if (lootpile)
       lootpile->push_back(clips.back());
     else
@@ -1809,12 +1649,10 @@ void Creature::drop_weapons_and_clips(vector<Item *> *lootpile)
   }
 }
 
-void Creature::drop_weapon(vector<Item *> *lootpile)
-{
+void Creature::drop_weapon(vector<Item *> *lootpile) {
   if (len(extra_throwing_weapons))
     has_thrown_weapon = true;
-  if (weapon)
-  {
+  if (weapon) {
     if (lootpile)
       lootpile->push_back(weapon);
     else
@@ -1823,8 +1661,7 @@ void Creature::drop_weapon(vector<Item *> *lootpile)
   }
 }
 
-int Creature::count_weapons() const
-{
+int Creature::count_weapons() const {
   int sum = 0;
   if (weapon) sum++;
   for (int i = 0; i < len(extra_throwing_weapons); i++)
@@ -1832,25 +1669,20 @@ int Creature::count_weapons() const
   return sum;
 }
 
-void Creature::give_armor(Armor &a, vector<Item *> *lootpile)
-{
-  if (!a.empty())
-  {
+void Creature::give_armor(Armor &a, vector<Item *> *lootpile) {
+  if (!a.empty()) {
     strip(lootpile);
     armor = a.split(1);
   }
 }
 
-void Creature::give_armor(const ArmorType &at, vector<Item *> *lootpile)
-{
+void Creature::give_armor(const ArmorType &at, vector<Item *> *lootpile) {
   Armor a(at);
   give_armor(a, lootpile);
 }
 
-void Creature::strip(vector<Item *> *lootpile)
-{
-  if (armor)
-  {
+void Creature::strip(vector<Item *> *lootpile) {
+  if (armor) {
     if (!lootpile)
       delete armor;
     else
@@ -1859,23 +1691,18 @@ void Creature::strip(vector<Item *> *lootpile)
   }
 }
 
-string Creature::get_weapon_string(int subtype) const
-{
+string Creature::get_weapon_string(int subtype) const {
   string r;
-  if (is_armed())
-  {
+  if (is_armed()) {
     r = weapon->get_name(subtype);
     if (weapon->uses_ammo())
       r += " (" + tostring(weapon->get_ammoamount()) + "/" + tostring(count_clips()) + ")";
     else if (weapon->is_throwable())
       r += " (1/" + tostring(count_weapons() - 1) + ")"; // -1 so not to count weapon in hands.
-  }
-  else if (len(extra_throwing_weapons))
-  {
+  } else if (len(extra_throwing_weapons)) {
     r = extra_throwing_weapons[0]->get_name(subtype);
     r += " (0/" + tostring(count_weapons()) + ")";
-  }
-  else
+  } else
     r = "None";
   return r;
 }

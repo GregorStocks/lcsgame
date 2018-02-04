@@ -10,8 +10,7 @@ ArmorType::ArmorType(MCD_STR xmlstring)
       interrogation_basepower_(0), interrogation_assaultbonus_(0), interrogation_drugbonus_(0),
       professionalism_(2), conceal_weaponsize_(5),
       mask_(false), surprise_mask_(false), description_("UNDEF"),
-      quality_levels_(4), durability_(10)
-{
+      quality_levels_(4), durability_(10) {
   init(xmlstring);
 }
 
@@ -31,8 +30,7 @@ ArmorType::ArmorType(const ArmorType &base, MCD_STR xmlstring)
   init(xmlstring);
 }
 
-void ArmorType::init(const MCD_STR &xmlstring)
-{
+void ArmorType::init(const MCD_STR &xmlstring) {
   CMarkup xml;
   xml.SetDoc(xmlstring);
   xml.FindElem();
@@ -47,8 +45,7 @@ void ArmorType::init(const MCD_STR &xmlstring)
       make_difficulty_ = atoi(xml.GetData());
     else if (element == "make_price")
       make_price_ = atoi(xml.GetData());
-    else if (element == "deathsquad_legality")
-    {
+    else if (element == "deathsquad_legality") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         deathsquad_legality_ = true;
@@ -57,29 +54,22 @@ void ArmorType::init(const MCD_STR &xmlstring)
       /*else
             errorlog << "Invalid boolean value for armor type " << idname()
                       << "::deathsquad_legality: " << xml.GetData() << std::endl;*/
-    }
-    else if (element == "can_get_bloody")
-    {
+    } else if (element == "can_get_bloody") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         can_get_bloody_ = true;
       else if (b == 0)
         can_get_bloody_ = false;
-    }
-    else if (element == "can_get_damaged")
-    {
+    } else if (element == "can_get_damaged") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         can_get_damaged_ = true;
       else if (b == 0)
         can_get_damaged_ = false;
-    }
-    else if (element == "armor")
-    {
+    } else if (element == "armor") {
       xml.IntoElem();
 
-      while (xml.FindElem())
-      {
+      while (xml.FindElem()) {
         element = xml.GetTagName();
 
         if (element == "body")
@@ -88,8 +78,7 @@ void ArmorType::init(const MCD_STR &xmlstring)
           armor_head_ = atoi(xml.GetData());
         else if (element == "limbs")
           armor_limbs_ = atoi(xml.GetData());
-        else if (element == "fireprotection")
-        {
+        else if (element == "fireprotection") {
           int b = stringtobool(xml.GetData());
           if (b == 1)
             fireprotection_ = true;
@@ -104,17 +93,13 @@ void ArmorType::init(const MCD_STR &xmlstring)
                          << "::armor: " << element << endl;*/
       }
       xml.OutOfElem();
-    }
-    else if (element == "body_covering")
-    {
+    } else if (element == "body_covering") {
       xml.IntoElem();
 
-      while (xml.FindElem())
-      {
+      while (xml.FindElem()) {
         element = xml.GetTagName();
 
-        if (element == "body")
-        {
+        if (element == "body") {
           int b = stringtobool(xml.GetData());
           if (b == 1)
             cover_body_ = true;
@@ -123,9 +108,7 @@ void ArmorType::init(const MCD_STR &xmlstring)
           /*else
                   errorlog << "Invalid boolean value for armor type " << idname()
                             << "::body_covering::body: " << xml.GetData() << std::endl;*/
-        }
-        else if (element == "head")
-        {
+        } else if (element == "head") {
           int b = stringtobool(xml.GetData());
           if (b == 1)
             cover_head_ = true;
@@ -134,9 +117,7 @@ void ArmorType::init(const MCD_STR &xmlstring)
           /*else
                   errorlog << "Invalid boolean value for armor type " << idname()
                             << "::body_covering::head: " << xml.GetData() << std::endl;*/
-        }
-        else if (element == "arms")
-        {
+        } else if (element == "arms") {
           int b = stringtobool(xml.GetData());
           if (b == 1)
             cover_arms_ = true;
@@ -145,9 +126,7 @@ void ArmorType::init(const MCD_STR &xmlstring)
           /*else
                   errorlog << "Invalid boolean value for armor type " << idname()
                             << "::body_covering::arms: " << xml.GetData() << std::endl;*/
-        }
-        else if (element == "legs")
-        {
+        } else if (element == "legs") {
           int b = stringtobool(xml.GetData());
           if (b == 1)
             cover_legs_ = true;
@@ -156,9 +135,7 @@ void ArmorType::init(const MCD_STR &xmlstring)
           /*else
                   errorlog << "Invalid boolean value for armor type " << idname()
                             << "::body_covering::legs: " << xml.GetData() << std::endl;*/
-        }
-        else if (element == "conceals_face")
-        {
+        } else if (element == "conceals_face") {
           int b = stringtobool(xml.GetData());
           if (b == 1)
             conceal_face_ = true;
@@ -173,20 +150,15 @@ void ArmorType::init(const MCD_STR &xmlstring)
                          << "::armor: " << element << endl;*/
       }
       xml.OutOfElem();
-    }
-    else if (element == "shortname")
-    {
+    } else if (element == "shortname") {
       shortname_ = xml.GetData();
       shortname_defined_ = true;
       if (len(shortname_) > 14)
         shortname_.resize(14);
-    }
-    else if (element == "interrogation")
-    {
+    } else if (element == "interrogation") {
       xml.IntoElem();
 
-      while (xml.FindElem())
-      {
+      while (xml.FindElem()) {
         if (element == "basepower")
           interrogation_basepower_ = atoi(xml.GetData());
         else if (element == "assaultbonus")
@@ -199,30 +171,25 @@ void ArmorType::init(const MCD_STR &xmlstring)
       }
 
       xml.OutOfElem();
-    }
-    else if (element == "professionalism")
+    } else if (element == "professionalism")
       professionalism_ = atoi(xml.GetData());
     else if (element == "conceal_weapon_size")
       conceal_weaponsize_ = atoi(xml.GetData());
     else if (element == "stealth_value")
       stealth_value_ = atoi(xml.GetData());
-    else if (element == "mask")
-    {
+    else if (element == "mask") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         mask_ = true;
       else if (b == 0)
         mask_ = false;
-    }
-    else if (element == "surprise")
-    {
+    } else if (element == "surprise") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         surprise_mask_ = true;
       else if (b == 0)
         surprise_mask_ = false;
-    }
-    else if (element == "description")
+    } else if (element == "description")
       description_ = xml.GetData();
     else if (element == "qualitylevels")
       quality_levels_ = max(1, atoi(xml.GetData()));
@@ -237,12 +204,9 @@ void ArmorType::init(const MCD_STR &xmlstring)
     shortname_ = name();
 }
 
-int ArmorType::get_armor(int bodypart) const
-{
-  if (covers(bodypart))
-  {
-    switch (bodypart)
-    {
+int ArmorType::get_armor(int bodypart) const {
+  if (covers(bodypart)) {
+    switch (bodypart) {
     case BODYPART_HEAD:
       return armor_head_;
 
@@ -262,10 +226,8 @@ int ArmorType::get_armor(int bodypart) const
   return 0;
 }
 
-bool ArmorType::covers(int bodypart) const
-{
-  switch (bodypart)
-  {
+bool ArmorType::covers(int bodypart) const {
+  switch (bodypart) {
   case BODYPART_HEAD:
     return cover_head_;
   case BODYPART_BODY:
@@ -281,8 +243,7 @@ bool ArmorType::covers(int bodypart) const
   return false;
 }
 
-const string &ArmorType::get_shortname() const
-{
+const string &ArmorType::get_shortname() const {
   if (shortname_future_defined_ && year >= 2100)
     return shortname_future_;
   else if (year >= 2100 && name_future_defined() && len(name_future()) <= 14)
@@ -295,8 +256,7 @@ const string &ArmorType::get_shortname() const
       return "UNDEF";*/
 }
 
-bool ArmorType::conceals_weaponsize(int weaponsize) const
-{
+bool ArmorType::conceals_weaponsize(int weaponsize) const {
   return (conceal_weaponsize_ >= weaponsize);
 }
 

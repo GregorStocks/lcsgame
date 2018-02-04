@@ -62,14 +62,11 @@ the bottom of includes.h in the top src folder.
 
 #include <externs.h>
 
-vector<Creature *> activatable_liberals()
-{
+vector<Creature *> activatable_liberals() {
   vector<Creature *> temppool;
   for (int p = 0; p < len(pool); p++)
-    if (pool[p]->is_active_liberal())
-    {
-      if (pool[p]->squadid != -1)
-      {
+    if (pool[p]->is_active_liberal()) {
+      if (pool[p]->squadid != -1) {
         int sq = getsquad(pool[p]->squadid);
         if (sq != -1)
           if (squad[sq]->activity.type != ACTIVITY_NONE) continue;
@@ -80,8 +77,7 @@ vector<Creature *> activatable_liberals()
 }
 
 /* base - activate the uninvolved */
-void activate()
-{
+void activate() {
   vector<Creature *> temppool = activatable_liberals();
 
   if (!len(temppool)) return;
@@ -90,8 +86,7 @@ void activate()
 
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     music.play(MUSIC_ACTIVATE);
     erase();
 
@@ -106,8 +101,7 @@ void activate()
     addstr("ACTIVITY");
 
     int y = 2;
-    for (int p = page * 19; p < len(temppool) && p < page * 19 + 19; p++, y++)
-    {
+    for (int p = page * 19; p < len(temppool) && p < page * 19 + 19; p++, y++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y, 0);
       addchar(y + 'A' - 2);
@@ -116,8 +110,7 @@ void activate()
 
       char bright = 0;
       int skill = 0;
-      for (int sk = 0; sk < SKILLNUM; sk++)
-      {
+      for (int sk = 0; sk < SKILLNUM; sk++) {
         skill += temppool[p]->get_skill(sk);
         if (temppool[p]->get_skill_ip(sk) >= 100 + (10 * temppool[p]->get_skill(sk)) &&
             temppool[p]->get_skill(sk) < temppool[p]->skill_cap(sk, true)) bright = 1;
@@ -159,14 +152,12 @@ void activate()
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(temppool)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + c - 'a';
       if (p < len(temppool)) activate(temppool[p]);
     }
 
-    if (c == 't')
-    {
+    if (c == 't') {
       sorting_prompt(SORTINGCHOICE_ACTIVATE);
       sortliberals(temppool, activesortingchoice[SORTINGCHOICE_ACTIVATE], true);
     }
@@ -178,13 +169,11 @@ void activate()
 }
 
 int classlist = 0;
-void listclasses(Creature *cr)
-{
+void listclasses(Creature *cr) {
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
   move(10, 40);
   addstr("Classes cost $60 a day. Study what?");
-  if (classlist == 0)
-  {
+  if (classlist == 0) {
     set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_STUDY_DEBATING);
     move(12, 40);
     addstr("1 - Public Policy");
@@ -208,9 +197,7 @@ void listclasses(Creature *cr)
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(17, 40);
     addstr("6 - Other classes");
-  }
-  else if (classlist == 1)
-  {
+  } else if (classlist == 1) {
     set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_STUDY_DRIVING);
     move(12, 40);
     addstr("1 - Drivers Ed");
@@ -234,9 +221,7 @@ void listclasses(Creature *cr)
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(17, 40);
     addstr("6 - Other classes");
-  }
-  else if (classlist == 2)
-  {
+  } else if (classlist == 2) {
     set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_STUDY_GYMNASTICS);
     move(12, 40);
     addstr("1 - Gymnastics");
@@ -263,19 +248,13 @@ void listclasses(Creature *cr)
   }
 }
 
-void updateclasschoice(Creature *cr, char choice)
-{
-  if (choice == '6')
-  {
+void updateclasschoice(Creature *cr, char choice) {
+  if (choice == '6') {
     classlist = (classlist + 1) % 3;
     listclasses(cr);
-  }
-  else
-  {
-    if (classlist == 0)
-    {
-      switch (choice)
-      {
+  } else {
+    if (classlist == 0) {
+      switch (choice) {
       case '1':
         cr->activity.type = ACTIVITY_STUDY_DEBATING;
         break;
@@ -292,11 +271,8 @@ void updateclasschoice(Creature *cr, char choice)
         cr->activity.type = ACTIVITY_STUDY_SCIENCE;
         break;
       }
-    }
-    else if (classlist == 1)
-    {
-      switch (choice)
-      {
+    } else if (classlist == 1) {
+      switch (choice) {
       case '1':
         cr->activity.type = ACTIVITY_STUDY_DRIVING;
         break;
@@ -313,11 +289,8 @@ void updateclasschoice(Creature *cr, char choice)
         cr->activity.type = ACTIVITY_STUDY_MARTIAL_ARTS;
         break;
       }
-    }
-    else if (classlist == 2)
-    {
-      switch (choice)
-      {
+    } else if (classlist == 2) {
+      switch (choice) {
       case '1':
         cr->activity.type = ACTIVITY_STUDY_GYMNASTICS;
         break;
@@ -339,33 +312,27 @@ void updateclasschoice(Creature *cr, char choice)
   }
 }
 
-void activate(Creature *cr)
-{
+void activate(Creature *cr) {
   int hostagecount = 0, state = 0, oldstate = 0, choice = 0;
   char havedead = 0;
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     if (pool[p]->alive && pool[p]->align != 1 && pool[p]->location == cr->location) hostagecount++;
     if (!pool[p]->alive) havedead = 1;
   }
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     printfunds();
 
     move(0, 0);
-    if (cr->income)
-    {
+    if (cr->income) {
       addstr(cr->name);
       addstr(" made $");
       addstr(cr->income);
       addstr(" yesterday. What now?");
-    }
-    else
-    {
+    } else {
       addstr("Taking Action: What will ");
       addstr(cr->name);
       addstr(" be doing today?");
@@ -375,8 +342,7 @@ void activate(Creature *cr)
 
     makedelimiter();
 
-    if (!state) switch (cr->activity.type)
-      {
+    if (!state) switch (cr->activity.type) {
       case ACTIVITY_COMMUNITYSERVICE:
       case ACTIVITY_TROUBLE:
       case ACTIVITY_GRAFFITI:
@@ -504,8 +470,7 @@ void activate(Creature *cr)
       set_color(COLOR_BLACK, COLOR_BLACK, 1);
     mvaddstr(20, 1, "E - Equip this Liberal");
 
-    if (state == 'a' || state == 'b' || state == 'c' || state == 'd')
-    {
+    if (state == 'a' || state == 'b' || state == 'c' || state == 'd') {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddstr(19, 40, "? - Help");
     }
@@ -516,8 +481,7 @@ void activate(Creature *cr)
     set_color(COLOR_WHITE, COLOR_BLACK, state == 'x');
     mvaddstr(21, 1, "X - Nothing for Now");
 
-    switch (state)
-    {
+    switch (state) {
     case 'a':
       set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_COMMUNITYSERVICE);
       mvaddstr(10, 40, "1 - Community Service");
@@ -541,8 +505,7 @@ void activate(Creature *cr)
       mvaddstr(15, 40, "6 - Write to Newspapers");
 
       if (cr->location != -1 &&
-          location[cr->location]->compound_walls & COMPOUND_PRINTINGPRESS)
-      {
+          location[cr->location]->compound_walls & COMPOUND_PRINTINGPRESS) {
         set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_WRITE_GUARDIAN);
         mvaddstr(16, 40, "7 - Write for The Liberal Guardian");
       }
@@ -603,13 +566,10 @@ void activate(Creature *cr)
       set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_REPAIR_ARMOR);
       mvaddstr(12, 40, "3 - Repair Clothing");
 
-      if (cr->canwalk())
-      {
+      if (cr->canwalk()) {
         set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_STEALCARS);
         mvaddstr(13, 40, "4 - Steal a Car");
-      }
-      else
-      {
+      } else {
         if (!(cr->flag & CREATUREFLAG_WHEELCHAIR))
           set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_WHEELCHAIR);
         else
@@ -640,8 +600,7 @@ void activate(Creature *cr)
     }
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
-    switch (cr->activity.type)
-    {
+    switch (cr->activity.type) {
     case ACTIVITY_COMMUNITYSERVICE:
       move(22, 3);
       addstr(cr->name);
@@ -815,14 +774,11 @@ void activate(Creature *cr)
     int c = getkey();
 
     if (c >= 'a' && c <= 'z') state = c;
-    if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
-    {
+    if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
       choice = c;
-      switch (state)
-      {
+      switch (state) {
       case 'a':
-        switch (choice)
-        {
+        switch (choice) {
         case '1':
           cr->activity.type = ACTIVITY_COMMUNITYSERVICE;
           break;
@@ -845,8 +801,7 @@ void activate(Creature *cr)
           break;
         case '7':
           if (cr->location != -1 &&
-              location[cr->location]->compound_walls & COMPOUND_PRINTINGPRESS)
-          {
+              location[cr->location]->compound_walls & COMPOUND_PRINTINGPRESS) {
             cr->activity.type = ACTIVITY_WRITE_GUARDIAN;
             break;
           }
@@ -855,23 +810,19 @@ void activate(Creature *cr)
             cr->activity.type = ACTIVITY_COMMUNITYSERVICE;
           else if (cr->get_attribute(ATTRIBUTE_WISDOM, true) > 4)
             cr->activity.type = ACTIVITY_TROUBLE;
-          else
-          {
+          else {
             if (cr->get_skill(SKILL_COMPUTERS) > 2)
               cr->activity.type = ACTIVITY_HACKING;
-            else if (cr->get_skill(SKILL_ART) > 1)
-            {
+            else if (cr->get_skill(SKILL_ART) > 1) {
               cr->activity.type = ACTIVITY_GRAFFITI;
               cr->activity.arg = -1;
-            }
-            else
+            } else
               cr->activity.type = ACTIVITY_TROUBLE;
           }
         }
         break;
       case 'b':
-        switch (choice)
-        {
+        switch (choice) {
         case '1':
           cr->activity.type = ACTIVITY_DONATIONS;
           break;
@@ -898,8 +849,7 @@ void activate(Creature *cr)
         }
         break;
       case 'c':
-        switch (choice)
-        {
+        switch (choice) {
         case '1':
           cr->activity.type = ACTIVITY_SELL_DRUGS;
           break;
@@ -927,10 +877,8 @@ void activate(Creature *cr)
         }
         break;
       case 'd':
-        switch (choice)
-        {
-        case '1':
-        { // Pick type to recruit
+        switch (choice) {
+        case '1': { // Pick type to recruit
           activityst oact = cr->activity;
           cr->activity.type = ACTIVITY_NONE;
           recruitSelect(*cr);
@@ -940,8 +888,7 @@ void activate(Creature *cr)
             cr->activity = oact;
           break;
         }
-        case '2':
-        { // Pick clothing to make
+        case '2': { // Pick clothing to make
           activityst oact = cr->activity;
           cr->activity.type = ACTIVITY_NONE;
           select_makeclothing(cr);
@@ -965,8 +912,7 @@ void activate(Creature *cr)
         }
         break;
       case 't':
-        switch (choice)
-        {
+        switch (choice) {
         case '1':
           cr->activity.type = ACTIVITY_TEACH_POLITICS;
           break;
@@ -977,8 +923,7 @@ void activate(Creature *cr)
           cr->activity.type = ACTIVITY_TEACH_FIGHTING;
           break;
         default:
-          switch (cr->type)
-          {
+          switch (cr->type) {
           // this first block are creatures with All Weapon Skills, Martial Arts, Dodge, and First Aid
           case CREATURE_ATHLETE:
           case CREATURE_BOUNCER:              // for fighting skills
@@ -1100,8 +1045,7 @@ void activate(Creature *cr)
         }
         break;
       case 'i':
-        if (hostagecount > 0)
-        {
+        if (hostagecount > 0) {
           activityst oact = cr->activity;
           cr->activity.type = ACTIVITY_NONE;
           select_tendhostage(cr);
@@ -1134,8 +1078,7 @@ void activate(Creature *cr)
           state = oldstate;
         break;
       case 'e':
-        if (!sieged)
-        {
+        if (!sieged) {
           //create a temp squad containing just this liberal
           int oldsquadid = cr->squadid;
           squadst *oldactivesquad = activesquad;
@@ -1185,16 +1128,14 @@ void activate(Creature *cr)
   }
 }
 
-void activatebulk()
-{
+void activatebulk() {
   vector<Creature *> temppool = activatable_liberals();
 
   if (!len(temppool)) return;
 
   int page = 0, selectedactivity = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
@@ -1245,8 +1186,7 @@ void activatebulk()
     addstr("6 - Community Service");
 
     int y = 2;
-    for (int p = page * 19; p < len(temppool) && p < page * 19 + 19; p++, y++)
-    {
+    for (int p = page * 19; p < len(temppool) && p < page * 19 + 19; p++, y++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y, 0);
       addchar(y + 'A' - 2);
@@ -1277,28 +1217,22 @@ void activatebulk()
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(temppool)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + c - 'a';
-      if (p < len(temppool))
-      {
-        switch (selectedactivity)
-        {
+      if (p < len(temppool)) {
+        switch (selectedactivity) {
         case 0: //Activism
           if (temppool[p]->get_attribute(ATTRIBUTE_WISDOM, true) > 7 || temppool[p]->juice < 0)
             temppool[p]->activity.type = ACTIVITY_COMMUNITYSERVICE;
           else if (temppool[p]->get_attribute(ATTRIBUTE_WISDOM, true) > 4)
             temppool[p]->activity.type = ACTIVITY_TROUBLE;
-          else
-          {
+          else {
             if (temppool[p]->get_skill(SKILL_COMPUTERS) > 2)
               temppool[p]->activity.type = ACTIVITY_HACKING;
-            else if (temppool[p]->get_skill(SKILL_ART) > 1)
-            {
+            else if (temppool[p]->get_skill(SKILL_ART) > 1) {
               temppool[p]->activity.type = ACTIVITY_GRAFFITI;
               temppool[p]->activity.arg = -1;
-            }
-            else
+            } else
               temppool[p]->activity.type = ACTIVITY_TROUBLE;
           }
           break;
@@ -1346,23 +1280,19 @@ void activatebulk()
 }
 
 /* base - activate - hostages */
-void select_tendhostage(Creature *cr)
-{
+void select_tendhostage(Creature *cr) {
   vector<Creature *> temppool;
 
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     if (pool[p]->align != 1 &&
         pool[p]->alive &&
-        pool[p]->location == cr->location)
-    {
+        pool[p]->location == cr->location) {
       temppool.push_back(pool[p]);
     }
   }
 
   if (!len(temppool)) return;
-  if (len(temppool) == 1)
-  {
+  if (len(temppool) == 1) {
     cr->activity.type = ACTIVITY_HOSTAGETENDING;
     cr->activity.arg = temppool[0]->id;
     return;
@@ -1370,8 +1300,7 @@ void select_tendhostage(Creature *cr)
 
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
@@ -1385,8 +1314,7 @@ void select_tendhostage(Creature *cr)
     addstr("DAYS IN CAPTIVITY");
 
     int y = 2;
-    for (int p = page * 19; p < len(temppool) && p < page * 19 + 19; p++, y++)
-    {
+    for (int p = page * 19; p < len(temppool) && p < page * 19 + 19; p++, y++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y, 0);
       addchar(y + 'A' - 2);
@@ -1395,8 +1323,7 @@ void select_tendhostage(Creature *cr)
 
       char bright = 0;
       int skill = 0;
-      for (int sk = 0; sk < SKILLNUM; sk++)
-      {
+      for (int sk = 0; sk < SKILLNUM; sk++) {
         skill += temppool[p]->get_skill(sk);
         if (temppool[p]->get_skill_ip(sk) >= 100 + (10 * temppool[p]->get_skill(sk)) &&
             temppool[p]->get_skill(sk) < temppool[p]->skill_cap(sk, true)) bright = 1;
@@ -1438,11 +1365,9 @@ void select_tendhostage(Creature *cr)
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(temppool)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + (int)(c - 'a');
-      if (p < len(temppool))
-      {
+      if (p < len(temppool)) {
         cr->activity.type = ACTIVITY_HOSTAGETENDING;
         cr->activity.arg = temppool[p]->id;
         return;
@@ -1453,8 +1378,7 @@ void select_tendhostage(Creature *cr)
   }
 }
 
-long select_hostagefundinglevel(Creature *cr, Creature *hs)
-{
+long select_hostagefundinglevel(Creature *cr, Creature *hs) {
   long flevel = -1;
 
   erase();
@@ -1498,8 +1422,7 @@ long select_hostagefundinglevel(Creature *cr, Creature *hs)
   addstr(cr->name);
   addstr(".");
 
-  do
-  {
+  do {
     int c = getkey();
 
     if (c == 'a') flevel = 0;
@@ -1515,8 +1438,7 @@ long select_hostagefundinglevel(Creature *cr, Creature *hs)
   return flevel;
 }
 
-struct recruitData
-{
+struct recruitData {
   int type;
   char *name;
   int difficulty;
@@ -1547,31 +1469,26 @@ recruitData recruitable_creatures[] = {
 
 // Return the difficulty of tracking this character type down, for the
 // purpose of the activation menu. 0 is trivial, 10 is impossible.
-int recruitFindDifficulty(int creatureType)
-{
+int recruitFindDifficulty(int creatureType) {
   for (int i = 0; i < len(recruitable_creatures); i++)
     if (recruitable_creatures[i].type == creatureType)
       return recruitable_creatures[i].difficulty;
   return 10; // No recruitData; assume impossible to recruit
 }
 
-char *recruitName(int creatureType)
-{
+char *recruitName(int creatureType) {
   for (int i = 0; i < len(recruitable_creatures); i++)
     if (recruitable_creatures[i].type == creatureType)
       return recruitable_creatures[i].name;
   return (char *)"missingno";
 }
 
-void recruitSelect(Creature &cr)
-{
+void recruitSelect(Creature &cr) {
   // Number of recruitable creatures
   int options = len(recruitable_creatures);
-  for (int i = 0; i < options; i++)
-  {
+  for (int i = 0; i < options; i++) {
     // Dynamic difficulty for certain creatures, recalculated each time the function is called
-    if (recruitable_creatures[i].type == CREATURE_MUTANT)
-    {
+    if (recruitable_creatures[i].type == CREATURE_MUTANT) {
       if (law[LAW_NUCLEARPOWER] == -2 && law[LAW_POLLUTION] == -2)
         recruitable_creatures[i].difficulty = 2;
       else if (law[LAW_NUCLEARPOWER] == -2 || law[LAW_POLLUTION] == -2)
@@ -1582,8 +1499,7 @@ void recruitSelect(Creature &cr)
   }
 
   int page = 0;
-  while (true)
-  {
+  while (true) {
     erase();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(0, 0);
@@ -1595,8 +1511,7 @@ void recruitSelect(Creature &cr)
     addstr("컴컴TYPE컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴횯IFFICULTY TO ARRANGE MEETING컴");
 
     int y = 2, difficulty;
-    for (int p = page * 19; p < options && p < page * 19 + 19; p++)
-    {
+    for (int p = page * 19; p < options && p < page * 19 + 19; p++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y, 0);
       addchar(y + 'A' - 2);
@@ -1605,8 +1520,7 @@ void recruitSelect(Creature &cr)
 
       move(y, 49);
       difficulty = recruitable_creatures[p].difficulty;
-      switch (difficulty)
-      {
+      switch (difficulty) {
       case 0:
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr("Simple");
@@ -1669,11 +1583,9 @@ void recruitSelect(Creature &cr)
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < options) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + (int)(c - 'a');
-      if (p < options)
-      {
+      if (p < options) {
         cr.activity.type = ACTIVITY_RECRUITING;
         cr.activity.arg = recruitable_creatures[p].type;
         break;
@@ -1687,11 +1599,9 @@ void recruitSelect(Creature &cr)
 }
 
 /* base - activate - make clothing */
-void select_makeclothing(Creature *cr)
-{
+void select_makeclothing(Creature *cr) {
   vector<int> armortypei;
-  for (int a = 0; a < len(armortype); a++)
-  {
+  for (int a = 0; a < len(armortype); a++) {
     if (armortype[a]->get_make_difficulty() == 0)
       continue;
 
@@ -1703,8 +1613,7 @@ void select_makeclothing(Creature *cr)
 
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1717,8 +1626,7 @@ void select_makeclothing(Creature *cr)
     addstr("컴컴NAME컴컴컴컴컴컴컴컴컴컴컴컴컴컴횯IFFICULTY컴컴컴컴컴컴횮OST컴컴컴컴컴컴컴컴");
 
     int y = 2, difficulty;
-    for (int p = page * 19; p < len(armortypei) && p < page * 19 + 19; p++, y++)
-    {
+    for (int p = page * 19; p < len(armortypei) && p < page * 19 + 19; p++, y++) {
       difficulty = armor_makedifficulty(*armortype[armortypei[p]], cr);
       if (difficulty < 0) difficulty = 0;
 
@@ -1729,8 +1637,7 @@ void select_makeclothing(Creature *cr)
       addstr(armortype[armortypei[p]]->get_name());
 
       move(y, 37);
-      switch (difficulty)
-      {
+      switch (difficulty) {
       case 0:
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr("Simple");
@@ -1796,11 +1703,9 @@ void select_makeclothing(Creature *cr)
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(armortypei)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + c - 'a';
-      if (p < len(armortypei))
-      {
+      if (p < len(armortypei)) {
         cr->activity.type = ACTIVITY_MAKE_ARMOR;
         cr->activity.arg = armortypei[p]; //Use id name of armor type instead? -XML
         return;
@@ -1811,8 +1716,7 @@ void select_makeclothing(Creature *cr)
   }
 }
 
-int armor_makedifficulty(Armor &type, Creature *cr)
-{
+int armor_makedifficulty(Armor &type, Creature *cr) {
   return armor_makedifficulty(*armortype[getarmortype(type.get_itemtypename())], cr);
 }
 
@@ -1823,8 +1727,7 @@ int armor_makedifficulty(ArmorType &type, Creature *cr) //Make class method? -XM
 }
 
 /* base - activate - trouble */
-long select_troublefundinglevel(Creature *cr)
-{
+long select_troublefundinglevel(Creature *cr) {
   long flevel = -1;
 
   erase();
@@ -1860,8 +1763,7 @@ long select_troublefundinglevel(Creature *cr)
   addstr(cr->name);
   addstr(".");
 
-  do
-  {
+  do {
     int c = getkey();
 
     if (c == 'a') flevel = 0;
@@ -1876,12 +1778,10 @@ long select_troublefundinglevel(Creature *cr)
 }
 
 /* base - activate - select a topic to write about */
-char select_view(Creature *cr, int &v)
-{
+char select_view(Creature *cr, int &v) {
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1894,8 +1794,7 @@ char select_view(Creature *cr, int &v)
     addstr("컴컴TOPIC컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴횵NTEREST컴컴컴컴컴컴컴컴컴컴컴컴컴�");
 
     int y = 3, x = 0;
-    for (int p = page * 18; p < VIEWNUM - 3 && p < page * 18 + 18; p++, y++)
-    {
+    for (int p = page * 18; p < VIEWNUM - 3 && p < page * 18 + 18; p++, y++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y, x);
       addchar((p - page * 18) + 'A');
@@ -1903,28 +1802,19 @@ char select_view(Creature *cr, int &v)
       addstr(getview(p, false));
 
       move(y, 44);
-      if (public_interest[p] > 100)
-      {
+      if (public_interest[p] > 100) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("Extremely Controversial");
-      }
-      else if (public_interest[p] > 50)
-      {
+      } else if (public_interest[p] > 50) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         addstr("Dinner Table Topic");
-      }
-      else if (public_interest[p] > 10)
-      {
+      } else if (public_interest[p] > 10) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         addstr("Significant Interest");
-      }
-      else if (public_interest[p] > 0)
-      {
+      } else if (public_interest[p] > 0) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         addstr("Minor Discussion");
-      }
-      else
-      {
+      } else {
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
         addstr("Exhausted");
       }
@@ -1943,11 +1833,9 @@ char select_view(Creature *cr, int &v)
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 16 < VIEWNUM - 3) page++;
 
-    if (c >= 'a' && c <= 'a' + 18)
-    {
+    if (c >= 'a' && c <= 'a' + 18) {
       int p = page * 18 + c - 'a';
-      if (p < VIEWNUM - 3)
-      {
+      if (p < VIEWNUM - 3) {
         v = p;
         return 1;
       }

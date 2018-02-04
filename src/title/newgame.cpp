@@ -29,8 +29,7 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* select new game options */
-void setup_newgame()
-{
+void setup_newgame() {
   music.play(MUSIC_NEWGAME);
   bool classicmode = false;
   bool strongccs = false;
@@ -39,8 +38,7 @@ void setup_newgame()
   stalinmode = false;
 
   clear();
-  while (true)
-  {
+  while (true) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(4, 6);
     addstr("New Game of Liberal Crime Squad: Advanced Gameplay Options");
@@ -96,49 +94,41 @@ void setup_newgame()
 
     int c = getkey();
 
-    if (c == 'a')
-    {
+    if (c == 'a') {
       classicmode = !classicmode;
       continue;
     }
-    if (c == 'b')
-    {
+    if (c == 'b') {
       strongccs = !strongccs;
       continue;
     }
-    if (c == 'c')
-    {
+    if (c == 'c') {
       nightmarelaws = !nightmarelaws;
       continue;
     }
-    if (c == 'd')
-    {
+    if (c == 'd') {
       multipleCityMode = !multipleCityMode;
       continue;
     }
-    if (c == 'e')
-    {
+    if (c == 'e') {
       nocourtpurge = !nocourtpurge;
       notermlimit = !notermlimit;
       continue;
     }
 #ifdef ALLOWSTALIN
-    if (c == 'f')
-    {
+    if (c == 'f') {
       stalinmode = !stalinmode;
       continue;
     }
 #endif
     break;
   }
-  if (nightmarelaws)
-  {
+  if (nightmarelaws) {
     for (int l = 0; l < LAWNUM; l++)
       law[l] = ALIGN_ARCHCONSERVATIVE;
     for (int a = 0; a < VIEWNUM - 3; a++)
       attitude[a] = LCSrandom(20);
-    for (int s = 0; s < SENATENUM; s++)
-    {
+    for (int s = 0; s < SENATENUM; s++) {
       if (s < 55)
         senate[s] = ALIGN_ARCHCONSERVATIVE;
       else if (s < 70)
@@ -151,8 +141,7 @@ void setup_newgame()
         senate[s] = ALIGN_ELITELIBERAL;
     }
 
-    for (int h = 0; h < HOUSENUM; h++)
-    {
+    for (int h = 0; h < HOUSENUM; h++) {
       if (h < 220)
         house[h] = ALIGN_ARCHCONSERVATIVE;
       else if (h < 350)
@@ -165,8 +154,7 @@ void setup_newgame()
         house[h] = ALIGN_ELITELIBERAL;
     }
 
-    for (int c = 0; c < COURTNUM; c++)
-    {
+    for (int c = 0; c < COURTNUM; c++) {
       if (c < 5)
         court[c] = ALIGN_ARCHCONSERVATIVE;
       else if (c < 7)
@@ -177,8 +165,7 @@ void setup_newgame()
         court[c] = ALIGN_LIBERAL;
       else
         court[c] = ALIGN_ELITELIBERAL;
-      do
-      {
+      do {
         if (court[c] == ALIGN_ARCHCONSERVATIVE)
           generate_name(courtname[c], GENDER_WHITEMALEPATRIARCH);
         else
@@ -188,15 +175,13 @@ void setup_newgame()
   }
   if (classicmode)
     endgamestate = ENDGAME_CCS_DEFEATED;
-  else if (strongccs)
-  {
+  else if (strongccs) {
     endgamestate = ENDGAME_CCS_ATTACKS;
     //attitude[VIEW_POLITICALVIOLENCE]=90;
   }
 
   clear();
-  while (true)
-  {
+  while (true) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(4, 6);
     addstr("New Game of Liberal Crime Squad: Your Agenda");
@@ -223,13 +208,11 @@ void setup_newgame()
 
     int c = getkey();
 
-    if (c == 'a')
-    {
+    if (c == 'a') {
       wincondition = WINCONDITION_ELITE;
       continue;
     }
-    if (c == 'b')
-    {
+    if (c == 'b') {
       wincondition = WINCONDITION_EASY;
       continue;
     }
@@ -237,8 +220,7 @@ void setup_newgame()
   }
 
   clear();
-  while (true)
-  {
+  while (true) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(4, 6);
     addstr("New Game of Liberal Crime Squad: Field Learning");
@@ -269,18 +251,15 @@ void setup_newgame()
 
     int c = getkey();
 
-    if (c == 'a')
-    {
+    if (c == 'a') {
       fieldskillrate = FIELDSKILLRATE_FAST;
       continue;
     }
-    if (c == 'b')
-    {
+    if (c == 'b') {
       fieldskillrate = FIELDSKILLRATE_CLASSIC;
       continue;
     }
-    if (c == 'c')
-    {
+    if (c == 'c') {
       fieldskillrate = FIELDSKILLRATE_HARD;
       continue;
     }
@@ -288,15 +267,13 @@ void setup_newgame()
   }
 }
 
-enum recruits
-{
+enum recruits {
   RECRUITS_GANG,
   RECRUITS_NONE
 };
 
 /* creates your founder */
-void makecharacter()
-{
+void makecharacter() {
   Creature *newcr = new Creature;
   newcr->align = 1;
 
@@ -346,8 +323,7 @@ void makecharacter()
   char last[80];
   bool male = LCSrandom(2); // whether or not starting gender is male
   char gender = newcr->gender_liberal = newcr->gender_conservative = (male ? GENDER_MALE : GENDER_FEMALE);
-  do
-  {
+  do {
     firstname(first[0], GENDER_NEUTRAL);
     firstname(first[1], GENDER_MALE);
     firstname(first[2], GENDER_FEMALE);
@@ -361,8 +337,7 @@ void makecharacter()
 
   bool choices = true;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -387,18 +362,13 @@ void makecharacter()
     move(11, 2);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     addstr("SEX: ");
-    if (newcr->gender_conservative == GENDER_MALE)
-    {
+    if (newcr->gender_conservative == GENDER_MALE) {
       set_color(COLOR_CYAN, COLOR_BLACK, 1);
       addstr("Male");
-    }
-    else if (newcr->gender_conservative == GENDER_FEMALE)
-    {
+    } else if (newcr->gender_conservative == GENDER_FEMALE) {
       set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
       addstr("Female");
-    }
-    else
-    {
+    } else {
       set_color(COLOR_YELLOW, COLOR_BLACK, 1);
       addstr("It's Complicated");
     }
@@ -409,13 +379,10 @@ void makecharacter()
     move(13, 2);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     addstr("HISTORY: ");
-    if (choices)
-    {
+    if (choices) {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       addstr("Let Me Choose");
-    }
-    else
-    {
+    } else {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       addstr("Let Fate Decide");
     }
@@ -423,8 +390,7 @@ void makecharacter()
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     addstr(" (Press D to toggle childhood)");
 
-    if (!multipleCityMode)
-    {
+    if (!multipleCityMode) {
       move(15, 2);
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       addstr("CITY: ");
@@ -440,24 +406,19 @@ void makecharacter()
 
     int c = getkey();
 
-    if (c == 'a')
-    {
-      do
-      {
+    if (c == 'a') {
+      do {
         firstname(first[(int)gender], newcr->gender_conservative);
       } while (strcmp(first[(int)gender], last) == 0);
       continue;
     }
-    if (c == 'b')
-    {
-      do
-      {
+    if (c == 'b') {
+      do {
         lastname(last);
       } while (strcmp(first[0], last) == 0 && strcmp(first[1], last) == 0 && strcmp(first[2], last) == 0);
       continue;
     }
-    if (c == 'c')
-    {
+    if (c == 'c') {
       if ((newcr->gender_conservative == GENDER_FEMALE && !male) ||
           (newcr->gender_conservative == GENDER_NEUTRAL && male))
         newcr->gender_conservative = GENDER_MALE;
@@ -470,13 +431,11 @@ void makecharacter()
       gender = newcr->gender_liberal = newcr->gender_conservative;
       continue;
     }
-    if (c == 'd')
-    {
+    if (c == 'd') {
       choices = !choices;
       continue;
     }
-    if (c == 'e' && !multipleCityMode)
-    {
+    if (c == 'e' && !multipleCityMode) {
       strcpy(lcityname, cityname());
       continue;
     }
@@ -495,8 +454,7 @@ void makecharacter()
   char recruits = RECRUITS_NONE;
   char base = SITE_RESIDENTIAL_SHELTER;
 
-  for (int q = 0; q < 10; q++)
-  {
+  for (int q = 0; q < 10; q++) {
     erase();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(0, 0);
@@ -511,8 +469,7 @@ void makecharacter()
 
     char selection = LCSrandom(5);
 
-    switch (q)
-    {
+    switch (q) {
 
     /*
         - The anniversary of Hitler's suicide. - SKILL_PISTOL 1 (lol)
@@ -568,8 +525,7 @@ void makecharacter()
 
       move(19, 0);
       addstr("My parents ");
-      if (newcr->gender_conservative == GENDER_NEUTRAL)
-      {
+      if (newcr->gender_conservative == GENDER_NEUTRAL) {
         addstr("insisted otherwise.");
         move(20, 0);
         addstr("They ");
@@ -897,46 +853,39 @@ void makecharacter()
       break;
     }
 
-    do
-    {
+    do {
       c = getkey();
       if (!choices) c = 'a' + selection;
     } while (c < 'a' || c > 'e');
 
-    switch (q)
-    {
+    switch (q) {
     case 0:
       // Oct. 19, 1984
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +2);
         newcr->birthday_month = 10;
         newcr->birthday_day = 19;
       }
       // Mar. 3, 1984
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->adjust_attribute(ATTRIBUTE_STRENGTH, +2);
         newcr->birthday_month = 3;
         newcr->birthday_day = 3;
       }
       // Jan. 24, 1984
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +2);
         newcr->birthday_month = 1;
         newcr->birthday_day = 24;
       }
       // Oct. 16, 1984
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->adjust_attribute(ATTRIBUTE_HEART, +2);
         newcr->birthday_month = 10;
         newcr->birthday_day = 16;
       }
       // Sep. 4, 1984
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +2);
         newcr->birthday_month = 9;
         newcr->birthday_day = 4;
@@ -944,205 +893,168 @@ void makecharacter()
       newcr->age = year - 1984;
       // Don't count this year in founder's age if starting before birthday
       if (month < newcr->birthday_month ||
-          (month == newcr->birthday_month && day < newcr->birthday_day))
-      {
+          (month == newcr->birthday_month && day < newcr->birthday_day)) {
         newcr->age--;
       }
       break;
     case 1:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_SECURITY, newcr->get_skill(SKILL_SECURITY) + (1));
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +1);
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_HANDTOHAND, newcr->get_skill(SKILL_HANDTOHAND) + (1));
         newcr->adjust_attribute(ATTRIBUTE_HEALTH, +1);
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +1);
         newcr->set_skill(SKILL_WRITING, newcr->get_skill(SKILL_WRITING) + (1));
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->set_skill(SKILL_PERSUASION, newcr->get_skill(SKILL_PERSUASION) + (1));
         newcr->adjust_attribute(ATTRIBUTE_HEART, +1);
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->set_skill(SKILL_PSYCHOLOGY, newcr->get_skill(SKILL_PSYCHOLOGY) + (1));
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +1);
       }
       break;
     case 2:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_DISGUISE, newcr->get_skill(SKILL_DISGUISE) + (1));
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +1);
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_PSYCHOLOGY, newcr->get_skill(SKILL_PSYCHOLOGY) + (1));
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +1);
         newcr->adjust_attribute(ATTRIBUTE_HEART, -1);
         newcr->adjust_attribute(ATTRIBUTE_STRENGTH, +1);
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +1);
         newcr->set_skill(SKILL_WRITING, newcr->get_skill(SKILL_WRITING) + (1));
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->adjust_attribute(ATTRIBUTE_STRENGTH, +1);
         newcr->set_skill(SKILL_HANDTOHAND, newcr->get_skill(SKILL_HANDTOHAND) + (1));
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->set_skill(SKILL_PERSUASION, newcr->get_skill(SKILL_PERSUASION) + (1));
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +1);
       }
       break;
     case 3:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_STEALTH, newcr->get_skill(SKILL_STEALTH) + (1));
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_HANDTOHAND, newcr->get_skill(SKILL_HANDTOHAND) + (1));
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->set_skill(SKILL_LAW, newcr->get_skill(SKILL_LAW) + (1));
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->set_skill(SKILL_SEDUCTION, newcr->get_skill(SKILL_SEDUCTION) + (1));
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->set_skill(SKILL_WRITING, newcr->get_skill(SKILL_WRITING) + 1);
       }
       break;
     case 4:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_SCIENCE, newcr->get_skill(SKILL_SCIENCE) + (2));
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +2);
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_MUSIC, newcr->get_skill(SKILL_MUSIC) + (2));
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +2);
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->set_skill(SKILL_ART, newcr->get_skill(SKILL_ART) + (2));
         newcr->adjust_attribute(ATTRIBUTE_HEART, +2);
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->set_skill(SKILL_COMPUTERS, newcr->get_skill(SKILL_COMPUTERS) + (2));
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +2);
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->adjust_attribute(ATTRIBUTE_STRENGTH, +2);
         newcr->set_skill(SKILL_SWORD, newcr->get_skill(SKILL_SWORD) + (2));
       }
       break;
     case 5:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_DRIVING, newcr->get_skill(SKILL_DRIVING) + (1));
         newcr->set_skill(SKILL_SECURITY, newcr->get_skill(SKILL_SECURITY) + (1));
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_SHOTGUN, newcr->get_skill(SKILL_SHOTGUN) + (1));
         newcr->set_skill(SKILL_RIFLE, newcr->get_skill(SKILL_RIFLE) + (1));
         newcr->set_skill(SKILL_PSYCHOLOGY, newcr->get_skill(SKILL_PSYCHOLOGY) + (1));
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->set_skill(SKILL_TAILORING, newcr->get_skill(SKILL_TAILORING) + (2));
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->set_skill(SKILL_RELIGION, newcr->get_skill(SKILL_RELIGION) + (1));
         newcr->set_skill(SKILL_PSYCHOLOGY, newcr->get_skill(SKILL_PSYCHOLOGY) + (1));
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->set_skill(SKILL_TEACHING, newcr->get_skill(SKILL_TEACHING) + (2));
       }
       break;
     case 6:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_DRIVING, newcr->get_skill(SKILL_DRIVING) + (1));
         newcr->set_skill(SKILL_SECURITY, newcr->get_skill(SKILL_SECURITY) + (1));
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +1);
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_SHOTGUN, newcr->get_skill(SKILL_SHOTGUN) + (2));
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +1);
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->adjust_attribute(ATTRIBUTE_STRENGTH, +1);
         newcr->set_skill(SKILL_HANDTOHAND, newcr->get_skill(SKILL_HANDTOHAND) + (2));
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->set_skill(SKILL_SEDUCTION, newcr->get_skill(SKILL_SEDUCTION) + (1));
         newcr->set_skill(SKILL_RELIGION, newcr->get_skill(SKILL_RELIGION) + (1));
         newcr->adjust_attribute(ATTRIBUTE_HEART, +1);
         gaylawyer = true;
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->set_skill(SKILL_PERSUASION, newcr->get_skill(SKILL_PERSUASION) + (2));
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +1);
       }
       break;
     case 7:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->set_skill(SKILL_SECURITY, newcr->get_skill(SKILL_SECURITY) + (1));
         newcr->set_skill(SKILL_STEALTH, newcr->get_skill(SKILL_STEALTH) + (1));
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +1);
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->adjust_attribute(ATTRIBUTE_STRENGTH, +1);
         newcr->set_skill(SKILL_HANDTOHAND, newcr->get_skill(SKILL_HANDTOHAND) + (2));
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +1);
         newcr->set_skill(SKILL_BUSINESS, newcr->get_skill(SKILL_BUSINESS) + (2));
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->adjust_attribute(ATTRIBUTE_HEART, -1);
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +2);
         newcr->set_skill(SKILL_SEDUCTION, newcr->get_skill(SKILL_SEDUCTION) + (2));
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +1);
         newcr->set_skill(SKILL_LAW, newcr->get_skill(SKILL_LAW) + (1));
         newcr->set_skill(SKILL_PERSUASION, newcr->get_skill(SKILL_PERSUASION) + (1));
       }
       break;
     case 8:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         startcar = new Vehicle(*vehicletype[getvehicletype("SPORTSCAR")]);
         // Add heat to the starting vehicle because it is stolen.
         // This is so that you can't immediately sell it at full price.
@@ -1150,29 +1062,24 @@ void makecharacter()
         vehicle.push_back(startcar);
         newcr->pref_carid = startcar->id();
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         Weapon neww(*weapontype[getweapontype("WEAPON_AUTORIFLE_AK47")]);
         Clip newc(*cliptype[getcliptype("CLIP_ASSAULT")], 9);
         newcr->give_weapon(neww, NULL);
         newcr->take_clips(newc, 9);
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         ledger.force_funds(1000);
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         makelawyer = true;
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         hasmaps = true;
       }
       break;
     case 9:
-      if (c == 'a')
-      {
+      if (c == 'a') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +2);
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +2);
         newcr->set_skill(SKILL_SECURITY, newcr->get_skill(SKILL_SECURITY) + (2));
@@ -1185,8 +1092,7 @@ void makecharacter()
         Armor newa(*armortype[getarmortype("ARMOR_BLACKCLOTHES")]);
         newcr->give_armor(newa, NULL);
       }
-      if (c == 'b')
-      {
+      if (c == 'b') {
         newcr->set_skill(SKILL_RIFLE, newcr->get_skill(SKILL_RIFLE) + (2));
         newcr->set_skill(SKILL_PISTOL, newcr->get_skill(SKILL_PISTOL) + (2));
         newcr->set_skill(SKILL_STREETSENSE, newcr->get_skill(SKILL_STREETSENSE) + (2));
@@ -1198,8 +1104,7 @@ void makecharacter()
         base = SITE_BUSINESS_CRACKHOUSE;
         recruits = RECRUITS_GANG;
       }
-      if (c == 'c')
-      {
+      if (c == 'c') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +4);
         newcr->set_skill(SKILL_SCIENCE, newcr->get_skill(SKILL_SCIENCE) + (2));
         newcr->set_skill(SKILL_COMPUTERS, newcr->get_skill(SKILL_COMPUTERS) + (2));
@@ -1212,8 +1117,7 @@ void makecharacter()
         base = SITE_RESIDENTIAL_APARTMENT;
         ledger.force_funds(ledger.get_funds() + 200);
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +1);
         newcr->adjust_attribute(ATTRIBUTE_AGILITY, +1);
         newcr->adjust_attribute(ATTRIBUTE_HEALTH, +2);
@@ -1230,8 +1134,7 @@ void makecharacter()
         newcr->adjust_attribute(ATTRIBUTE_HEALTH, +1);
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +1);
       }
-      if (c == 'e')
-      {
+      if (c == 'e') {
         newcr->adjust_attribute(ATTRIBUTE_CHARISMA, +2);
         newcr->adjust_attribute(ATTRIBUTE_INTELLIGENCE, +2);
         newcr->set_skill(SKILL_LAW, newcr->get_skill(SKILL_LAW) + (1));
@@ -1328,15 +1231,12 @@ void makecharacter()
   newsq->squad[0] = newcr;
   newcr->squadid = 0;
   strcpy(newsq->name, "The Liberal Crime Squad");
-  for (int l = 0; l < len(location); l++)
-  {
-    if (location[l]->type == base)
-    {
+  for (int l = 0; l < len(location); l++) {
+    if (location[l]->type == base) {
       newcr->base = l;
       newcr->location = l;
       if (startcar) startcar->set_location(l);
-      switch (base)
-      {
+      switch (base) {
       case SITE_RESIDENTIAL_APARTMENT_UPSCALE:
         location[l]->renting = 500;
         break;
@@ -1353,17 +1253,14 @@ void makecharacter()
       }
       location[l]->newrental = 1;
 
-      switch (recruits)
-      {
+      switch (recruits) {
       case RECRUITS_GANG:
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++) {
           Creature *recruit = new Creature;
           makecreature(*recruit, CREATURE_GANGMEMBER);
           if (recruit->get_weapon().get_itemtypename() == "WEAPON_AUTORIFLE_AK47" ||
               recruit->get_weapon().get_itemtypename() == "WEAPON_SMG_MP5" ||
-              !recruit->is_armed())
-          {
+              !recruit->is_armed()) {
             Weapon w(*weapontype[getweapontype("WEAPON_SEMIPISTOL_9MM")]);
             recruit->give_weapon(w, NULL);
             Clip c(*cliptype[getcliptype("CLIP_9")], 4);
@@ -1410,21 +1307,17 @@ void makecharacter()
   squad.push_back(newsq);
   activesquad = newsq;
 
-  if (makelawyer)
-  {
+  if (makelawyer) {
     Creature *lawyer = new Creature;
     makecreature(*lawyer, CREATURE_LAWYER);
     // Make sure lawyer is of the appropriate gender for dating the main character;
     // opposite sex by default, same sex if the option was chosen that mentions
     // homosexuality
-    if (gaylawyer)
-    {
+    if (gaylawyer) {
       lawyer->gender_conservative = lawyer->gender_liberal = newcr->gender_conservative;
 
       // neutral founder gets neutral partner
-    }
-    else
-    {
+    } else {
       if (newcr->gender_conservative == GENDER_MALE)
         lawyer->gender_liberal = lawyer->gender_conservative = GENDER_FEMALE;
 

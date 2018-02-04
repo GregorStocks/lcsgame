@@ -75,12 +75,9 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess);
 void doActivityTeach(vector<Creature *> &teachers, char &clearformess);
 void doActivityBury(vector<Creature *> &bury, char &clearformess);
 
-void adjustblogpower(int &power)
-{
-  if (power < 20)
-  {
-    switch (LCSrandom(20))
-    {
+void adjustblogpower(int &power) {
+  if (power < 20) {
+    switch (LCSrandom(20)) {
     case 0:
       addstr("a sub-Liberal");
       break;
@@ -143,9 +140,7 @@ void adjustblogpower(int &power)
       break;
     }
     power = -signed(LCSrandom(2));
-  }
-  else if (power < 35)
-  {
+  } else if (power < 35) {
     //switch(LCSrandom(1))
     //{
     //case 0:addstr("a fair");break;
@@ -170,11 +165,8 @@ void adjustblogpower(int &power)
     //case 8:addstr("a respectable");break;
     //}
     power = 1;
-  }
-  else if (power < 50)
-  {
-    switch (LCSrandom(11))
-    {
+  } else if (power < 50) {
+    switch (LCSrandom(11)) {
     //case 0:addstr("a solid");break;
     case 0:
       addstr("a good");
@@ -221,11 +213,8 @@ void adjustblogpower(int &power)
       break;
     }
     power = 2;
-  }
-  else
-  {
-    switch (LCSrandom(10))
-    {
+  } else {
+    switch (LCSrandom(10)) {
     case 0:
       addstr("a great");
       break;
@@ -274,8 +263,7 @@ void adjustblogpower(int &power)
 }
 
 /* armor repair */
-void repairarmor(Creature &cr, char &clearformess)
-{
+void repairarmor(Creature &cr, char &clearformess) {
   Armor *armor = NULL;
   Item *pile = NULL;
   vector<Item *> *pilelist = NULL;
@@ -284,15 +272,12 @@ void repairarmor(Creature &cr, char &clearformess)
   // Clean yourself up first
   if (cr.get_armor().is_bloody() || cr.get_armor().is_damaged())
     armor = &cr.get_armor();
-  else if (cr.squadid != -1)
-  {
+  else if (cr.squadid != -1) {
     int sq = getsquad(cr.squadid);
     for (int l = 0; l < len(squad[sq]->loot); l++)
-      if (squad[sq]->loot[l]->is_armor())
-      {
+      if (squad[sq]->loot[l]->is_armor()) {
         Armor *a = static_cast<Armor *>(squad[sq]->loot[l]); //cast -XML
-        if (a->is_bloody() || a->is_damaged())
-        {
+        if (a->is_bloody() || a->is_damaged()) {
           armor = a;
           pile = squad[sq]->loot[l];
           pileindex = l;
@@ -306,11 +291,9 @@ void repairarmor(Creature &cr, char &clearformess)
   for (int passnum = 0; passnum < 3 && !dothis; passnum++)
     if (armor == NULL && cr.location != -1)
       for (int l = 0; l < len(location[cr.location]->loot); l++)
-        if (location[cr.location]->loot[l]->is_armor())
-        {
+        if (location[cr.location]->loot[l]->is_armor()) {
           Armor *a = static_cast<Armor *>(location[cr.location]->loot[l]); //cast -XML
-          switch (passnum)
-          {
+          switch (passnum) {
           case 0: // Guaranteed to accomplish something
             dothis = (a->is_bloody() && a->is_damaged());
             break;
@@ -321,8 +304,7 @@ void repairarmor(Creature &cr, char &clearformess)
             dothis = (a->is_bloody() || a->is_damaged());
             break;
           }
-          if (dothis)
-          {
+          if (dothis) {
             armor = a;
             pile = location[cr.location]->loot[l];
             pileindex = l;
@@ -336,12 +318,10 @@ void repairarmor(Creature &cr, char &clearformess)
   else
     makedelimiter();
 
-  if (armor == NULL)
-  {
+  if (armor == NULL) {
     move(8, 1);
     addstr(cr.name, gamelog);
-    switch (LCSrandom(4))
-    {
+    switch (LCSrandom(4)) {
     case 0:
       addstr(" tidies up the safehouse.", gamelog);
       break;
@@ -359,24 +339,19 @@ void repairarmor(Creature &cr, char &clearformess)
     gamelog.nextMessage();
 
     getkey();
-  }
-  else
-  {
+  } else {
     string armorname = armor->get_name(); // Get name before we maybe destroy it
     bool repairfailed = false;
     bool qualityReduction = !LCSrandom(10);
     bool armorDestroyed = !armor->decrease_quality(0);
 
-    if (armor->is_damaged())
-    {
+    if (armor->is_damaged()) {
       long dif = armor_makedifficulty(*armor, &cr);
       dif >>= (armor->get_quality() - 1); // it is easy to patch up rags
       cr.train(SKILL_TAILORING, dif / 2 + 1);
 
       if (LCSrandom(1 + dif / 2)) repairfailed = true;
-    }
-    else
-    {
+    } else {
       repairfailed = true;
     }
     if (armorDestroyed)
@@ -390,49 +365,34 @@ void repairarmor(Creature &cr, char &clearformess)
     std::string result = "";
     result += cr.name;
 
-    if (armorDestroyed)
-    {
+    if (armorDestroyed) {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       result += " disposes of ";
-    }
-    else if (repairfailed && armor->is_bloody())
-    {
+    } else if (repairfailed && armor->is_bloody()) {
       set_color(COLOR_CYAN, COLOR_BLACK, 1);
       result += " cleans ";
-    }
-    else if (repairfailed)
-    {
+    } else if (repairfailed) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       result += " is working to repair ";
-    }
-    else
-    {
-      if (!qualityReduction)
-      {
+    } else {
+      if (!qualityReduction) {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         result += " repairs ";
-      }
-      else
-      {
+      } else {
         armorDestroyed = !armor->decrease_quality(1);
-        if (armorDestroyed)
-        {
+        if (armorDestroyed) {
           set_color(COLOR_RED, COLOR_BLACK, 1);
           result += " finds there is no hope of repairing ";
-        }
-        else
-        {
+        } else {
           set_color(COLOR_YELLOW, COLOR_BLACK, 1);
           result += " repairs what little can be fixed of ";
         }
       }
     }
 
-    if (pile)
-    {
+    if (pile) {
       result += armor->aan();
-    }
-    else
+    } else
       result += cr.hisher();
 
     if (armorDestroyed)
@@ -443,27 +403,22 @@ void repairarmor(Creature &cr, char &clearformess)
     addstr(result, gamelog);
     gamelog.nextMessage();
 
-    if (pile)
-    {
-      if (pile->get_number() > 1)
-      {
+    if (pile) {
+      if (pile->get_number() > 1) {
         Item *newpile = pile->split(pile->get_number() - 1);
         pilelist->push_back(newpile);
       }
     }
 
     armor->set_bloody(false);
-    if (!repairfailed)
-    {
+    if (!repairfailed) {
       armor->set_damaged(false);
     }
-    if (armorDestroyed)
-    {
+    if (armorDestroyed) {
       if (!pile) // repairer was wearing it
       {
         cr.strip(NULL);
-      }
-      else // scrap from stockpile
+      } else // scrap from stockpile
       {
         delete_and_remove(*pilelist, pileindex);
       }
@@ -474,16 +429,14 @@ void repairarmor(Creature &cr, char &clearformess)
 }
 
 /* armor manufacture */
-void makearmor(Creature &cr, char &clearformess)
-{
+void makearmor(Creature &cr, char &clearformess) {
   int at = cr.activity.arg;
 
   int cost = armortype[at]->get_make_price();
   int hcost = (cost >> 1) + 1;
   int dif = armor_makedifficulty(*armortype[at], &cr);
 
-  if (ledger.get_funds() < hcost)
-  {
+  if (ledger.get_funds() < hcost) {
     if (clearformess)
       erase();
     else
@@ -497,13 +450,10 @@ void makearmor(Creature &cr, char &clearformess)
 
     getkey();
     return;
-  }
-  else
-  {
+  } else {
     char foundcloth = 0;
 
-    if (cr.squadid != -1)
-    {
+    if (cr.squadid != -1) {
       int sq = getsquad(cr.squadid);
       for (int l = 0; l < len(squad[sq]->loot); l++)
         if (squad[sq]->loot[l]->is_loot() &&
@@ -530,8 +480,7 @@ void makearmor(Creature &cr, char &clearformess)
           break;
         }
 
-    if (!foundcloth && ledger.get_funds() < cost)
-    {
+    if (!foundcloth && ledger.get_funds() < cost) {
       if (clearformess)
         erase();
       else
@@ -544,9 +493,7 @@ void makearmor(Creature &cr, char &clearformess)
       gamelog.nextMessage();
 
       getkey();
-    }
-    else
-    {
+    } else {
       if (foundcloth)
         ledger.subtract_funds(hcost, EXPENSE_MANUFACTURE);
       else
@@ -568,11 +515,9 @@ void makearmor(Creature &cr, char &clearformess)
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(8, 1);
       addstr(cr.name, gamelog);
-      if (quality <= ((Armor *)it)->get_quality_levels())
-      {
+      if (quality <= ((Armor *)it)->get_quality_levels()) {
         addstr(" has made a ", gamelog);
-        switch (quality)
-        {
+        switch (quality) {
         case 1:
           addstr("first-rate", gamelog);
           break;
@@ -591,9 +536,7 @@ void makearmor(Creature &cr, char &clearformess)
           break;
         }
         location[cr.location]->loot.push_back(it);
-      }
-      else
-      {
+      } else {
         addstr(" wasted the materials for a", gamelog);
       }
       addstr(" ", gamelog);
@@ -607,8 +550,7 @@ void makearmor(Creature &cr, char &clearformess)
 }
 
 /* search for polls */
-void survey(Creature *cr)
-{
+void survey(Creature *cr) {
   music.play(MUSIC_ELECTIONS);
   static const char SURVEY_PAGE_SIZE = 14;
 
@@ -643,25 +585,19 @@ void survey(Creature *cr)
   int survey[VIEWNUM];
 
   int maxview = -1;
-  for (v = 0; v < VIEWNUM; v++)
-  {
+  for (v = 0; v < VIEWNUM; v++) {
     survey[v] = attitude[v];
-    if (v != VIEW_LIBERALCRIMESQUAD && v != VIEW_LIBERALCRIMESQUADPOS /*&&v!=VIEW_POLITICALVIOLENCE*/)
-    {
-      if (maxview != -1)
-      {
+    if (v != VIEW_LIBERALCRIMESQUAD && v != VIEW_LIBERALCRIMESQUADPOS /*&&v!=VIEW_POLITICALVIOLENCE*/) {
+      if (maxview != -1) {
         if (public_interest[v] > public_interest[maxview]) maxview = v;
-      }
-      else
-      {
+      } else {
         if (public_interest[v] > 0) maxview = v;
       }
     }
 
 //MAKE SURVEY ACCURATE IF DEBUGGING
 #ifndef SHOWMECHANICS
-    do
-    {
+    do {
       survey[v] += LCSrandom(noise * 2 + 1) - noise;
     } while (!LCSrandom(20));
 #endif
@@ -696,12 +632,10 @@ void survey(Creature *cr)
   addstr(".");
 
   //Top excitement issue
-  if (maxview != -1)
-  {
+  if (maxview != -1) {
     move(4, 0);
     addstr("The people are most concerned about ");
-    switch (maxview)
-    {
+    switch (maxview) {
     case VIEW_GAY:
       if (attitude[VIEW_GAY] > 50)
         addstr("protecting gay rights.");
@@ -711,8 +645,7 @@ void survey(Creature *cr)
     case VIEW_DEATHPENALTY:
       if (attitude[VIEW_DEATHPENALTY] > 50)
         addstr("the unjust death penalty.");
-      else
-      {
+      else {
         if (law[LAW_DEATHPENALTY] == 2)
           addstr("restoring the death penalty.");
         else
@@ -728,8 +661,7 @@ void survey(Creature *cr)
     case VIEW_NUCLEARPOWER:
       if (attitude[VIEW_NUCLEARPOWER] > 50)
         addstr("the dangers of nuclear power.");
-      else
-      {
+      else {
         if (law[LAW_NUCLEARPOWER] == 2)
           addstr("legalizing nuclear power.");
         else
@@ -809,8 +741,7 @@ void survey(Creature *cr)
     case VIEW_IMMIGRATION:
       if (attitude[VIEW_IMMIGRATION] > 50)
         addstr("immigrant rights.");
-      else
-      {
+      else {
         if (law[LAW_IMMIGRATION] >= 1)
           addstr("uncontrolled immigration.");
         else
@@ -851,8 +782,7 @@ void survey(Creature *cr)
     case VIEW_LIBERALCRIMESQUADPOS:
       if (attitude[VIEW_LIBERALCRIMESQUAD] < 50)
         addstr("activist political groups.");
-      else
-      {
+      else {
         if (attitude[VIEW_LIBERALCRIMESQUADPOS] > 50)
           addstr("the Liberal Crime Squad.");
         else
@@ -879,9 +809,7 @@ void survey(Creature *cr)
         addstr("Liberal Media Bias.");
       break;
     }
-  }
-  else
-  {
+  } else {
     move(4, 0);
     addstr("The public is not concerned with politics right now.");
   }
@@ -907,18 +835,15 @@ void survey(Creature *cr)
 
   int page = 0;
   const int maxpage = VIEWNUM / SURVEY_PAGE_SIZE;
-  while (true)
-  {
+  while (true) {
     //Keep pages within bounds
     if (page < 0) page = maxpage;
     if (page > maxpage) page = 0;
     //Start from the top
     y = 8;
     //Draw each line
-    for (v = page * SURVEY_PAGE_SIZE; v < (page + 1) * SURVEY_PAGE_SIZE; v++, y++)
-    {
-      if (v >= VIEWNUM || (v == VIEW_CONSERVATIVECRIMESQUAD && (endgamestate >= ENDGAME_CCS_DEFEATED || newscherrybusted < 2)))
-      {
+    for (v = page * SURVEY_PAGE_SIZE; v < (page + 1) * SURVEY_PAGE_SIZE; v++, y++) {
+      if (v >= VIEWNUM || (v == VIEW_CONSERVATIVECRIMESQUAD && (endgamestate >= ENDGAME_CCS_DEFEATED || newscherrybusted < 2))) {
         move(y, 0);
         addstr("                                                                                ");
         continue;
@@ -928,15 +853,12 @@ void survey(Creature *cr)
       addstr("........................................................");
       if (noise >= 7 || survey[v] == -1)
         addstr("Unknown  ");
-      else if (noise >= 4)
-      {
+      else if (noise >= 4) {
         if (public_interest[v] > 50)
           addstr("High     ");
         else
           addstr("Low      ");
-      }
-      else
-      {
+      } else {
         if (public_interest[v] > 100)
           addstr("Very High");
         else if (public_interest[v] > 50)
@@ -967,15 +889,13 @@ void survey(Creature *cr)
       move(y, 0);
       if (survey[v] == -1)
         addstr("??");
-      else
-      {
+      else {
         if (survey[v] < 10) addchar('0');
         addstr(survey[v]);
       }
       addstr("% ");
 
-      switch (v)
-      {
+      switch (v) {
       case VIEW_GAY:
         addstr("were in favor of equal rights for homosexuals");
         break;
@@ -1067,19 +987,15 @@ void survey(Creature *cr)
       }
     }
 
-    while (true)
-    {
+    while (true) {
       int c = getkey();
 
       if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
         return;
-      else if (c == interface_pgup || c == KEY_UP || c == KEY_LEFT)
-      {
+      else if (c == interface_pgup || c == KEY_UP || c == KEY_LEFT) {
         page--;
         break;
-      }
-      else if (c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT)
-      {
+      } else if (c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) {
         page++;
         break;
       }
@@ -1088,10 +1004,8 @@ void survey(Creature *cr)
 }
 
 // Police accost your liberal!
-void attemptarrest(Creature &liberal, const char *string, int clearformess)
-{
-  if (string)
-  {
+void attemptarrest(Creature &liberal, const char *string, int clearformess) {
+  if (string) {
     if (clearformess)
       erase();
     else
@@ -1111,8 +1025,7 @@ void attemptarrest(Creature &liberal, const char *string, int clearformess)
   // Chase sequence! Wee!
   makechasers(-1, 5);
 
-  if (!sitestory)
-  {
+  if (!sitestory) {
     newsstoryst *ns = new newsstoryst;
     ns->type = NEWSSTORY_WANTEDARREST; // TODO: Make a more generic catch-all arrest story
     ns->loc = -1;
@@ -1126,12 +1039,10 @@ void attemptarrest(Creature &liberal, const char *string, int clearformess)
 }
 
 // While galavanting in public, your liberals may be ambushed by police
-int checkforarrest(Creature &liberal, const char *string, int clearformess)
-{
+int checkforarrest(Creature &liberal, const char *string, int clearformess) {
   bool arrest = false;
 
-  if (!liberal.animalgloss && liberal.is_naked() && LCSrandom(2))
-  {
+  if (!liberal.animalgloss && liberal.is_naked() && LCSrandom(2)) {
     criminalize(liberal, LAWFLAG_DISTURBANCE);
 
     newsstoryst *ns = new newsstoryst;
@@ -1141,11 +1052,8 @@ int checkforarrest(Creature &liberal, const char *string, int clearformess)
     sitestory = ns;
 
     arrest = true;
-  }
-  else if (liberal.heat > liberal.get_skill(SKILL_STREETSENSE) * 10)
-  {
-    if (!LCSrandom(50))
-    {
+  } else if (liberal.heat > liberal.get_skill(SKILL_STREETSENSE) * 10) {
+    if (!LCSrandom(50)) {
       newsstoryst *ns = new newsstoryst;
       ns->type = NEWSSTORY_WANTEDARREST;
       ns->loc = -1;
@@ -1162,20 +1070,16 @@ int checkforarrest(Creature &liberal, const char *string, int clearformess)
 
 /* misc activation related things */
 // *JDSRETURN*
-void funds_and_trouble(char &clearformess)
-{ //ACTIVITIES FOR INDIVIDUALS
+void funds_and_trouble(char &clearformess) { //ACTIVITIES FOR INDIVIDUALS
   vector<Creature *> trouble, hack, bury, solicit, tshirts, art, music, graffiti, brownies, prostitutes, teachers, students;
 
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     if (!pool[p]->alive) continue;
-    if (pool[p]->location == -1)
-    {
+    if (pool[p]->location == -1) {
       pool[p]->activity.type = ACTIVITY_NONE;
       continue;
     }
-    switch (pool[p]->activity.type)
-    {
+    switch (pool[p]->activity.type) {
     case ACTIVITY_TEACH_FIGHTING:
     case ACTIVITY_TEACH_POLITICS:
     case ACTIVITY_TEACH_COVERT:
@@ -1242,8 +1146,7 @@ void funds_and_trouble(char &clearformess)
       students.push_back(pool[p]);
       break;
     case ACTIVITY_SLEEPER_JOINLCS:
-      if (!location[find_homeless_shelter(*pool[p])]->siege.siege)
-      {
+      if (!location[find_homeless_shelter(*pool[p])]->siege.siege) {
         pool[p]->activity.type = ACTIVITY_NONE;
         pool[p]->flag &= ~CREATUREFLAG_SLEEPER;
         pool[p]->location = pool[p]->base = find_homeless_shelter(*pool[p]);
@@ -1280,13 +1183,10 @@ void funds_and_trouble(char &clearformess)
   doActivityBury(bury, clearformess);
 }
 
-void doActivitySolicitDonations(vector<Creature *> &solicit, char &clearformess)
-{ //SOLICITORS
+void doActivitySolicitDonations(vector<Creature *> &solicit, char &clearformess) { //SOLICITORS
   long total_income = 0;
-  for (int s = 0; s < len(solicit); s++)
-  {
-    if (!checkforarrest(*solicit[s], "soliciting donations", clearformess))
-    {
+  for (int s = 0; s < len(solicit); s++) {
+    if (!checkforarrest(*solicit[s], "soliciting donations", clearformess)) {
       int income = solicit[s]->skill_roll(SKILL_PERSUASION) *
                        solicit[s]->get_armor().get_professionalism() +
                    1;
@@ -1308,12 +1208,9 @@ void doActivitySolicitDonations(vector<Creature *> &solicit, char &clearformess)
   ledger.add_funds(total_income, INCOME_DONATIONS);
 }
 
-void doActivitySellTshirts(vector<Creature *> &tshirts, char &clearformess)
-{
-  for (int s = 0; s < len(tshirts); s++)
-  {
-    if (!checkforarrest(*tshirts[s], "selling shirts", clearformess))
-    {
+void doActivitySellTshirts(vector<Creature *> &tshirts, char &clearformess) {
+  for (int s = 0; s < len(tshirts); s++) {
+    if (!checkforarrest(*tshirts[s], "selling shirts", clearformess)) {
       long money = (tshirts[s]->skill_roll(SKILL_TAILORING) +
                     tshirts[s]->skill_roll(SKILL_BUSINESS)) /
                    2;
@@ -1336,12 +1233,9 @@ void doActivitySellTshirts(vector<Creature *> &tshirts, char &clearformess)
   }
 }
 
-void doActivitySellArt(vector<Creature *> &art, char &clearformess)
-{
-  for (int s = 0; s < len(art); s++)
-  {
-    if (!checkforarrest(*art[s], "sketching portraits", clearformess))
-    {
+void doActivitySellArt(vector<Creature *> &art, char &clearformess) {
+  for (int s = 0; s < len(art); s++) {
+    if (!checkforarrest(*art[s], "sketching portraits", clearformess)) {
       long money = art[s]->skill_roll(SKILL_ART);
 
       // Country's alignment affects effectiveness
@@ -1361,12 +1255,9 @@ void doActivitySellArt(vector<Creature *> &art, char &clearformess)
   }
 }
 
-void doActivitySellMusic(vector<Creature *> &music, char &clearformess)
-{
-  for (int s = 0; s < len(music); s++)
-  {
-    if (!checkforarrest(*music[s], "playing music", clearformess))
-    {
+void doActivitySellMusic(vector<Creature *> &music, char &clearformess) {
+  for (int s = 0; s < len(music); s++) {
+    if (!checkforarrest(*music[s], "playing music", clearformess)) {
       long money = music[s]->skill_roll(SKILL_MUSIC) / 2;
       bool has_instrument = music[s]->get_weapon().is_instrument();
 
@@ -1392,10 +1283,8 @@ void doActivitySellMusic(vector<Creature *> &music, char &clearformess)
   }
 }
 
-void doActivitySellBrownies(vector<Creature *> &brownies, char &clearformess)
-{
-  for (int s = 0; s < len(brownies); s++)
-  {
+void doActivitySellBrownies(vector<Creature *> &brownies, char &clearformess) {
+  for (int s = 0; s < len(brownies); s++) {
     //Check for police search
     int dodgelawroll = LCSrandom(1 + 30 * law[LAW_DRUGS] + 3);
 
@@ -1437,17 +1326,13 @@ void doActivitySellBrownies(vector<Creature *> &brownies, char &clearformess)
   }
 }
 
-void doActivityHacking(vector<Creature *> &hack, char &clearformess)
-{
-  if (len(hack))
-  {
+void doActivityHacking(vector<Creature *> &hack, char &clearformess) {
+  if (len(hack)) {
     vector<Creature *> cc, web, ddos, truehack;
 
     //First, do accounting to figure out who's doing what
-    for (int h = 0; h < len(hack); h++)
-    {
-      switch (hack[h]->activity.type)
-      {
+    for (int h = 0; h < len(hack); h++) {
+      switch (hack[h]->activity.type) {
       case ACTIVITY_CCFRAUD:
         hack[h]->train(SKILL_COMPUTERS, 2);
         cc.push_back(hack[h]);
@@ -1474,12 +1359,10 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
     for (int h = 0; h < len(truehack); h++)
       hack_skill = MAX(hack_skill, truehack[h]->skill_roll(SKILL_COMPUTERS));
 
-    if (DIFFICULTY_HEROIC <= hack_skill + len(truehack) - 1)
-    {
+    if (DIFFICULTY_HEROIC <= hack_skill + len(truehack) - 1) {
       if (len(truehack) > 1)
         strcpy(msg, "Your Hackers have ");
-      else
-      {
+      else {
         strcpy(msg, truehack[0]->name);
         strcat(msg, " has ");
       }
@@ -1487,10 +1370,8 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
       int trackdif = 0, juiceval = 0;
       int short crime = 0;
 
-      switch (LCSrandom(11))
-      {
-      case 0:
-      {
+      switch (LCSrandom(11)) {
+      case 0: {
         strcat(msg, "pilfered files from a Corporate server.");
 
         Item *it = new Loot(*loottype[getloottype("LOOT_CORPFILES")]);
@@ -1517,8 +1398,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         juiceval = 10;
         change_public_opinion(VIEW_GENETICS, 2, 0, 75);
         break;
-      case 3:
-      {
+      case 3: {
         strcat(msg, "intercepted internal media emails.");
 
         Item *it;
@@ -1541,8 +1421,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         juiceval = 10;
         change_public_opinion(VIEW_LIBERALCRIMESQUAD, 5, 0, 75);
         break;
-      case 5:
-      {
+      case 5: {
         strcat(msg, "uncovered information on dangerous research.");
 
         Item *it = new Loot(*loottype[getloottype("LOOT_RESEARCHFILES")]);
@@ -1553,8 +1432,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         juiceval = 10;
         break;
       }
-      case 6:
-      {
+      case 6: {
         strcat(msg, "discovered evidence of judicial corruption.");
 
         Item *it = new Loot(*loottype[getloottype("LOOT_JUDGEFILES")]);
@@ -1565,8 +1443,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         juiceval = 10;
         break;
       }
-      case 7:
-      {
+      case 7: {
         strcat(msg, "subverted a Conservative family forum.");
 
         trackdif = DIFFICULTY_SUPERHEROIC;
@@ -1576,8 +1453,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         change_public_opinion(VIEW_WOMEN, 2, 0, 75);
         break;
       }
-      case 8:
-      {
+      case 8: {
         strcat(msg, "spread videos of racist police brutality.");
 
         trackdif = DIFFICULTY_SUPERHEROIC;
@@ -1587,8 +1463,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         change_public_opinion(VIEW_CIVILRIGHTS, 2, 0, 75);
         break;
       }
-      case 9:
-      {
+      case 9: {
         strcat(msg, "published emails revealing CEO tax evasion.");
         //Scambaiting, except you're baiting a CEO
 
@@ -1599,8 +1474,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         change_public_opinion(VIEW_TAXES, 2, 0, 75);
         break;
       }
-      case 10:
-      {
+      case 10: {
         strcat(msg, "revealed huge political bias in INS processes.");
 
         trackdif = DIFFICULTY_SUPERHEROIC;
@@ -1619,9 +1493,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
       // Award juice to the hacking team for a job well done
       for (int h = 0; h < len(truehack); h++)
         addjuice(*truehack[h], juiceval, 200);
-    }
-    else if (DIFFICULTY_FORMIDABLE <= hack_skill + len(truehack) - 1)
-    {
+    } else if (DIFFICULTY_FORMIDABLE <= hack_skill + len(truehack) - 1) {
       int issue = LCSrandom(VIEWNUM - 5), crime = LAWFLAG_INFORMATION;
 
       // Maybe do a switch on issue here to specify which website it was, but I don't feel like
@@ -1629,14 +1501,12 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
 
       if (len(truehack) > 1)
         strcpy(msg, "Your hackers have ");
-      else
-      {
+      else {
         strcpy(msg, truehack[0]->name);
         strcat(msg, " has ");
       }
 
-      switch (LCSrandom(4))
-      {
+      switch (LCSrandom(4)) {
       case 0:
         strcat(msg, "defaced");
         crime = LAWFLAG_INFORMATION;
@@ -1655,8 +1525,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         break;
       }
       strcat(msg, " a ");
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         strcat(msg, "corporate website");
         break;
@@ -1686,8 +1555,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         addjuice(*truehack[h], 5, 100);
     }
 
-    if (msg[0])
-    {
+    if (msg[0]) {
       if (clearformess)
         erase();
       else
@@ -1704,13 +1572,11 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
     }
 
     //CREDIT CARD FRAUD
-    for (int h = 0; h < len(cc); h++)
-    {
+    for (int h = 0; h < len(cc); h++) {
       hack_skill = cc[h]->skill_roll(SKILL_COMPUTERS);
       int difficulty = DIFFICULTY_CHALLENGING;
 
-      if (difficulty <= hack_skill)
-      {
+      if (difficulty <= hack_skill) {
         // *JDS* You get between $1 and $100, plus an extra $1-50 every
         // time you pass a check against your hacking skill, where chance of
         // failure is one over the adjusted hackers' skill divided by four. Once
@@ -1718,8 +1584,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
         // up to 20 times, at which point the loop breaks. The skill check
         // here doesn't take into account funding.
         int fundgain = LCSrandom(101);
-        while (difficulty < hack_skill)
-        {
+        while (difficulty < hack_skill) {
           fundgain += LCSrandom(51);
           difficulty += 2;
         }
@@ -1731,8 +1596,7 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
           criminalize(*cc[h], LAWFLAG_CCFRAUD);
       }
 
-      if (msg[0])
-      {
+      if (msg[0]) {
         if (clearformess)
           erase();
         else
@@ -1751,16 +1615,12 @@ void doActivityHacking(vector<Creature *> &hack, char &clearformess)
   }
 }
 
-void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
-{
+void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess) {
   int s;
 
-  if (len(graffiti))
-  {
-    for (s = 0; s < len(graffiti); s++)
-    {
-      if (!graffiti[s]->get_weapon().can_graffiti())
-      {
+  if (len(graffiti)) {
+    for (s = 0; s < len(graffiti); s++) {
+      if (!graffiti[s]->get_weapon().can_graffiti()) {
 
         if (clearformess)
           erase();
@@ -1773,13 +1633,10 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
 
         //Check base inventory for a spraycan
         bool foundone = false;
-        for (int i = 0; i < len(location[graffiti[s]->base]->loot); i++)
-        {
-          if (location[graffiti[s]->base]->loot[i]->is_weapon())
-          {
+        for (int i = 0; i < len(location[graffiti[s]->base]->loot); i++) {
+          if (location[graffiti[s]->base]->loot[i]->is_weapon()) {
             Weapon *w = static_cast<Weapon *>(location[graffiti[s]->base]->loot[i]); //cast -XML
-            if (w->can_graffiti())
-            {
+            if (w->can_graffiti()) {
               addstr(" grabbed a ", gamelog);
               addstr(w->get_name(), gamelog);
               addstr(" from ", gamelog);
@@ -1798,8 +1655,7 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
           }
         }
 
-        if (!foundone && ledger.get_funds() >= 20)
-        {
+        if (!foundone && ledger.get_funds() >= 20) {
           ledger.subtract_funds(20, EXPENSE_SHOPPING);
           addstr(" bought spraypaint for graffiti.", gamelog);
 
@@ -1807,9 +1663,7 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
 
           Weapon spray(*weapontype[getweapontype("WEAPON_SPRAYCAN")]);
           graffiti[s]->give_weapon(spray, &location[graffiti[s]->base]->loot);
-        }
-        else if (!foundone)
-        {
+        } else if (!foundone) {
           addstr(" needs a spraycan equipped to do graffiti.", gamelog);
           graffiti[s]->activity.type = ACTIVITY_NONE;
 
@@ -1826,8 +1680,7 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
         makedelimiter();
 
       if (!LCSrandom(10) &&
-          !(graffiti[s]->skill_check(SKILL_STREETSENSE, DIFFICULTY_AVERAGE)))
-      {
+          !(graffiti[s]->skill_check(SKILL_STREETSENSE, DIFFICULTY_AVERAGE))) {
         if (clearformess)
           erase();
         else
@@ -1841,12 +1694,10 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
         criminalize(*graffiti[s], LAWFLAG_VANDALISM);
         graffiti[s]->train(SKILL_STREETSENSE, 20);
 
-        if (graffiti[s]->activity.arg != -1)
-        {
+        if (graffiti[s]->activity.arg != -1) {
           addstr(" while working on the mural!", gamelog);
           graffiti[s]->activity.arg = -1;
-        }
-        else
+        } else
           addstr(" while spraying an LCS tag!", gamelog);
         gamelog.nextMessage();
 
@@ -1860,12 +1711,9 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
         getkey();
 
         attemptarrest(*graffiti[s], NULL, clearformess);
-      }
-      else if (graffiti[s]->activity.arg != -1)
-      {
+      } else if (graffiti[s]->activity.arg != -1) {
         power = 0;
-        if (!LCSrandom(3))
-        {
+        if (!LCSrandom(3)) {
           issue = graffiti[s]->activity.arg;
           power = graffiti[s]->skill_roll(SKILL_ART) / 3;
 
@@ -1885,9 +1733,7 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
           graffiti[s]->train(SKILL_ART, MAX(10 - graffiti[s]->get_skill(SKILL_ART) / 2, 1));
 
           getkey();
-        }
-        else
-        {
+        } else {
           power = 0;
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(8, 1);
@@ -1898,9 +1744,7 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
 
           getkey();
         }
-      }
-      else if (!LCSrandom(MAX(30 - graffiti[s]->get_skill(SKILL_ART) * 2, 5)))
-      {
+      } else if (!LCSrandom(MAX(30 - graffiti[s]->get_skill(SKILL_ART) * 2, 5))) {
         issue = randomissue();
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(8, 1);
@@ -1917,14 +1761,11 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
       }
 
       graffiti[s]->train(SKILL_ART, MAX(4 - graffiti[s]->get_skill(SKILL_ART), 0));
-      if (issue == VIEW_LIBERALCRIMESQUAD)
-      {
+      if (issue == VIEW_LIBERALCRIMESQUAD) {
         change_public_opinion(VIEW_LIBERALCRIMESQUAD, LCSrandom(2), 0, 65);
         change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, !LCSrandom(8), 0, 65);
         public_interest[issue] += power;
-      }
-      else
-      {
+      } else {
         change_public_opinion(VIEW_LIBERALCRIMESQUAD, LCSrandom(2) + 1, 0, 85);
         change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, !LCSrandom(4), 0, 65);
         public_interest[issue] += power;
@@ -1934,10 +1775,8 @@ void doActivityGraffiti(vector<Creature *> &graffiti, char &clearformess)
   }
 }
 
-void doActivityProstitution(vector<Creature *> &prostitutes, char &clearformess)
-{
-  for (int p = len(prostitutes) - 1; p >= 0; p--)
-  {
+void doActivityProstitution(vector<Creature *> &prostitutes, char &clearformess) {
+  for (int p = len(prostitutes) - 1; p >= 0; p--) {
     // Business once every three days or so
     if (LCSrandom(3)) continue;
 
@@ -1955,8 +1794,7 @@ void doActivityProstitution(vector<Creature *> &prostitutes, char &clearformess)
 
     // Street sense check or deal with slimy people that reduce dignity and juice
     if (!LCSrandom(3) &&
-        !(prostitutes[p]->skill_check(SKILL_STREETSENSE, DIFFICULTY_AVERAGE)))
-    {
+        !(prostitutes[p]->skill_check(SKILL_STREETSENSE, DIFFICULTY_AVERAGE))) {
       addjuice(*prostitutes[p], -!LCSrandom(3), -20);
     }
 
@@ -1991,9 +1829,7 @@ void doActivityProstitution(vector<Creature *> &prostitutes, char &clearformess)
         prostitutes[p]->drop_weapons_and_clips(NULL);
         prostitutes[p]->activity.type = ACTIVITY_NONE;
         criminalize(*prostitutes[p], LAWFLAG_PROSTITUTION);
-      }
-      else
-      {
+      } else {
         if (clearformess)
           erase();
         else
@@ -2011,8 +1847,7 @@ void doActivityProstitution(vector<Creature *> &prostitutes, char &clearformess)
       }
     }
 
-    if (!caught)
-    {
+    if (!caught) {
       prostitutes[p]->train(SKILL_STREETSENSE, MAX(5 - prostitutes[p]->get_skill(SKILL_STREETSENSE), 0));
       ledger.add_funds(fundgain, INCOME_PROSTITUTION);
       prostitutes[p]->income = fundgain;
@@ -2020,16 +1855,13 @@ void doActivityProstitution(vector<Creature *> &prostitutes, char &clearformess)
   }
 }
 
-void doActivityLearn(vector<Creature *> &students, char &clearformess)
-{
-  for (int s = len(students) - 1; s >= 0; s--)
-  {
+void doActivityLearn(vector<Creature *> &students, char &clearformess) {
+  for (int s = len(students) - 1; s >= 0; s--) {
     if (ledger.get_funds() < 60) break;
     ledger.subtract_funds(60, EXPENSE_TRAINING);
     int skill[2] = {-1, -1};
     int effectiveness[2] = {20, 20};
-    switch (students[s]->activity.type)
-    {
+    switch (students[s]->activity.type) {
     case ACTIVITY_STUDY_DEBATING:
       skill[0] = SKILL_PERSUASION;
       break;
@@ -2081,8 +1913,7 @@ void doActivityLearn(vector<Creature *> &students, char &clearformess)
     }
     bool worthcontinuing = false;
     for (int i = 0; i < 2; i++)
-      if (skill[i] != -1)
-      { // rapid decrease in effectiveness as your skill gets higher.
+      if (skill[i] != -1) { // rapid decrease in effectiveness as your skill gets higher.
         effectiveness[i] /= (students[s]->get_skill(skill[i]) + 1);
         if (effectiveness[i] < 1)
           effectiveness[i] = 1;
@@ -2090,8 +1921,7 @@ void doActivityLearn(vector<Creature *> &students, char &clearformess)
         if (students[s]->get_skill(skill[i]) < students[s]->skill_cap(skill[i], true))
           worthcontinuing = true;
       }
-    if (!worthcontinuing)
-    {
+    if (!worthcontinuing) {
       students[s]->activity.type = ACTIVITY_NONE;
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(8, 1);
@@ -2106,10 +1936,8 @@ void doActivityLearn(vector<Creature *> &students, char &clearformess)
   }
 }
 
-void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
-{
-  if (len(trouble))
-  {
+void doActivityTrouble(vector<Creature *> &trouble, char &clearformess) {
+  if (len(trouble)) {
     long juiceval = 0;
     char done = 0;
     short crime = 0;
@@ -2123,8 +1951,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
     move(8, 1);
     if (len(trouble) > 1)
       addstr("Your Activists have ", gamelog);
-    else
-    {
+    else {
       addstr(trouble[0]->name, gamelog);
       addstr(" has ", gamelog);
     }
@@ -2142,10 +1969,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
     if (LCSrandom(80) < power) mod++;
     if (LCSrandom(100) < power) mod++;
 
-    do
-    {
-      switch (LCSrandom(10))
-      {
+    do {
+      switch (LCSrandom(10)) {
       case 0:
         addstr("run around uptown splashing paint on fur coats!", gamelog);
         juiceval = 2;
@@ -2156,10 +1981,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         background_liberal_influence[VIEW_ANIMALRESEARCH] += mod;
         done = 1;
         break;
-      case 1:
-      {
-        if (law[LAW_GAY] < 2)
-        {
+      case 1: {
+        if (law[LAW_GAY] < 2) {
           addstr("disrupted a traditional wedding at a church!", gamelog);
           change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
           change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2171,10 +1994,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         }
         break;
       }
-      case 2:
-      {
-        if (law[LAW_ABORTION] < 2)
-        {
+      case 2: {
+        if (law[LAW_ABORTION] < 2) {
           addstr("posted horrifying dead abortion doctor pictures downtown!", gamelog);
           change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
           change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2185,10 +2006,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         }
         break;
       }
-      case 3:
-      {
-        if (law[LAW_POLICEBEHAVIOR] < 2)
-        {
+      case 3: {
+        if (law[LAW_POLICEBEHAVIOR] < 2) {
           addstr("gone downtown and reenacted a police beating!", gamelog);
           change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
           change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2200,10 +2019,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         }
         break;
       }
-      case 4:
-      {
-        if (law[LAW_NUCLEARPOWER] < 2)
-        {
+      case 4: {
+        if (law[LAW_NUCLEARPOWER] < 2) {
           if (len(trouble) > 1)
             addstr("dressed up and pretended to be radioactive mutants!", gamelog);
           else
@@ -2218,10 +2035,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         }
         break;
       }
-      case 5:
-      {
-        if (law[LAW_POLLUTION] < 2)
-        {
+      case 5: {
+        if (law[LAW_POLLUTION] < 2) {
           addstr("squirted business people with fake polluted water!", gamelog);
           change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
           change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2233,10 +2048,8 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         }
         break;
       }
-      case 6:
-      {
-        if (law[LAW_DEATHPENALTY] < 2)
-        {
+      case 6: {
+        if (law[LAW_DEATHPENALTY] < 2) {
           addstr("distributed fliers graphically illustrating executions!", gamelog);
           change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
           change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2247,8 +2060,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         }
         break;
       }
-      case 7:
-      {
+      case 7: {
         addstr("distributed fliers graphically illustrating CIA torture!", gamelog);
         change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
         change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2258,25 +2070,21 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
         done = 1;
         break;
       }
-      case 8:
-      {
+      case 8: {
         addstr("burned a corporate symbol and denounced capitalism!", gamelog);
         change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
         change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
         public_interest[VIEW_CORPORATECULTURE] += mod;
         background_liberal_influence[VIEW_CORPORATECULTURE] += mod;
-        if (law[LAW_CORPORATE] == -2)
-        {               // In extreme corporate culture cases this should give a flag burning charge! -- kviiri
-          juiceval = 2; // Done -- SlatersQuest
+        if (law[LAW_CORPORATE] == -2) { // In extreme corporate culture cases this should give a flag burning charge! -- kviiri
+          juiceval = 2;                 // Done -- SlatersQuest
           crime = LAWFLAG_BURNFLAG;
-        }
-        else
+        } else
           juiceval = 1;
         done = 1;
         break;
       }
-      case 9:
-      {
+      case 9: {
         addstr("set up a mock sweatshop in the middle of the mall!", gamelog);
         change_public_opinion(VIEW_LIBERALCRIMESQUAD, mod);
         change_public_opinion(VIEW_LIBERALCRIMESQUADPOS, mod, 0, 70);
@@ -2293,20 +2101,16 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
 
     getkey();
 
-    if (crime != 0)
-    {
-      for (int t = 0; t < len(trouble); t++)
-      {
+    if (crime != 0) {
+      for (int t = 0; t < len(trouble); t++) {
         if (!LCSrandom(30) &&
-            !(trouble[t]->skill_check(SKILL_STREETSENSE, DIFFICULTY_AVERAGE)))
-        {
+            !(trouble[t]->skill_check(SKILL_STREETSENSE, DIFFICULTY_AVERAGE))) {
           if (clearformess)
             erase();
           else
             makedelimiter();
 
-          if (!LCSrandom(4))
-          {
+          if (!LCSrandom(4)) {
             newsstoryst *ns = new newsstoryst;
             ns->type = NEWSSTORY_WANTEDARREST; // should probably create a NEWSSTORY_TROUBLEARREST and implement it fully
             ns->loc = -1;                      // but this will have to do for now
@@ -2314,9 +2118,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
             newsstory.push_back(ns);
             sitestory = ns;
             attemptarrest(*trouble[t], "causing trouble", clearformess);
-          }
-          else
-          {
+          } else {
             set_color(COLOR_WHITE, COLOR_BLACK, 1);
             move(8, 1);
             addstr(trouble[t]->name, gamelog);
@@ -2327,8 +2129,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
 
             bool wonfight = false;
 
-            if (trouble[t]->get_weapon().is_threatening())
-            {
+            if (trouble[t]->get_weapon().is_threatening()) {
               if (clearformess)
                 erase();
               else
@@ -2359,22 +2160,17 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
               addjuice(*trouble[t], 5, 20);
 
               wonfight = true;
-            }
-            else
-            {
-              for (int count = 0; count <= LCSrandom(5) + 2; count++)
-              {
+            } else {
+              for (int count = 0; count <= LCSrandom(5) + 2; count++) {
                 if (clearformess)
                   erase();
                 else
                   makedelimiter();
-                if (trouble[t]->skill_roll(SKILL_HANDTOHAND) > LCSrandom(6) + count)
-                {
+                if (trouble[t]->skill_roll(SKILL_HANDTOHAND) > LCSrandom(6) + count) {
                   set_color(COLOR_CYAN, COLOR_BLACK, 1);
                   move(8, 1);
                   addstr(trouble[t]->name, gamelog);
-                  switch (LCSrandom(8))
-                  {
+                  switch (LCSrandom(8)) {
                   case 0:
                     addstr(" breaks the arm of the nearest person!", gamelog);
                     break;
@@ -2406,14 +2202,11 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
                   getkey();
 
                   wonfight = true;
-                }
-                else
-                {
+                } else {
                   set_color(COLOR_YELLOW, COLOR_BLACK, 1);
                   move(8, 1);
                   addstr(trouble[t]->name, gamelog);
-                  switch (LCSrandom(8))
-                  {
+                  switch (LCSrandom(8)) {
                   case 0:
                     addstr(" is held down and kicked by three guys!", gamelog);
                     break;
@@ -2450,8 +2243,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
                 }
               }
 
-              if (wonfight)
-              {
+              if (wonfight) {
                 if (clearformess)
                   erase();
                 else
@@ -2475,8 +2267,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
               }
             }
 
-            if (!wonfight)
-            {
+            if (!wonfight) {
               if (clearformess)
                 erase();
               else
@@ -2494,17 +2285,14 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
               addjuice(*trouble[t], -10, -50);
               if (trouble[t]->blood > 10) trouble[t]->blood = 10;
 
-              if (!LCSrandom(5))
-              {
+              if (!LCSrandom(5)) {
                 if (clearformess)
                   erase();
                 else
                   makedelimiter();
-                switch (LCSrandom(10))
-                {
+                switch (LCSrandom(10)) {
                 case 0:
-                  if (trouble[t]->special[SPECIALWOUND_LOWERSPINE] == 1)
-                  {
+                  if (trouble[t]->special[SPECIALWOUND_LOWERSPINE] == 1) {
                     move(8, 1);
                     addstr(trouble[t]->name, gamelog);
                     addstr("'s lower spine has been broken!", gamelog);
@@ -2515,8 +2303,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
                   }
                   break;
                 case 1:
-                  if (trouble[t]->special[SPECIALWOUND_UPPERSPINE] == 1)
-                  {
+                  if (trouble[t]->special[SPECIALWOUND_UPPERSPINE] == 1) {
                     move(8, 1);
                     addstr(trouble[t]->name, gamelog);
                     addstr("'s upper spine has been broken!", gamelog);
@@ -2527,8 +2314,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
                   }
                   break;
                 case 2:
-                  if (trouble[t]->special[SPECIALWOUND_NECK] == 1)
-                  {
+                  if (trouble[t]->special[SPECIALWOUND_NECK] == 1) {
                     move(8, 1);
                     addstr(trouble[t]->name, gamelog);
                     addstr("'s neck has been broken!", gamelog);
@@ -2539,8 +2325,7 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
                   }
                   break;
                 case 3:
-                  if (trouble[t]->special[SPECIALWOUND_TEETH] > 0)
-                  {
+                  if (trouble[t]->special[SPECIALWOUND_TEETH] > 0) {
                     move(8, 1);
                     addstr(trouble[t]->name);
                     if (trouble[t]->special[SPECIALWOUND_TEETH] > 1)
@@ -2553,31 +2338,24 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
                     getkey();
                   }
                   break;
-                default:
-                {
-                  if (trouble[t]->special[SPECIALWOUND_RIBS] > 0)
-                  {
+                default: {
+                  if (trouble[t]->special[SPECIALWOUND_RIBS] > 0) {
                     int ribminus = LCSrandom(RIBNUM) + 1;
                     if (ribminus > trouble[t]->special[SPECIALWOUND_RIBS]) ribminus = trouble[t]->special[SPECIALWOUND_RIBS];
 
                     move(8, 1);
-                    if (ribminus > 1)
-                    {
+                    if (ribminus > 1) {
                       if (ribminus == trouble[t]->special[SPECIALWOUND_RIBS])
                         addstr("All ", gamelog);
                       addstr(ribminus, gamelog);
                       addstr(" of ", gamelog);
                       addstr(trouble[t]->name, gamelog);
                       addstr("'s ribs are ", gamelog);
-                    }
-                    else if (trouble[t]->special[SPECIALWOUND_RIBS] > 1)
-                    {
+                    } else if (trouble[t]->special[SPECIALWOUND_RIBS] > 1) {
                       addstr("One of ", gamelog);
                       addstr(trouble[t]->name, gamelog);
                       addstr("'s rib is ", gamelog);
-                    }
-                    else
-                    {
+                    } else {
                       addstr(trouble[t]->name);
                       addstr("'s last unbroken rib is ", gamelog);
                     }
@@ -2604,16 +2382,13 @@ void doActivityTrouble(vector<Creature *> &trouble, char &clearformess)
   }
 }
 
-void doActivityTeach(vector<Creature *> &teachers, char &clearformess)
-{
-  for (int t = 0; t < len(teachers); t++)
-  {
+void doActivityTeach(vector<Creature *> &teachers, char &clearformess) {
+  for (int t = 0; t < len(teachers); t++) {
     int skillarray[14];
     int cost = 0, students = 0;
     //Build a list of skills to train and determine the cost for running
     //a class depending on what the teacher is teaching
-    switch (teachers[t]->activity.type)
-    {
+    switch (teachers[t]->activity.type) {
     case ACTIVITY_TEACH_POLITICS:
       cost = 2;
       skillarray[0] = SKILL_LAW;
@@ -2659,13 +2434,11 @@ void doActivityTeach(vector<Creature *> &teachers, char &clearformess)
     }
 
     //Count potential students for this teacher to get an idea of efficiency
-    for (int p = 0; p < len(pool); p++)
-    {
+    for (int p = 0; p < len(pool); p++) {
       //If they're at the location
       if (pool[p]->location == teachers[t]->location &&
           pool[p]->align == ALIGN_LIBERAL &&
-          pool[p]->alive)
-      {
+          pool[p]->alive) {
         //Step through the array of skills to train
         for (int i = 0; i < 13; i++) //Any reason why we aren't using a while(true) loop or something even more dynamic? --kviiri
         {
@@ -2676,8 +2449,7 @@ void doActivityTeach(vector<Creature *> &teachers, char &clearformess)
           //teacher's ability at teaching
           if (pool[p]->get_skill(skillarray[i]) < teachers[t]->get_skill(skillarray[i]) - 1 &&
               pool[p]->get_skill(skillarray[i]) < teachers[t]->get_skill(SKILL_TEACHING) + 2 &&
-              pool[p]->get_skill(skillarray[i]) < pool[p]->skill_cap(skillarray[i], true))
-          {
+              pool[p]->get_skill(skillarray[i]) < pool[p]->skill_cap(skillarray[i], true)) {
             students++;
           }
         }
@@ -2689,16 +2461,13 @@ void doActivityTeach(vector<Creature *> &teachers, char &clearformess)
       continue; //Can't afford to teach them. Continue with next teacher.
 
     //Walk through and train people
-    for (int p = 0; p < len(pool); p++)
-    {
+    for (int p = 0; p < len(pool); p++) {
       //If they're at the location
       if (pool[p]->location == teachers[t]->location &&
           pool[p]->align == ALIGN_LIBERAL &&
-          pool[p]->alive)
-      {
+          pool[p]->alive) {
         //Step through the array of skills to train
-        for (int i = 0; i < 13; i++)
-        {
+        for (int i = 0; i < 13; i++) {
           //If no more skills to train, stop
           if (skillarray[i] == -1) break;
           //Otherwise, if the student has less skill than the teacher, train the student
@@ -2706,16 +2475,14 @@ void doActivityTeach(vector<Creature *> &teachers, char &clearformess)
           //teacher's ability at teaching
           if (pool[p]->get_skill(skillarray[i]) < teachers[t]->get_skill(skillarray[i]) - 1 &&
               pool[p]->get_skill(skillarray[i]) < teachers[t]->get_skill(SKILL_TEACHING) + 2 &&
-              pool[p]->get_skill(skillarray[i]) < pool[p]->skill_cap(skillarray[i], true))
-          {
+              pool[p]->get_skill(skillarray[i]) < pool[p]->skill_cap(skillarray[i], true)) {
             // Teach based on teacher's skill in the topic plus skill in teaching, minus
             // student's skill in the topic
             int teach = teachers[t]->get_skill(skillarray[i]) +
                         teachers[t]->get_skill(SKILL_TEACHING) -
                         pool[p]->get_skill(skillarray[i]);
             //at ten students, cost no longer goes up, but effectiveness goes down.
-            if (students > 10)
-            {
+            if (students > 10) {
               //teach = (teach * 10) / students; //teach at 50% speed with twice as many students.
               teach = ((teach * 30 / students) + teach) / 4; //62.5% speed with twice as many students.
             }
@@ -2743,12 +2510,9 @@ void doActivityTeach(vector<Creature *> &teachers, char &clearformess)
   }
 }
 
-void doActivityBury(vector<Creature *> &bury, char &clearformess)
-{
-  if (len(bury))
-  {
-    for (int p = len(pool) - 1; p >= 0; p--)
-    {
+void doActivityBury(vector<Creature *> &bury, char &clearformess) {
+  if (len(bury)) {
+    for (int p = len(pool) - 1; p >= 0; p--) {
       if (pool[p]->alive) continue;
 
       bool arrest_attempted = false;
@@ -2756,10 +2520,8 @@ void doActivityBury(vector<Creature *> &bury, char &clearformess)
       //MAKE BASE LOOT
       makeloot(*pool[p], location[bury[0]->base]->loot);
 
-      for (int b = 0; b < len(bury); b++)
-      {
-        if (!arrest_attempted && !(bury[b]->skill_check(SKILL_STREETSENSE, DIFFICULTY_EASY)))
-        {
+      for (int b = 0; b < len(bury); b++) {
+        if (!arrest_attempted && !(bury[b]->skill_check(SKILL_STREETSENSE, DIFFICULTY_EASY))) {
           arrest_attempted = true; // Only attempt one burial arrest per body
 
           newsstoryst *ns = new newsstoryst;
@@ -2790,15 +2552,13 @@ void doActivityBury(vector<Creature *> &bury, char &clearformess)
 }
 
 /* steal a car */
-bool stealcar(Creature &cr, char &clearformess)
-{
+bool stealcar(Creature &cr, char &clearformess) {
   music.play(MUSIC_CARTHEFT);
   clearformess = 1;
 
   short cartype;
 
-  if (carselect(cr, cartype))
-  {
+  if (carselect(cr, cartype)) {
     int diff = vehicletype[cartype]->steal_difficultytofind() * 2;
 
     Vehicle *v = NULL;
@@ -2833,13 +2593,11 @@ bool stealcar(Creature &cr, char &clearformess)
 
     move(11, 0);
     addstr(cr.name, gamelog);
-    if (old != cartype)
-    {
+    if (old != cartype) {
       addstr(" was unable to find a ", gamelog);
       addstr(vehicletype[old]->longname(), gamelog);
       addstr(" but did find a ", gamelog);
-    }
-    else
+    } else
       addstr(" found a ", gamelog);
     addstr(v->longname(), gamelog);
     addstr(".", gamelog);
@@ -2869,12 +2627,10 @@ bool stealcar(Creature &cr, char &clearformess)
     move(13, 0);
     addstr("Enter - Call it a day.");
 
-    while (true)
-    {
+    while (true) {
       int c = getkey();
       if (c == 'a') break;
-      if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
-      {
+      if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) {
         delete v;
         return false;
       }
@@ -2885,8 +2641,7 @@ bool stealcar(Creature &cr, char &clearformess)
          touchalarm = LCSrandom(100) < v->touchalarmchance();
     char windowdamage = 0;
 
-    for (bool entered = false; !entered;)
-    {
+    for (bool entered = false; !entered;) {
       erase();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(0, 0);
@@ -2894,8 +2649,7 @@ bool stealcar(Creature &cr, char &clearformess)
       printcreatureinfo(&cr);
       makedelimiter();
 
-      if (alarmon)
-      {
+      if (alarmon) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(10, 0);
         if (sensealarm)
@@ -2908,18 +2662,14 @@ bool stealcar(Creature &cr, char &clearformess)
           addstr("STAND AWAY FROM THE VEHICLE!   <BEEP!!> <BEEP!!>");
         else
           addstr("<BEEP!!> <BEEP!!> <BEEP!!> <BEEP!!>");
-      }
-      else if (sensealarm)
-      {
+      } else if (sensealarm) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(10, 0);
         addstr("THE VIPER:   ");
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("THIS IS THE VIPER!   STAND AWAY!", gamelog);
         gamelog.nextMessage();
-      }
-      else
-      {
+      } else {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         move(10, 0);
         addstr(cr.name, gamelog);
@@ -2938,16 +2688,12 @@ bool stealcar(Creature &cr, char &clearformess)
       move(14, 0);
       if (!sensealarm)
         addstr("Enter - Call it a day.");
-      else
-      {
-        if (!alarmon)
-        {
+      else {
+        if (!alarmon) {
           addstr("Enter - The Viper?   ");
           addstr(cr.name);
           addstr(" is deterred.");
-        }
-        else
-        {
+        } else {
           addstr("Enter - Yes, the Viper has deterred ");
           addstr(cr.name);
           addstr(".");
@@ -2955,25 +2701,20 @@ bool stealcar(Creature &cr, char &clearformess)
       }
 
       char method = -1;
-      while (method == -1)
-      {
+      while (method == -1) {
         int c = getkey();
         if (c == 'a') method = 0;
         if (c == 'b') method = 1;
-        if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
-        {
+        if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) {
           delete v;
           return false;
         } /* try again tomorrow */
       }
 
       //PICK LOCK
-      if (method == 0)
-      {
-        if (cr.skill_check(SKILL_SECURITY, DIFFICULTY_AVERAGE))
-        {
-          switch (fieldskillrate)
-          {
+      if (method == 0) {
+        if (cr.skill_check(SKILL_SECURITY, DIFFICULTY_AVERAGE)) {
+          switch (fieldskillrate) {
           case FIELDSKILLRATE_FAST:
             cr.train(SKILL_SECURITY, 25);
             break;
@@ -2993,9 +2734,7 @@ bool stealcar(Creature &cr, char &clearformess)
           getkey();
 
           entered = true;
-        }
-        else
-        {
+        } else {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 0);
           addstr(cr.name, gamelog);
@@ -3006,18 +2745,15 @@ bool stealcar(Creature &cr, char &clearformess)
         }
       }
       //BREAK WINDOW
-      if (method == 1)
-      {
+      if (method == 1) {
         int difficulty = static_cast<int>(DIFFICULTY_EASY / cr.get_weapon().get_bashstrengthmod()) - windowdamage;
 
-        if (cr.attribute_check(ATTRIBUTE_STRENGTH, difficulty))
-        {
+        if (cr.attribute_check(ATTRIBUTE_STRENGTH, difficulty)) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 0);
           addstr(cr.name, gamelog);
           addstr(" smashes the window", gamelog);
-          if (cr.get_weapon().get_bashstrengthmod() > 1)
-          {
+          if (cr.get_weapon().get_bashstrengthmod() > 1) {
             addstr(" with a ", gamelog);
             addstr(cr.get_weapon().get_name(2), gamelog);
           }
@@ -3028,15 +2764,12 @@ bool stealcar(Creature &cr, char &clearformess)
           getkey();
 
           entered = true;
-        }
-        else
-        {
+        } else {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 0);
           addstr(cr.name, gamelog);
           addstr(" cracks the window", gamelog);
-          if (cr.get_weapon().get_bashstrengthmod() > 1)
-          {
+          if (cr.get_weapon().get_bashstrengthmod() > 1) {
             addstr(" with a ", gamelog);
             addstr(cr.get_weapon().get_name(2), gamelog);
           }
@@ -3051,10 +2784,8 @@ bool stealcar(Creature &cr, char &clearformess)
       //ALARM CHECK
       int y = 17;
 
-      if (touchalarm || sensealarm)
-      {
-        if (!alarmon)
-        {
+      if (touchalarm || sensealarm) {
+        if (!alarmon) {
           set_color(COLOR_YELLOW, COLOR_BLACK, 1);
           move(y++, 0);
           addstr("An alarm suddenly starts blaring!", gamelog);
@@ -3067,8 +2798,7 @@ bool stealcar(Creature &cr, char &clearformess)
       }
 
       //NOTICE CHECK
-      if (!LCSrandom(50) || (!LCSrandom(5) && alarmon))
-      {
+      if (!LCSrandom(50) || (!LCSrandom(5) && alarmon)) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         move(y++, 0);
         addstr(cr.name, gamelog);
@@ -3086,14 +2816,12 @@ bool stealcar(Creature &cr, char &clearformess)
         sitestory = ns;
         makechasers(-1, 5);
 
-        if (footchase(cr))
-        {
+        if (footchase(cr)) {
           mode = GAMEMODE_BASE;
           delete v;
           return false;
         } // Switched to return false; this will cause you to try again tomorrow
-        else
-        {
+        else {
           mode = GAMEMODE_BASE;
           delete v;
           return false;
@@ -3106,8 +2834,7 @@ bool stealcar(Creature &cr, char &clearformess)
     int key_location = LCSrandom(5), nervous_counter = 0;
     //char ignition_progress=0;
 
-    for (bool started = false; !started;)
-    {
+    for (bool started = false; !started;) {
       nervous_counter++;
       erase();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -3126,8 +2853,7 @@ bool stealcar(Creature &cr, char &clearformess)
       addstr(".", gamelog);
       gamelog.nextMessage();
 
-      if (alarmon)
-      {
+      if (alarmon) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(y++, 0);
         if (sensealarm)
@@ -3151,8 +2877,7 @@ bool stealcar(Creature &cr, char &clearformess)
       move(y++, 0);
       if (!sensealarm)
         addstr("Enter - Call it a day.");
-      else
-      {
+      else {
         addstr("Enter - The Viper has finally deterred ");
         addstr(cr.name);
         addstr(".");
@@ -3160,25 +2885,20 @@ bool stealcar(Creature &cr, char &clearformess)
       y++;
 
       char method = -1;
-      while (method == -1)
-      {
+      while (method == -1) {
         int c = getkey();
         if (c == 'a') method = 0;
         if (c == 'b') method = 1;
-        if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
-        {
+        if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) {
           delete v;
           return false;
         } // Call it a day and try again tomorrow
       }
 
       //HOTWIRE CAR
-      if (method == 0)
-      {
-        if (cr.skill_check(SKILL_SECURITY, DIFFICULTY_CHALLENGING))
-        {
-          switch (fieldskillrate)
-          {
+      if (method == 0) {
+        if (cr.skill_check(SKILL_SECURITY, DIFFICULTY_CHALLENGING)) {
+          switch (fieldskillrate) {
           case FIELDSKILLRATE_FAST:
             cr.train(SKILL_SECURITY, 50);
             break;
@@ -3198,9 +2918,7 @@ bool stealcar(Creature &cr, char &clearformess)
           getkey();
 
           started = true;
-        }
-        else
-        {
+        } else {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(y++, 0);
           addstr(cr.name, gamelog);
@@ -3209,8 +2927,7 @@ bool stealcar(Creature &cr, char &clearformess)
             flavor_text = LCSrandom(3);
           else
             flavor_text = LCSrandom(5);
-          switch (flavor_text)
-          {
+          switch (flavor_text) {
           case 0:
             addstr(" fiddles with the ignition, but the car doesn't start.", gamelog);
             break;
@@ -3233,19 +2950,15 @@ bool stealcar(Creature &cr, char &clearformess)
         }
       }
       //KEYS
-      if (method == 1)
-      {
+      if (method == 1) {
         int difficulty;
         const char *location;
 
-        if (!keys_in_car)
-        {
+        if (!keys_in_car) {
           difficulty = DIFFICULTY_IMPOSSIBLE;
           location = "in SPACE. With ALIENS. Seriously.";
-        }
-        else
-          switch (key_location)
-          {
+        } else
+          switch (key_location) {
           case 0:
           default:
             difficulty = DIFFICULTY_AUTOMATIC;
@@ -3268,8 +2981,7 @@ bool stealcar(Creature &cr, char &clearformess)
             location = "under the back seat!";
             break;
           }
-        if (cr.attribute_check(ATTRIBUTE_INTELLIGENCE, difficulty))
-        {
+        if (cr.attribute_check(ATTRIBUTE_INTELLIGENCE, difficulty)) {
           set_color(COLOR_GREEN, COLOR_BLACK, 1);
           move(y++, 0);
           if (law[LAW_FREESPEECH] == -2)
@@ -3284,9 +2996,7 @@ bool stealcar(Creature &cr, char &clearformess)
           getkey();
 
           started = true;
-        }
-        else
-        {
+        } else {
           key_search_total++;
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(y++, 0);
@@ -3299,10 +3009,8 @@ bool stealcar(Creature &cr, char &clearformess)
             addstr("I don't think they're in here...", gamelog);
           else if (key_search_total == 15)
             addstr("If they were here, I'd have found them by now.", gamelog);
-          else if (key_search_total > 15)
-          {
-            switch (LCSrandom(5))
-            {
+          else if (key_search_total > 15) {
+            switch (LCSrandom(5)) {
             case 0:
               addstr("This isn't working!", gamelog);
               break;
@@ -3319,11 +3027,8 @@ bool stealcar(Creature &cr, char &clearformess)
               addstr("I'm going to get arrested, aren't I?", gamelog);
               break;
             }
-          }
-          else
-          {
-            switch (LCSrandom(5))
-            {
+          } else {
+            switch (LCSrandom(5)) {
             case 0:
               addstr("Please be in here somewhere...", gamelog);
               break;
@@ -3354,8 +3059,7 @@ bool stealcar(Creature &cr, char &clearformess)
       }
 
       //NOTICE CHECK
-      if (!started && (!LCSrandom(50) || (!LCSrandom(5) && alarmon)))
-      {
+      if (!started && (!LCSrandom(50) || (!LCSrandom(5) && alarmon))) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         move(y++, 0);
         addstr(cr.name, gamelog);
@@ -3373,14 +3077,11 @@ bool stealcar(Creature &cr, char &clearformess)
         sitestory = ns;
         makechasers(-1, 5);
 
-        if (footchase(cr))
-        {
+        if (footchase(cr)) {
           mode = GAMEMODE_BASE;
           delete v;
           return 0;
-        }
-        else
-        {
+        } else {
           mode = GAMEMODE_BASE;
           delete v;
           return 0;
@@ -3388,15 +3089,13 @@ bool stealcar(Creature &cr, char &clearformess)
       }
 
       // Nervous message check
-      else if (!started && (LCSrandom(7) + 5) < nervous_counter)
-      {
+      else if (!started && (LCSrandom(7) + 5) < nervous_counter) {
         nervous_counter = 0;
         move(++y, 0);
         y++;
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         addstr(cr.name, gamelog);
-        switch (LCSrandom(3))
-        {
+        switch (LCSrandom(3)) {
         case 0:
           addstr(" hears someone nearby making a phone call.", gamelog);
           break;
@@ -3421,8 +3120,7 @@ bool stealcar(Creature &cr, char &clearformess)
     v->add_heat(14 + v->steal_extraheat());
     v->set_location(cr.base);
     // Automatically assign this car to this driver, if no other one is present
-    if (cr.pref_carid == -1)
-    {
+    if (cr.pref_carid == -1) {
       cr.pref_carid = v->id();
       cr.pref_is_driver = true;
     }
@@ -3449,8 +3147,7 @@ bool stealcar(Creature &cr, char &clearformess)
   return 0;
 }
 
-bool carselect(Creature &cr, short &cartype)
-{
+bool carselect(Creature &cr, short &cartype) {
   cartype = -1;
 
   vector<int> cart;
@@ -3459,8 +3156,7 @@ bool carselect(Creature &cr, short &cartype)
 
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -3473,8 +3169,7 @@ bool carselect(Creature &cr, short &cartype)
     addstr("컴컴TYPE컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴횯IFFICULTY TO FIND UNATTENDED컴");
 
     int y = 2, difficulty;
-    for (int p = page * 19; p < len(cart) && p < page * 19 + 19; p++)
-    {
+    for (int p = page * 19; p < len(cart) && p < page * 19 + 19; p++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y, 0);
       addchar(y + 'A' - 2);
@@ -3483,8 +3178,7 @@ bool carselect(Creature &cr, short &cartype)
 
       move(y++, 49);
       difficulty = vehicletype[cart[p]]->steal_difficultytofind();
-      switch (difficulty)
-      {
+      switch (difficulty) {
       case 0:
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr("Simple");
@@ -3545,11 +3239,9 @@ bool carselect(Creature &cr, short &cartype)
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(cart)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + c - 'a';
-      if (p < len(cart))
-      {
+      if (p < len(cart)) {
         cartype = cart[p];
         return true;
       }
@@ -3566,24 +3258,20 @@ bool carselect(Creature &cr, short &cartype)
 }
 
 /* get a wheelchair */
-void getwheelchair(Creature &cr, char &clearformess)
-{
+void getwheelchair(Creature &cr, char &clearformess) {
   if (clearformess)
     erase();
   else
     makedelimiter();
 
-  if (LCSrandom(2))
-  {
+  if (LCSrandom(2)) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(8, 1);
     addstr(cr.name, gamelog);
     addstr(" has procured a wheelchair.", gamelog);
 
     cr.flag |= CREATUREFLAG_WHEELCHAIR;
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(8, 1);
     addstr(cr.name, gamelog);

@@ -24,16 +24,14 @@
 #define SiteName(Y) strcpy(site->name, Y);
 #define SiteShortname(Y) strcpy(site->shortname, Y);
 
-Location *find_site_by_id(int id)
-{
+Location *find_site_by_id(int id) {
   for (int i = 0; i < len(location); i++)
     if (location[i]->id == id)
       return location[i];
   return NULL;
 }
 
-Location *find_site_in_city(int site_type, int city)
-{
+Location *find_site_in_city(int site_type, int city) {
   int i = find_site_index_in_city(site_type, city);
   if (i != -1)
     return location[i];
@@ -41,23 +39,20 @@ Location *find_site_in_city(int site_type, int city)
     return NULL;
 }
 
-int find_site_index_in_city(int site_type, int city)
-{
+int find_site_index_in_city(int site_type, int city) {
   for (int i = 0; i < len(location); i++)
     if (location[i]->type == site_type && (!multipleCityMode || city == -1 || location[i]->city == city))
       return i;
   return -1;
 }
 
-int find_site_index_in_same_city(int site_type, int site_index)
-{
+int find_site_index_in_same_city(int site_type, int site_index) {
   int city = -1;
   if (site_index >= 0) city = location[site_index]->city;
   return find_site_index_in_city(site_type, city);
 }
 
-void make_classic_world(bool hasmaps)
-{
+void make_classic_world(bool hasmaps) {
   Location *city = NULL;
   Location *district = NULL;
   Location *site = NULL;
@@ -130,10 +125,8 @@ void make_classic_world(bool hasmaps)
                                                                                                                                                                                                                                                               Site(SITE_GOVERNMENT_WHITE_HOUSE)
 }
 
-void make_world(bool hasmaps)
-{
-  if (!multipleCityMode)
-  {
+void make_world(bool hasmaps) {
+  if (!multipleCityMode) {
     make_classic_world(hasmaps);
     return;
   }

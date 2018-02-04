@@ -29,28 +29,23 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* common - test for possible game over */
-char endcheck(char cause)
-{
+char endcheck(char cause) {
   bool dead = true;
   for (int p = 0; p < len(pool) && dead; p++)
     if (pool[p]->alive && pool[p]->align == 1 &&
         !(pool[p]->flag & CREATUREFLAG_SLEEPER && pool[p]->hireid != -1)) // Allow sleepers to lead LCS without losing
       dead = false;
 
-  if (dead) // Did we just lose the game?
-  {         // Game Over
-    if (cause == -2)
-    {                           // just checking for game over ahead of time but going back to the code for more stuff
+  if (dead)                     // Did we just lose the game?
+  {                             // Game Over
+    if (cause == -2) {          // just checking for game over ahead of time but going back to the code for more stuff
       music.play(MUSIC_DEFEAT); // we were defeated, so play the right music
       return true;              // go back to code, it has more text to display before we REALLY end the game
     }
     // OK if we didn't return yet it's REALLY Game Over, right now, but we need to find out why
-    if (cause == -1)
-    { // got killed, possibly in a siege but maybe not, find out the reason we lost
-      if (location[cursite]->siege.siege)
-      {
-        switch (location[cursite]->siege.siegetype)
-        {
+    if (cause == -1) { // got killed, possibly in a siege but maybe not, find out the reason we lost
+      if (location[cursite]->siege.siege) {
+        switch (location[cursite]->siege.siegetype) {
         case SIEGE_POLICE:
           savehighscore(END_POLICE);
           break;
@@ -70,11 +65,9 @@ char endcheck(char cause)
           savehighscore(END_FIREMEN);
           break;
         }
-      }
-      else
+      } else
         savehighscore(END_DEAD);
-    }
-    else
+    } else
       savehighscore(cause); // the reason we lost was specified in the function call
     // You just lost the game!
     reset();
@@ -88,8 +81,7 @@ char endcheck(char cause)
 
 /* common - tests if the person is a wanted criminal */
 // *JDS* Checks if the character is a criminal
-bool iscriminal(Creature &cr)
-{
+bool iscriminal(Creature &cr) {
   for (int i = 0; i < LAWFLAGNUM; i++)
     if (cr.crimes_suspected[i]) return true;
   return false;
@@ -100,15 +92,13 @@ bool iscriminal(Creature &cr)
 * *JDS* Hospitalize -- sends current person to the *
 * specified clinic or hospital.                    *
 ***************************************************/
-void hospitalize(int loc, Creature &patient)
-{
+void hospitalize(int loc, Creature &patient) {
   // He's dead, Jim
   if (!patient.alive) return;
 
   int time = clinictime(patient);
 
-  if (time > 0)
-  {
+  if (time > 0) {
     squadst *patientsquad = NULL;
     if (patient.squadid != -1)
       patientsquad = squad[getsquad(patient.squadid)];
@@ -136,13 +126,10 @@ void hospitalize(int loc, Creature &patient)
 
     getkey();
 
-    if (patientsquad)
-    { // Reorganize patient's former squad
+    if (patientsquad) { // Reorganize patient's former squad
       bool flipstart = 0;
-      for (int p = 0; p < 6; p++)
-      {
-        if (patientsquad->squad[p] == &patient)
-        {
+      for (int p = 0; p < 6; p++) {
+        if (patientsquad->squad[p] == &patient) {
           patientsquad->squad[p] = NULL;
           flipstart = 1;
         }
@@ -154,8 +141,7 @@ void hospitalize(int loc, Creature &patient)
 }
 
 /* common - determines how long a creature's injuries will take to heal */
-int clinictime(Creature &g)
-{
+int clinictime(Creature &g) {
   int time = 0;
   for (int w = 0; w < BODYPARTNUM; w++)
     if ((g.wound[w] & WOUND_NASTYOFF) && (g.blood < 100))
@@ -179,22 +165,18 @@ int clinictime(Creature &g)
 }
 
 /* common - applies a crime to everyone in the active party */
-void criminalizeparty(short crime)
-{
+void criminalizeparty(short crime) {
   if (!activesquad) return;
   for (int p = 0; p < 6; p++)
-    if (activesquad->squad[p])
-    {
+    if (activesquad->squad[p]) {
       if (!activesquad->squad[p]->alive) continue;
       criminalize(*(activesquad->squad[p]), crime);
     }
 }
 
 /* common - applies a crime to everyone in a location, or the entire LCS */
-void criminalizepool(short crime, long exclude, short loc)
-{
-  for (int p = 0; p < len(pool); p++)
-  {
+void criminalizepool(short crime, long exclude, short loc) {
+  for (int p = 0; p < len(pool); p++) {
     if (p == exclude) continue;
     if (loc != -1 && pool[p]->location != loc) continue;
     criminalize(*pool[p], crime);
@@ -202,18 +184,14 @@ void criminalizepool(short crime, long exclude, short loc)
 }
 
 /* common - applies a crime to a person */
-void criminalize(Creature &cr, short crime)
-{
-  if (mode == GAMEMODE_SITE)
-  {
-    if (location[cursite]->siege.siege)
-    {
+void criminalize(Creature &cr, short crime) {
+  if (mode == GAMEMODE_SITE) {
+    if (location[cursite]->siege.siege) {
       // Do not criminalize the LCS for self-defense against
       // extrajudicial raids
       if (location[cursite]->siege.siegetype != SIEGE_POLICE)
         return;
-    }
-    else if (location[cursite]->renting == RENTING_CCS)
+    } else if (location[cursite]->renting == RENTING_CCS)
       // Do not criminalize the LCS for crimes against the CCS
       return;
   }
@@ -222,8 +200,7 @@ void criminalize(Creature &cr, short crime)
 }
 
 /* common - gives juice to everyone in the active party */
-void juiceparty(long juice, long cap)
-{
+void juiceparty(long juice, long cap) {
   if (activesquad != NULL)
     for (int p = 0; p < 6; p++)
       if (activesquad->squad[p] != NULL)
@@ -232,8 +209,7 @@ void juiceparty(long juice, long cap)
 }
 
 /* common - gives juice to a given creature */
-void addjuice(Creature &cr, long juice, long cap)
-{
+void addjuice(Creature &cr, long juice, long cap) {
   // Ignore zero changes
   if (juice == 0) return;
 
@@ -248,8 +224,7 @@ void addjuice(Creature &cr, long juice, long cap)
   // Pyramid scheme of juice trickling up the chain
   if (cr.hireid != -1)
     for (int i = 0; i < len(pool); i++)
-      if (pool[i]->id == cr.hireid)
-      {
+      if (pool[i]->id == cr.hireid) {
         addjuice(*pool[i], juice / 5, cr.juice);
         break;
       }
@@ -260,16 +235,12 @@ void addjuice(Creature &cr, long juice, long cap)
 }
 
 /* common - removes the liberal from all squads */
-void removesquadinfo(Creature &cr)
-{
-  if (cr.squadid != -1)
-  {
+void removesquadinfo(Creature &cr) {
+  if (cr.squadid != -1) {
     long sq = getsquad(cr.squadid);
-    if (sq != -1)
-    {
+    if (sq != -1) {
       bool flipstart = 0;
-      for (int pt = 0; pt < 6; pt++)
-      {
+      for (int pt = 0; pt < 6; pt++) {
         if (squad[sq]->squad[pt] == &cr) flipstart = 1;
         if (flipstart && pt < 5) squad[sq]->squad[pt] = squad[sq]->squad[pt + 1];
       }
@@ -280,26 +251,20 @@ void removesquadinfo(Creature &cr)
 }
 
 /* common - purges empty squads from existence */
-void cleangonesquads()
-{
-  for (int sq = len(squad) - 1; sq >= 0; sq--)
-  { //NUKE SQUAD IF IT IS GONE
+void cleangonesquads() {
+  for (int sq = len(squad) - 1; sq >= 0; sq--) { //NUKE SQUAD IF IT IS GONE
     bool hasmembers = false;
     for (int p = 0; p < 6; p++)
-      if (squad[sq]->squad[p] != NULL)
-      { // Let's do a bit of housekeeping here
+      if (squad[sq]->squad[p] != NULL) { // Let's do a bit of housekeeping here
         // And see if we can't gracefully eliminate that
         // pesky dead liberal in my squad bug
-        if (squad[sq]->squad[p]->alive == false)
-        {
+        if (squad[sq]->squad[p]->alive == false) {
           removesquadinfo(*squad[sq]->squad[p]);
           p = -1; // restart this for loop
-        }
-        else
+        } else
           hasmembers = true;
       }
-    if (!hasmembers)
-    { //SQUAD LOOT WILL BE DESTROYED
+    if (!hasmembers) { //SQUAD LOOT WILL BE DESTROYED
       if (activesquad == squad[sq]) activesquad = NULL;
       delete_and_remove(squad, sq);
     }
@@ -310,14 +275,11 @@ void cleangonesquads()
 }
 
 /* common - moves all squad members and their cars to a new location */
-void locatesquad(squadst *st, long loc)
-{
+void locatesquad(squadst *st, long loc) {
   for (int p = 0; p < 6; p++)
-    if (st->squad[p] != NULL)
-    {
+    if (st->squad[p] != NULL) {
       st->squad[p]->location = loc;
-      if (st->squad[p]->carid != -1)
-      {
+      if (st->squad[p]->carid != -1) {
         long v = id_getcar(st->squad[p]->carid);
         if (v != -1) vehicle[v]->set_location(loc);
       }
@@ -325,16 +287,14 @@ void locatesquad(squadst *st, long loc)
 }
 
 // Picks a random option, based on the weights provided
-int choose_one(const int *weight_list, int number_of_options, int default_value)
-{
+int choose_one(const int *weight_list, int number_of_options, int default_value) {
   int weight_total = 0, option;
   for (option = 0; option < number_of_options; option++)
     weight_total += weight_list[option];
   if (weight_total < 1) return default_value; // No acceptable results; use default
 
   int choose = LCSrandom(weight_total);
-  for (option = 0; option < number_of_options; option++)
-  {
+  for (option = 0; option < number_of_options; option++) {
     choose -= weight_list[option];
     if (choose < 0) break;
   }
@@ -342,27 +302,23 @@ int choose_one(const int *weight_list, int number_of_options, int default_value)
 }
 
 /* common - assigns a new base to all members of a squad */
-void basesquad(squadst *st, long loc)
-{
+void basesquad(squadst *st, long loc) {
   for (int p = 0; p < 6; p++)
     if (st->squad[p] != NULL) st->squad[p]->base = loc;
 }
 
 /* common - shifts public opinion on an issue */
-void change_public_opinion(int v, int power, char affect, char cap)
-{
+void change_public_opinion(int v, int power, char affect, char cap) {
   // First note this in the liberal influence -- mostly for the
   // sake of the nice visual intelligence report entry
-  if (v < VIEWNUM - 5)
-  {
+  if (v < VIEWNUM - 5) {
     background_liberal_influence[v] += power * 10;
   }
 
   if (v == VIEW_LIBERALCRIMESQUAD) affect = 0;
   if (v == VIEW_LIBERALCRIMESQUADPOS) affect = 0;
 
-  if (v == VIEW_LIBERALCRIMESQUADPOS)
-  {
+  if (v == VIEW_LIBERALCRIMESQUADPOS) {
     int mood = publicmood(-1);
     if (cap > mood + 40) cap = mood + 40;
   }
@@ -371,8 +327,7 @@ void change_public_opinion(int v, int power, char affect, char cap)
 
   // Affect is whether the LCS is publicly known to be behind
   // the circumstances creating the public opinion change
-  if (affect == 1)
-  {
+  if (affect == 1) {
     // Aff is the % of people who know/care about the LCS
     int aff = attitude[VIEW_LIBERALCRIMESQUAD];
     // Rawpower is the amount of the action proportional
@@ -385,8 +340,7 @@ void change_public_opinion(int v, int power, char affect, char cap)
     // and have it alter their opinion
     int affectedpower = power - rawpower;
 
-    if (affectedpower > 0)
-    {
+    if (affectedpower > 0) {
       // Dist is a combination of the relative popularity of the LCS
       // to the issue and the absolute popularity of the LCS. Very
       // popular LCS on a very unpopular issue is very influential.
@@ -407,22 +361,17 @@ void change_public_opinion(int v, int power, char affect, char cap)
     // about the LCS and had their judgment swayed by their opinion
     // of it).
     effpower = rawpower + affectedpower;
-  }
-  else if (affect == -1)
-  {
+  } else if (affect == -1) {
     // Simplifed algorithm for affect by CCS respect
     effpower = power * (100 - attitude[VIEW_CONSERVATIVECRIMESQUAD]) / 100;
   }
 
-  if (v == VIEW_LIBERALCRIMESQUAD)
-  {
+  if (v == VIEW_LIBERALCRIMESQUAD) {
     //Only half the country will ever hear about the LCS at one time,
     //and people will only grudgingly lose fear of it
     if (effpower < -5) effpower = -5;
     if (effpower > 50) effpower = 50;
-  }
-  else if (v == VIEW_LIBERALCRIMESQUADPOS)
-  {
+  } else if (v == VIEW_LIBERALCRIMESQUADPOS) {
     //Only 50% of the country can be swayed at once in their views
     //of the LCS negatively, 5% positively
     if (effpower < -50) effpower = -50;
@@ -437,13 +386,11 @@ void change_public_opinion(int v, int power, char affect, char cap)
   if (public_interest[v] < cap || (v == VIEW_LIBERALCRIMESQUADPOS && public_interest[v] < 100))
     public_interest[v] += ABS(effpower);
 
-  if (effpower > 0)
-  {
+  if (effpower > 0) {
     //Some things will never persuade the last x% of the population.
     //If there's a cap on how many people will be impressed, this
     //is where that's handled.
-    if (attitude[v] + effpower > cap)
-    {
+    if (attitude[v] + effpower > cap) {
       if (attitude[v] > cap)
         effpower = 0;
       else
@@ -459,16 +406,14 @@ void change_public_opinion(int v, int power, char affect, char cap)
 }
 
 /* returns the amount of heat associated with a given crime */
-int lawflagheat(int lawflag)
-{
+int lawflagheat(int lawflag) {
   // Note that for the purposes of this function, we're not looking at how severe the crime is,
   // but how vigorously it is pursued by law enforcement. This determines how quickly they raid
   // you for it, and how much of a penalty you get in court for it. Some crimes are inflated
   // heat, others are deflated (such as the violent crimes).
   //
   // - Jonathan S. Fox
-  switch (lawflag)
-  {
+  switch (lawflag) {
   case LAWFLAG_TREASON:
     return 100;
   case LAWFLAG_TERRORISM:
@@ -537,8 +482,7 @@ int lawflagheat(int lawflag)
 }
 
 // Determines the number of subordinates a creature may command
-int maxsubordinates(const Creature &cr)
-{
+int maxsubordinates(const Creature &cr) {
   //brainwashed recruits can't recruit normally
   if (cr.flag & CREATUREFLAG_BRAINWASHED) return 0;
 
@@ -559,8 +503,7 @@ int maxsubordinates(const Creature &cr)
 
 // Determines the number of subordinates a creature may recruit,
 // based on their max and the number they already command
-int subordinatesleft(const Creature &cr)
-{
+int subordinatesleft(const Creature &cr) {
   int recruitcap = maxsubordinates(cr);
   for (int p = 0; p < len(pool); p++)
     // ignore seduced and brainwashed characters
@@ -573,8 +516,7 @@ int subordinatesleft(const Creature &cr)
 }
 
 // Determines the number of love slaves a creature has
-int loveslaves(const Creature &cr)
-{
+int loveslaves(const Creature &cr) {
   int loveslaves = 0;
   for (int p = 0; p < len(pool); p++)
     // If subordinate and a love slave
@@ -585,8 +527,7 @@ int loveslaves(const Creature &cr)
 
 // Determines the number of love slaves a creature may recruit,
 // based on max minus number they already command
-int loveslavesleft(const Creature &cr)
-{
+int loveslavesleft(const Creature &cr) {
   // Get maximum lovers
   int loveslavecap = cr.get_skill(SKILL_SEDUCTION) / 2 + 1;
 
@@ -604,8 +545,7 @@ int loveslavesleft(const Creature &cr)
 }
 
 // Determines the number of recruitment meetings a creature has scheduled
-int scheduledmeetings(const Creature &cr)
-{
+int scheduledmeetings(const Creature &cr) {
   int meetings = 0;
   for (int p = len(recruit) - 1; p >= 0; p--)
     // If meeting is with this creature
@@ -614,13 +554,11 @@ int scheduledmeetings(const Creature &cr)
 }
 
 // Determines the number of dates a creature has scheduled
-int scheduleddates(const Creature &cr)
-{
+int scheduleddates(const Creature &cr) {
   int dates = 0;
   for (int p = len(date) - 1; p >= 0; p--)
     // Does this creature have a list of dates scheduled?
-    if (date[p]->mac_id == cr.id)
-    {
+    if (date[p]->mac_id == cr.id) {
       dates = len(date[p]->date);
       break;
     }
@@ -628,12 +566,10 @@ int scheduleddates(const Creature &cr)
 }
 
 /* common - random issue by public interest */
-int randomissue(bool core_only)
-{
+int randomissue(bool core_only) {
   int interest_array[VIEWNUM], total_interest = 0;
   int numviews = core_only ? VIEWNUM - 5 : ((endgamestate >= ENDGAME_CCS_DEFEATED || newscherrybusted < 2) ? VIEWNUM - 1 : VIEWNUM);
-  for (int i = 0; i < numviews; i++)
-  {
+  for (int i = 0; i < numviews; i++) {
     interest_array[i] = public_interest[i] + total_interest + 25;
     total_interest += public_interest[i] + 25;
   }
@@ -644,11 +580,9 @@ int randomissue(bool core_only)
 }
 
 // Prompt to turn new recruit into a sleeper
-void sleeperize_prompt(Creature &converted, Creature &recruiter, int y)
-{
+void sleeperize_prompt(Creature &converted, Creature &recruiter, int y) {
   bool selection = false;
-  while (true)
-  {
+  while (true) {
     move(y, 0);
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     addstr("In what capacity will ");
@@ -677,8 +611,7 @@ void sleeperize_prompt(Creature &converted, Creature &recruiter, int y)
 
     int c = getkey();
 
-    if ((c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) && selection)
-    {
+    if ((c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) && selection) {
       converted.flag |= CREATUREFLAG_SLEEPER;
       converted.location = converted.worklocation;
       location[converted.worklocation]->mapped = 1;
@@ -686,26 +619,21 @@ void sleeperize_prompt(Creature &converted, Creature &recruiter, int y)
       converted.base = converted.worklocation;
       liberalize(converted, false);
       break;
-    }
-    else if ((c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) && !selection)
-    {
+    } else if ((c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) && !selection) {
       converted.location = recruiter.location;
       converted.base = recruiter.base;
       liberalize(converted, false);
       break;
-    }
-    else if (c == interface_pgup || c == KEY_UP || c == KEY_LEFT ||
-             c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT)
+    } else if (c == interface_pgup || c == KEY_UP || c == KEY_LEFT ||
+               c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT)
       selection = !selection;
   }
 }
 
 /* common - Sort a list of creatures.*/
-void sortliberals(std::vector<Creature *> &liberals, short sortingchoice, bool dosortnone)
-{
+void sortliberals(std::vector<Creature *> &liberals, short sortingchoice, bool dosortnone) {
   if (!dosortnone && sortingchoice == SORTING_NONE) return;
-  switch (sortingchoice)
-  {
+  switch (sortingchoice) {
   case SORTING_NONE:
     sort(liberals.begin(), liberals.end(), sort_none);
     break;
@@ -733,13 +661,11 @@ bool sort_none(const Creature *first, const Creature *second) //This will sort s
   return false;
 }
 
-bool sort_locationandname(const Creature *first, const Creature *second)
-{
+bool sort_locationandname(const Creature *first, const Creature *second) {
   return first->location < second->location || (first->location == second->location && sort_name(first, second));
 }
 
-bool sort_squadorname(const Creature *first, const Creature *second)
-{ // Use getsquad to treat members of a new squad being assembled as if not in a squad.
+bool sort_squadorname(const Creature *first, const Creature *second) { // Use getsquad to treat members of a new squad being assembled as if not in a squad.
   bool first_in_squad = getsquad(first->squadid) != -1;
   bool second_in_squad = getsquad(second->squadid) != -1;
   bool a = ((first_in_squad && !second_in_squad)                                   //Squad member should come before squadless.
@@ -756,14 +682,12 @@ bool sort_squadorname(const Creature *first, const Creature *second)
 }
 
 /* common - Prompt to decide how to sort liberals.*/
-void sorting_prompt(short listforsorting)
-{
+void sorting_prompt(short listforsorting) {
   erase();
   move(1, 1);
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
   addstr("Choose how to sort list of ");
-  switch (listforsorting)
-  {
+  switch (listforsorting) {
   case SORTINGCHOICE_LIBERALS:
     addstr("active Liberals.");
     break;
@@ -810,41 +734,30 @@ void sorting_prompt(short listforsorting)
   move(6, 2);
   addstr("D - Sort by squad or name.");
 
-  while (true)
-  {
+  while (true) {
     int c = getkey();
 
-    if (c == 'a')
-    {
+    if (c == 'a') {
       activesortingchoice[listforsorting] = SORTING_NONE;
       break;
-    }
-    else if (c == 'b')
-    {
+    } else if (c == 'b') {
       activesortingchoice[listforsorting] = SORTING_NAME;
       break;
-    }
-    else if (c == 'c')
-    {
+    } else if (c == 'c') {
       activesortingchoice[listforsorting] = SORTING_LOCATION_AND_NAME;
       break;
-    }
-    else if (c == 'd')
-    {
+    } else if (c == 'd') {
       activesortingchoice[listforsorting] = SORTING_SQUAD_OR_NAME;
       break;
-    }
-    else if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
+    } else if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
       break;
   }
 }
 
 /* common - Returns appropriate sortingchoice enum value for a reviewmode enum value.
             Is currently unnecessary unless the enums are changed.*/
-short reviewmodeenum_to_sortingchoiceenum(short reviewmode)
-{
-  switch (reviewmode)
-  {
+short reviewmodeenum_to_sortingchoiceenum(short reviewmode) {
+  switch (reviewmode) {
   case REVIEWMODE_LIBERALS:
     return SORTINGCHOICE_LIBERALS;
   case REVIEWMODE_HOSTAGES:
@@ -868,12 +781,10 @@ short reviewmodeenum_to_sortingchoiceenum(short reviewmode)
             to the index of the option in the vector. */
 int choiceprompt(const string &firstline, const string &secondline,
                  const vector<string> &option, const string &optiontypename,
-                 bool allowexitwochoice, const string &exitstring)
-{
+                 bool allowexitwochoice, const string &exitstring) {
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(0, 0);
@@ -883,8 +794,7 @@ int choiceprompt(const string &firstline, const string &secondline,
     addstr(secondline);
 
     //Write options
-    for (int p = page * 19, y = 2; p < len(option) && p < page * 19 + 19; p++, y++)
-    {
+    for (int p = page * 19, y = 2; p < len(option) && p < page * 19 + 19; p++, y++) {
       mvaddchar(y, 0, 'A' + y - 2);
       addstr(" - ");
       addstr(option[p]);
@@ -892,8 +802,7 @@ int choiceprompt(const string &firstline, const string &secondline,
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(22, 0);
-    switch (optiontypename[0])
-    {
+    switch (optiontypename[0]) {
     case 'a':
     case 'e':
     case 'i':
@@ -922,8 +831,7 @@ int choiceprompt(const string &firstline, const string &secondline,
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(option)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + c - 'a';
       if (p < len(option)) return p;
     }
@@ -937,12 +845,10 @@ int choiceprompt(const string &firstline, const string &secondline,
             to the index of the chosen thing in the nameprice vector. */
 int buyprompt(const string &firstline, const string &secondline,
               const vector<pair<string, int> > &nameprice, int namepaddedlength,
-              const string &producttype, const string &exitstring)
-{
+              const string &producttype, const string &exitstring) {
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(0, 0);
@@ -951,8 +857,7 @@ int buyprompt(const string &firstline, const string &secondline,
     addstr(secondline);
 
     //Write wares and prices
-    for (int p = page * 19, y = 2; p < len(nameprice) && p < page * 19 + 19; p++)
-    {
+    for (int p = page * 19, y = 2; p < len(nameprice) && p < page * 19 + 19; p++) {
       if (nameprice[p].second > ledger.get_funds())
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
       else
@@ -966,8 +871,7 @@ int buyprompt(const string &firstline, const string &secondline,
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(22, 0);
-    switch (producttype[0])
-    {
+    switch (producttype[0]) {
     case 'a':
     case 'e':
     case 'i':
@@ -996,8 +900,7 @@ int buyprompt(const string &firstline, const string &secondline,
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 19 < len(nameprice)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 19 + c - 'a';
       if (p < len(nameprice) && nameprice[p].second <= ledger.get_funds())
         return p;
@@ -1009,8 +912,7 @@ int buyprompt(const string &firstline, const string &secondline,
 }
 
 /* tells how many total members a squad has (including dead members) */
-int squadsize(const squadst *st)
-{
+int squadsize(const squadst *st) {
   int partysize = 0;
   if (st)
     for (int p = 0; p < 6; p++)
@@ -1019,8 +921,7 @@ int squadsize(const squadst *st)
 }
 
 /* tells how many members a squad has who are alive */
-int squadalive(const squadst *st)
-{
+int squadalive(const squadst *st) {
   int partyalive = 0;
   if (st)
     for (int p = 0; p < 6; p++)

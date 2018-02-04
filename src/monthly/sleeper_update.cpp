@@ -42,13 +42,11 @@ This file is part of Liberal Crime Squad.                                       
 ** - News Anchors and Radio Personalities remain the two most powerful
 ** sleepers.
 **********************************************************************/
-void sleepereffect(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
+void sleepereffect(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
   if (disbanding) cr.activity.type = ACTIVITY_SLEEPER_LIBERAL;
   int infiltrate = 1;
 
-  switch (cr.activity.type)
-  {
+  switch (cr.activity.type) {
   case ACTIVITY_SLEEPER_LIBERAL:
     sleeper_influence(cr, clearformess, canseethings, libpower);
     cr.infiltration -= 0.02f;
@@ -89,16 +87,14 @@ void sleepereffect(Creature &cr, char &clearformess, char canseethings, int (&li
 **     PUBLIC OPINION
 **
 **********************************/
-void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
+void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
   int power = (cr.get_attribute(ATTRIBUTE_CHARISMA, true) +
                cr.get_attribute(ATTRIBUTE_HEART, true) +
                cr.get_attribute(ATTRIBUTE_INTELLIGENCE, true) +
                cr.get_skill(SKILL_PERSUASION));
 
   // Profession specific skills
-  switch (cr.type)
-  {
+  switch (cr.type) {
   case CREATURE_CRITIC_ART:
     power += cr.get_skill(SKILL_WRITING);
   case CREATURE_PAINTER:
@@ -137,8 +133,7 @@ void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int 
   }
 
   // Adjust power for super sleepers
-  switch (cr.type)
-  {
+  switch (cr.type) {
   case CREATURE_CORPORATE_CEO:
   case CREATURE_POLITICIAN:
   case CREATURE_SCIENTIST_EMINENT:
@@ -162,22 +157,19 @@ void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int 
 
   power = static_cast<int>(power * cr.infiltration);
 
-  switch (cr.type)
-  {
+  switch (cr.type) {
   /* Radio Personalities and News Anchors subvert Conservative news stations by
          reducing their audience and twisting views on the issues. As their respective
          media establishments become marginalized, so does their influence. */
   case CREATURE_RADIOPERSONALITY:
     change_public_opinion(VIEW_AMRADIO, 1);
-    for (int i = 0; i < VIEWNUM - 3; i++)
-    {
+    for (int i = 0; i < VIEWNUM - 3; i++) {
       libpower[i] += power * (100 - attitude[VIEW_AMRADIO]) / 100;
     }
     break;
   case CREATURE_NEWSANCHOR:
     change_public_opinion(VIEW_CABLENEWS, 1);
-    for (int i = 0; i < VIEWNUM - 3; i++)
-    {
+    for (int i = 0; i < VIEWNUM - 3; i++) {
       libpower[i] += power * (100 - attitude[VIEW_CABLENEWS]) / 100;
     }
     break;
@@ -294,8 +286,7 @@ void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int 
   case CREATURE_MUTANT:
     return;
   /* Miscellaneous block -- includes everyone else */
-  case CREATURE_POLITICIAN:
-  {
+  case CREATURE_POLITICIAN: {
     int a = LCSrandom(VIEWNUM - 5);
     int b = LCSrandom(VIEWNUM - 5);
     while (b == a)
@@ -306,11 +297,9 @@ void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int 
     libpower[a] += power;
     libpower[b] += power;
     libpower[c] += power;
-  }
-  break;
+  } break;
   case CREATURE_FIREFIGHTER:
-    if (law[LAW_FREESPEECH] == -2)
-    {
+    if (law[LAW_FREESPEECH] == -2) {
       libpower[VIEW_FREESPEECH] += power;
       break;
     }
@@ -324,15 +313,12 @@ void sleeper_influence(Creature &cr, char &clearformess, char canseethings, int 
 **   SLEEPERS SNOOPING AROUND
 **
 **********************************/
-void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
+void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
   int homes = find_homeless_shelter(cr);
 
-  if (LCSrandom(100) > 100 * cr.infiltration)
-  {
+  if (LCSrandom(100) > 100 * cr.infiltration) {
     cr.juice -= 1;
-    if (cr.juice < -2)
-    {
+    if (cr.juice < -2) {
       erase();
       move(6, 1);
       addstr("Sleeper ", gamelog);
@@ -357,8 +343,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
   }
 
   // Improves juice, as confidence improves
-  if (cr.juice < 100)
-  {
+  if (cr.juice < 100) {
     cr.juice += 10;
     if (cr.juice > 100) cr.juice = 100;
   }
@@ -366,14 +351,12 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
   location[cr.base]->mapped = 1;
 
   bool pause = false;
-  switch (cr.type)
-  {
+  switch (cr.type) {
   case CREATURE_SECRET_SERVICE:
   case CREATURE_AGENT:
   case CREATURE_POLITICIAN:
     // Agents can leak intelligence files to you
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (LCSrandom(law[LAW_PRIVACY] + 3)) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_SECRETDOCUMENTS")]);
       location[homes]->loot.push_back(it);
@@ -395,8 +378,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
   case CREATURE_COP:
   case CREATURE_GANGUNIT:
     // Cops can leak police files to you
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (LCSrandom(law[LAW_POLICEBEHAVIOR] + 3)) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_POLICERECORDS")]);
       location[homes]->loot.push_back(it);
@@ -416,8 +398,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
   case CREATURE_CORPORATE_MANAGER:
   case CREATURE_CORPORATE_CEO:
     // Can leak corporate files to you
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (LCSrandom(law[LAW_CORPORATE] + 3) && cr.type != CREATURE_CORPORATE_CEO) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_CORPFILES")]);
       location[homes]->loot.push_back(it);
@@ -436,8 +417,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
     break;
   case CREATURE_EDUCATOR:
   case CREATURE_PRISONGUARD:
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (LCSrandom(law[LAW_POLICEBEHAVIOR] + 3)) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_PRISONFILES")]);
       location[homes]->loot.push_back(it);
@@ -455,8 +435,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
     }
     break;
   case CREATURE_NEWSANCHOR:
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       // More likely to leak these documents the more restrictive
       // free speech is -- because the more free the society, the
       // less any particular action the media takes seems scandalous
@@ -477,8 +456,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
     }
     break;
   case CREATURE_RADIOPERSONALITY:
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       // More likely to leak these documents the more restrictive
       // free speech is -- because the more free the society, the
       // less any particular action the media takes seems scandalous
@@ -500,8 +478,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
     break;
   case CREATURE_SCIENTIST_LABTECH:
   case CREATURE_SCIENTIST_EMINENT:
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (LCSrandom(law[LAW_ANIMALRESEARCH] + 3)) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_RESEARCHFILES")]);
       location[homes]->loot.push_back(it);
@@ -519,8 +496,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
     }
     break;
   case CREATURE_JUDGE_CONSERVATIVE:
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (LCSrandom(5)) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_JUDGEFILES")]);
       location[homes]->loot.push_back(it);
@@ -538,8 +514,7 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
     }
     break;
   case CREATURE_CCS_ARCHCONSERVATIVE:
-    if (!location[homes]->siege.siege && canseethings)
-    {
+    if (!location[homes]->siege.siege && canseethings) {
       if (ccsexposure >= CCSEXPOSURE_LCSGOTDATA) break;
       Item *it = new Loot(*loottype[getloottype("LOOT_CCS_BACKERLIST")]);
       location[homes]->loot.push_back(it);
@@ -566,13 +541,10 @@ void sleeper_spy(Creature &cr, char &clearformess, char canseethings, int (&libp
 **   SLEEPERS EMBEZZLING FUNDS
 **
 **********************************/
-void sleeper_embezzle(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
-  if (LCSrandom(100) > 100 * cr.infiltration)
-  {
+void sleeper_embezzle(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
+  if (LCSrandom(100) > 100 * cr.infiltration) {
     cr.juice -= 1;
-    if (cr.juice < -2)
-    {
+    if (cr.juice < -2) {
       erase();
       move(6, 1);
       addstr("Sleeper ", gamelog);
@@ -593,15 +565,13 @@ void sleeper_embezzle(Creature &cr, char &clearformess, char canseethings, int (
   }
 
   // Improves juice, as confidence improves
-  if (cr.juice < 100)
-  {
+  if (cr.juice < 100) {
     cr.juice += 10;
     if (cr.juice > 100) cr.juice = 100;
   }
 
   int income;
-  switch (cr.type)
-  {
+  switch (cr.type) {
   case CREATURE_CORPORATE_CEO:
     income = static_cast<int>(50000 * cr.infiltration);
     break;
@@ -623,13 +593,10 @@ void sleeper_embezzle(Creature &cr, char &clearformess, char canseethings, int (
 **   SLEEPERS STEALING THINGS
 **
 **********************************/
-void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
-  if (LCSrandom(100) > 100 * cr.infiltration)
-  {
+void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
+  if (LCSrandom(100) > 100 * cr.infiltration) {
     cr.juice -= 1;
-    if (cr.juice < -2)
-    {
+    if (cr.juice < -2) {
       erase();
       move(6, 1);
       addstr("Sleeper ", gamelog);
@@ -649,8 +616,7 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
     return;
   }
   // Improves juice, as confidence improves
-  if (cr.juice < 100)
-  {
+  if (cr.juice < 100) {
     cr.juice += 10;
     if (cr.juice > 100) cr.juice = 100;
   }
@@ -663,8 +629,7 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
   int number_of_items = LCSrandom(10) + 1;
   int itemindex = -1;       // have to check case item not found to avoid brave modders segfaults.
   int numberofxmlfails = 0; // Tell them how many fails
-  while (number_of_items--)
-  {
+  while (number_of_items--) {
     switch (location[cr.location]->type) //Temporary (transitionally) solution until sites are done. -XML
     {
     case SITE_RESIDENTIAL_TENEMENT:
@@ -675,12 +640,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_FAMILYPHOTO";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -696,12 +658,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -719,12 +678,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -744,12 +700,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -763,24 +716,18 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
     case SITE_GOVERNMENT_PRISON:
       item = "WEAPON_SHANK";
       itemindex = getweapontype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Weapon(*weapontype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -791,36 +738,27 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
     case SITE_INDUSTRY_SWEATSHOP:
       item = "LOOT_FINECLOTH";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
     case SITE_INDUSTRY_POLLUTER:
       item = "LOOT_CHEMICAL";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -834,12 +772,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -861,12 +796,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -882,12 +814,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
@@ -903,18 +832,14 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       else
         item = "LOOT_COMPUTER";
       itemindex = getloottype(item);
-      if (itemindex > -1)
-      {
+      if (itemindex > -1) {
         shelter->loot.push_back(new Loot(*loottype[itemindex]));
-      }
-      else
-      {
+      } else {
         numberofxmlfails++;
       }
       break;
     case SITE_GOVERNMENT_POLICESTATION:
-      if (!LCSrandom(3))
-      {
+      if (!LCSrandom(3)) {
         if (!LCSrandom(4))
           item = "WEAPON_SMG_MP5";
         else if (!LCSrandom(3))
@@ -924,17 +849,12 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
         else
           item = "WEAPON_SEMIRIFLE_AR15";
         itemindex = getweapontype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Weapon(*weapontype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
-      }
-      else if (!LCSrandom(2))
-      {
+      } else if (!LCSrandom(2)) {
         if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2 && !LCSrandom(4))
           item = "ARMOR_DEATHSQUADUNIFORM";
         else if (!LCSrandom(3))
@@ -944,17 +864,12 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
         else
           item = "ARMOR_POLICEARMOR";
         itemindex = getarmortype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Armor(*armortype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
-      }
-      else
-      {
+      } else {
         if (!LCSrandom(5))
           item = "LOOT_POLICERECORDS";
         else if (!LCSrandom(3))
@@ -964,48 +879,34 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
         else
           item = "LOOT_COMPUTER";
         itemindex = getloottype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Loot(*loottype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
       }
       break;
     case SITE_GOVERNMENT_ARMYBASE:
-      if (!LCSrandom(3))
-      {
+      if (!LCSrandom(3)) {
         if (LCSrandom(3))
           item = "WEAPON_AUTORIFLE_M16";
         else
           item = "WEAPON_CARBINE_M4";
         itemindex = getweapontype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Weapon(*weapontype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
-      }
-      else if (!LCSrandom(2))
-      {
+      } else if (!LCSrandom(2)) {
         item = "ARMOR_ARMYARMOR";
         itemindex = getarmortype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Armor(*armortype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
-      }
-      else
-      {
+      } else {
         if (!LCSrandom(5))
           item = "LOOT_SECRETDOCUMENTS";
         else if (!LCSrandom(3))
@@ -1015,12 +916,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
         else
           item = "LOOT_SILVERWARE";
         itemindex = getloottype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Loot(*loottype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
       }
@@ -1028,8 +926,7 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
       break;
     case SITE_GOVERNMENT_WHITE_HOUSE:
     case SITE_GOVERNMENT_INTELLIGENCEHQ:
-      if (!LCSrandom(3))
-      {
+      if (!LCSrandom(3)) {
         if (!LCSrandom(4))
           item = "WEAPON_SMG_MP5";
         else if (!LCSrandom(3))
@@ -1039,30 +936,20 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
         else
           item = "WEAPON_CARBINE_M4";
         itemindex = getweapontype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Weapon(*weapontype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
-      }
-      else if (!LCSrandom(2))
-      {
+      } else if (!LCSrandom(2)) {
         item = "ARMOR_BLACKSUIT";
         itemindex = getarmortype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Armor(*armortype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
-      }
-      else
-      {
+      } else {
         if (!LCSrandom(5))
           item = "LOOT_SECRETDOCUMENTS";
         else if (!LCSrandom(3))
@@ -1072,12 +959,9 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
         else
           item = "LOOT_COMPUTER";
         itemindex = getloottype(item);
-        if (itemindex > -1)
-        {
+        if (itemindex > -1) {
           shelter->loot.push_back(new Loot(*loottype[itemindex]));
-        }
-        else
-        {
+        } else {
           numberofxmlfails++;
         }
       }
@@ -1092,8 +976,7 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
   addstr(cr.name, gamelog);
   addstr(" has dropped a package off at the homeless shelter.", gamelog);
   gamelog.nextMessage();
-  if (numberofxmlfails > 0)
-  {
+  if (numberofxmlfails > 0) {
     move(8, 1);
     set_color(COLOR_RED, COLOR_BLUE, 1);
     addstr("Items not found in XML files led to ", xmllog);
@@ -1114,8 +997,7 @@ void sleeper_steal(Creature &cr, char &clearformess, char canseethings, int (&li
 **   SLEEPERS CREATING SCANDALS
 **
 **********************************/
-void sleeper_scandal(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
+void sleeper_scandal(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
   // Add content here!
   return;
 }
@@ -1125,25 +1007,20 @@ void sleeper_scandal(Creature &cr, char &clearformess, char canseethings, int (&
 **   SLEEPERS RECRUITING
 **
 **********************************/
-void sleeper_recruit(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM])
-{
-  if (subordinatesleft(cr))
-  {
+void sleeper_recruit(Creature &cr, char &clearformess, char canseethings, int (&libpower)[VIEWNUM]) {
+  if (subordinatesleft(cr)) {
     prepareencounter(location[cr.worklocation]->type, 0);
-    for (int e = 0; e < 18; e++)
-    {
+    for (int e = 0; e < 18; e++) {
       if (encounter[e].exists == false)
         break;
-      if (encounter[e].worklocation == cr.worklocation || !LCSrandom(5))
-      {
+      if (encounter[e].worklocation == cr.worklocation || !LCSrandom(5)) {
         if (encounter[e].align != 1 && LCSrandom(5)) continue;
 
         Creature *recruit = new Creature(encounter[e]);
         liberalize(*recruit, 0);
         recruit->namecreature();
         recruit->hireid = cr.id;
-        if (recruit->infiltration > cr.infiltration)
-        {
+        if (recruit->infiltration > cr.infiltration) {
           recruit->infiltration = cr.infiltration;
         }
         recruit->flag |= CREATUREFLAG_SLEEPER;

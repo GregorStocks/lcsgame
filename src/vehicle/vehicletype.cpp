@@ -11,8 +11,7 @@ VehicleType::VehicleType(MCD_STR xmlstring)
       attackbonus_driver_(-2), attackbonus_passenger_(0),
       armormidpoint_(50), lowarmormin_(4), lowarmormax_(6), higharmormin_(0), higharmormax_(2),
       steal_difficultytofind_(1), steal_juice_(0), steal_extraheat_(0),
-      sensealarmchance_(0), touchalarmchance_(0), availableatshop_(true), price_(1234), sleeperprice_(1111)
-{
+      sensealarmchance_(0), touchalarmchance_(0), availableatshop_(true), price_(1234), sleeperprice_(1111) {
   id_ = number_of_vehicletypes++;
 
   CMarkup xmlfile;
@@ -29,16 +28,13 @@ VehicleType::VehicleType(MCD_STR xmlstring)
   {
     std::string element = xmlfile.GetTagName();
 
-    if (element == "year")
-    {
+    if (element == "year") {
       xmlfile.IntoElem();
 
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
-        if (element == "start_at_current_year")
-        {
+        if (element == "start_at_current_year") {
           int b = stringtobool(xmlfile.GetData());
           if (b == 1)
             year_startcurrent_ = true;
@@ -47,11 +43,9 @@ VehicleType::VehicleType(MCD_STR xmlstring)
           /*else
                   std::cerr << "Invalid boolean value for vehicle type " << idname
                             << "::year::start_at_current_year: " << xmlfile.GetData() << std::endl;*/
-        }
-        else if (element == "start_at_year")
+        } else if (element == "start_at_year")
           year_start_ = atoi(xmlfile.GetData());
-        else if (element == "add_random_up_to_current_year")
-        {
+        else if (element == "add_random_up_to_current_year") {
           int b = stringtobool(xmlfile.GetData());
           if (b == 1)
             year_randomuptocurrent_ = true;
@@ -60,8 +54,7 @@ VehicleType::VehicleType(MCD_STR xmlstring)
           /*else
                   std::cerr << "Invalid boolean value for vehicle type " << idname
                             << "::year::add_random_up_to_current_year: " << xmlfile.GetData() << std::endl;*/
-        }
-        else if (element == "add_random")
+        } else if (element == "add_random")
           year_addrandom_ = atoi(xmlfile.GetData());
         else if (element == "add")
           year_add_ = atoi(xmlfile.GetData());
@@ -71,21 +64,15 @@ VehicleType::VehicleType(MCD_STR xmlstring)
       }
 
       xmlfile.OutOfElem();
-    }
-    else if (element == "colors")
-    {
+    } else if (element == "colors") {
       xmlfile.IntoElem();
       //std::string color;
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
-        if (element == "color")
-        {
+        if (element == "color") {
           color_.push_back(xmlfile.GetData());
-        }
-        else if (element == "display_color")
-        {
+        } else if (element == "display_color") {
           int b = stringtobool(xmlfile.GetData());
           if (b == 1)
             displaycolor_ = true;
@@ -100,12 +87,9 @@ VehicleType::VehicleType(MCD_STR xmlstring)
                          << element << std::endl;*/
       }
       xmlfile.OutOfElem();
-    }
-    else if (element == "drivebonus")
-    {
+    } else if (element == "drivebonus") {
       xmlfile.IntoElem();
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
         if (element == "base")
@@ -121,12 +105,9 @@ VehicleType::VehicleType(MCD_STR xmlstring)
                          << element << std::endl;*/
       }
       xmlfile.OutOfElem();
-    }
-    else if (element == "dodgebonus")
-    {
+    } else if (element == "dodgebonus") {
       xmlfile.IntoElem();
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
         if (element == "base")
@@ -142,12 +123,9 @@ VehicleType::VehicleType(MCD_STR xmlstring)
                          << element << std::endl;*/
       }
       xmlfile.OutOfElem();
-    }
-    else if (element == "attackbonus")
-    {
+    } else if (element == "attackbonus") {
       xmlfile.IntoElem();
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
         if (element == "driver")
@@ -159,20 +137,15 @@ VehicleType::VehicleType(MCD_STR xmlstring)
                          << element << std::endl;*/
       }
       xmlfile.OutOfElem();
-    }
-    else if (element == "longname")
+    } else if (element == "longname")
       longname_ = xmlfile.GetData();
-    else if (element == "shortname")
-    {
+    else if (element == "shortname") {
       shortname_ = xmlfile.GetData();
       if (len(shortname_) > 7)
         shortname_.resize(7); //Only seven characters allowed for shortname_.
-    }
-    else if (element == "stealing")
-    {
+    } else if (element == "stealing") {
       xmlfile.IntoElem();
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
         if (element == "difficulty_to_find")
@@ -190,12 +163,9 @@ VehicleType::VehicleType(MCD_STR xmlstring)
                          << element << std::endl;*/
       }
       xmlfile.OutOfElem();
-    }
-    else if (element == "armor")
-    {
+    } else if (element == "armor") {
       xmlfile.IntoElem();
-      while (xmlfile.FindElem())
-      {
+      while (xmlfile.FindElem()) {
         element = xmlfile.GetTagName();
 
         if (element == "low_armor_min")
@@ -213,9 +183,7 @@ VehicleType::VehicleType(MCD_STR xmlstring)
                          << element << std::endl;*/
       }
       xmlfile.OutOfElem();
-    }
-    else if (element == "available_at_dealership")
-    {
+    } else if (element == "available_at_dealership") {
       int b = stringtobool(xmlfile.GetData());
       if (b == 1)
         availableatshop_ = true;
@@ -224,8 +192,7 @@ VehicleType::VehicleType(MCD_STR xmlstring)
       /*else
             std::cerr << "Invalid boolean value for vehicle type " << idname
                       << "::available_at_dealership: " << xmlfile.GetData() << std::endl;*/
-    }
-    else if (element == "price")
+    } else if (element == "price")
       price_ = atoi(xmlfile.GetData());
     else if (element == "sleeperprice")
       sleeperprice_ = atoi(xmlfile.GetData());
@@ -240,8 +207,7 @@ VehicleType::VehicleType(MCD_STR xmlstring)
   //xmlfile.OutOfElem();
 }
 
-int VehicleType::makeyear() const
-{
+int VehicleType::makeyear() const {
   int myear = 0;
 
   if (year_startcurrent_)
@@ -262,10 +228,8 @@ int VehicleType::makeyear() const
   return myear;
 }
 
-int VehicleType::gethitlocation(int bodypart)
-{
-  switch (bodypart)
-  {
+int VehicleType::gethitlocation(int bodypart) {
+  switch (bodypart) {
   case BODYPART_HEAD:
     return CARPART_WINDOW;
     break;
@@ -282,14 +246,11 @@ int VehicleType::gethitlocation(int bodypart)
 
   return CARPART_WINDOW;
 }
-string VehicleType::getpartname(int location)
-{
+string VehicleType::getpartname(int location) {
   return location == CARPART_WINDOW ? "window" : "body";
 }
-int VehicleType::armorbonus(int location)
-{
-  switch (location)
-  {
+int VehicleType::armorbonus(int location) {
+  switch (location) {
   case CARPART_BODY:
     return LCSrandom(lowarmormax_ - lowarmormin_ + 1) + lowarmormin_;
   case CARPART_WINDOW:
@@ -298,8 +259,7 @@ int VehicleType::armorbonus(int location)
   return 0;
 }
 
-int VehicleType::modifieddriveskill(int skillLevel)
-{
+int VehicleType::modifieddriveskill(int skillLevel) {
   int score = (skillLevel + drivebonus_) * drivebonus_factor_;
   if (score < drivebonus_limit1_)
     return score;
@@ -307,8 +267,7 @@ int VehicleType::modifieddriveskill(int skillLevel)
     score = (score + drivebonus_limit1_) / 2; // half credit after limit1
   return (score > drivebonus_limit2_) ? drivebonus_limit2_ : score;
 }
-int VehicleType::modifieddodgeskill(int skillLevel)
-{
+int VehicleType::modifieddodgeskill(int skillLevel) {
   int score = (skillLevel + dodgebonus_) * dodgebonus_factor_;
   if (score < dodgebonus_limit1_)
     return score;

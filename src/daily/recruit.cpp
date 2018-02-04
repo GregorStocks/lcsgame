@@ -23,29 +23,24 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* recruit struct constructor */
-recruitst::recruitst() : timeleft(0), level(0), eagerness1(0), task(0)
-{
+recruitst::recruitst() : timeleft(0), level(0), eagerness1(0), task(0) {
   //Has heard of the LCS
-  if ((int)LCSrandom(100) < attitude[VIEW_LIBERALCRIMESQUAD])
-  {
+  if ((int)LCSrandom(100) < attitude[VIEW_LIBERALCRIMESQUAD]) {
     //Likes the LCS
     if ((int)LCSrandom(100) < attitude[VIEW_LIBERALCRIMESQUADPOS])
       eagerness1 = 3;
     //Doesn't like the LCS
     else
       eagerness1 = 0;
-  }
-  else
+  } else
     eagerness1 = 2;
 }
 
-recruitst::~recruitst()
-{
+recruitst::~recruitst() {
   delete recruit;
 }
 
-char recruitst::eagerness()
-{
+char recruitst::eagerness() {
   char eagerness_temp = eagerness1;
   //Moderates are decidedly less interested
   if (recruit->align == 0) eagerness_temp -= 2;
@@ -54,10 +49,8 @@ char recruitst::eagerness()
   return eagerness_temp;
 }
 
-static void getissueeventstring(char *str)
-{
-  switch (LCSrandom(VIEWNUM - 3))
-  {
+static void getissueeventstring(char *str) {
+  switch (LCSrandom(VIEWNUM - 3)) {
   case VIEW_DRUGS:
     strcat(str, "a collection of studies on the health effects of marijuana");
     break;
@@ -135,8 +128,7 @@ static void getissueeventstring(char *str)
 }
 
 /* recruiting */
-char recruitment_activity(Creature &cr, char &clearformess)
-{
+char recruitment_activity(Creature &cr, char &clearformess) {
   clearformess = 1;
   int ocursite = cursite;
   cursite = cr.location;
@@ -145,8 +137,7 @@ char recruitment_activity(Creature &cr, char &clearformess)
   int difficulty = recruitFindDifficulty(type);
   char *name = recruitName(type);
 
-  if (type >= 0)
-  {
+  if (type >= 0) {
     music.play(MUSIC_RECRUITING);
     cr.train(SKILL_STREETSENSE, 5);
 
@@ -165,28 +156,22 @@ char recruitment_activity(Creature &cr, char &clearformess)
 
     if (difficulty < 10)
       // Generate recruitment candidates
-      for (recruitCount = 0; recruitCount < 5; recruitCount++)
-      {
-        if (recruitCount == 0 || cr.skill_roll(SKILL_STREETSENSE) > (difficulty + recruitCount * 2))
-        {
+      for (recruitCount = 0; recruitCount < 5; recruitCount++) {
+        if (recruitCount == 0 || cr.skill_roll(SKILL_STREETSENSE) > (difficulty + recruitCount * 2)) {
           makecreature(encounter[recruitCount], type);
           encounter[recruitCount].namecreature();
-        }
-        else
+        } else
           break;
       }
 
-    if (recruitCount == 0)
-    {
+    if (recruitCount == 0) {
       mvaddstr_f(11, 0, "%s was unable to track down a %s.", cr.name, name);
 
       getkey();
 
       cursite = ocursite;
       return 0;
-    }
-    else if (recruitCount == 1)
-    {
+    } else if (recruitCount == 1) {
       mvaddstr_f(11, 0, "%s managed to set up a meeting with ", cr.name);
       set_alignment_color(encounter[0].align);
       addstr(encounter[0].name);
@@ -202,11 +187,8 @@ char recruitment_activity(Creature &cr, char &clearformess)
       printcreatureinfo(&encounter[0]);
       makedelimiter();
       talk(cr, 0);
-    }
-    else
-    {
-      while (true)
-      {
+    } else {
+      while (true) {
         erase();
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         mvaddstr(0, 0, "Adventures in Liberal Recruitment");
@@ -215,8 +197,7 @@ char recruitment_activity(Creature &cr, char &clearformess)
 
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         mvaddstr_f(10, 0, "%s was able to get information on multiple people.", cr.name);
-        for (int i = 0; i < recruitCount; i++)
-        {
+        for (int i = 0; i < recruitCount; i++) {
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
           mvaddstr_f(12 + i, 0, "%c - ", 'a' + i);
           set_alignment_color(encounter[i].align);
@@ -230,8 +211,7 @@ char recruitment_activity(Creature &cr, char &clearformess)
 
         if (c == ENTER || c == ESC) break;
         c -= 'a';
-        if (c >= 0 && c < ENCMAX - 1 && encounter[c].exists)
-        {
+        if (c >= 0 && c < ENCMAX - 1 && encounter[c].exists) {
           int id = encounter[c].id;
           erase();
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -252,16 +232,14 @@ char recruitment_activity(Creature &cr, char &clearformess)
 }
 
 /* daily - recruit - recruit meeting */
-char completerecruitmeeting(recruitst &r, int p, char &clearformess)
-{
+char completerecruitmeeting(recruitst &r, int p, char &clearformess) {
   music.play(MUSIC_RECRUITING);
   clearformess = 1;
 
   erase();
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   move(0, 0);
-  if (pool[p]->meetings++ > 5 && LCSrandom(pool[p]->meetings - 5))
-  {
+  if (pool[p]->meetings++ > 5 && LCSrandom(pool[p]->meetings - 5)) {
     addstr(pool[p]->name, gamelog);
     addstr(" accidentally missed the meeting with ", gamelog);
     addstr(r.recruit->name, gamelog);
@@ -295,8 +273,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
 
   move(10, 0);
   addstr(r.recruit->name);
-  switch (r.eagerness())
-  {
+  switch (r.eagerness()) {
   case 1:
     addstr(" will take a lot of persuading.");
     break;
@@ -326,22 +303,17 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
   addstr("B - Just casually chat with them and discuss politics.");
 
   move(15, 0);
-  if (subordinatesleft(*pool[p]) && r.eagerness() >= 4)
-  {
+  if (subordinatesleft(*pool[p]) && r.eagerness() >= 4) {
     addstr("C - Offer to let ");
     addstr(r.recruit->name);
     addstr(" join the LCS as a full member.");
-  }
-  else if (!subordinatesleft(*pool[p]))
-  {
+  } else if (!subordinatesleft(*pool[p])) {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     addstr("C - ");
     addstr(pool[p]->name);
     addstr(" needs more Juice to recruit.");
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  }
-  else
-  {
+  } else {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     addstr("C - ");
     addstr(r.recruit->name);
@@ -354,12 +326,10 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
 
   int y = 18;
 
-  while (true)
-  {
+  while (true) {
     int c = getkey();
 
-    if (c == 'c' && subordinatesleft(*pool[p]) && r.eagerness() >= 4)
-    {
+    if (c == 'c' && subordinatesleft(*pool[p]) && r.eagerness() >= 4) {
       move(y, 0);
       addstr(pool[p]->name, gamelog);
       addstr(" offers to let ", gamelog);
@@ -393,8 +363,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
 
       return 1;
     }
-    if (c == 'b' || (c == 'a' && ledger.get_funds() >= 50))
-    {
+    if (c == 'b' || (c == 'a' && ledger.get_funds() >= 50)) {
       if (c == 'a')
         ledger.subtract_funds(50, EXPENSE_RECRUITMENT);
 
@@ -432,8 +401,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
 
       char str[75];
       strcpy(str, "");
-      if (c == 'a')
-      {
+      if (c == 'a') {
         difficulty -= 5;
 
         move(y++, 0);
@@ -445,9 +413,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
         gamelog.newline();
 
         getkey();
-      }
-      else
-      {
+      } else {
         move(y++, 0);
         addstr(pool[p]->name, gamelog);
         addstr(" explains ", gamelog);
@@ -461,8 +427,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
       }
 
       // Liberals with juice increase difficulty as if their Wisdom were increased by said juice
-      if (r.recruit->juice >= 10)
-      {
+      if (r.recruit->juice >= 10) {
         if (r.recruit->juice < 50) //Activist
           difficulty += 1;
         else if (r.recruit->juice < 100) //Socialist Threat
@@ -478,8 +443,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
       }
       if (difficulty > 18) difficulty = 18; // difficulty above 18 is impossible, we don't want that
 
-      if (pool[p]->skill_check(SKILL_PERSUASION, difficulty))
-      {
+      if (pool[p]->skill_check(SKILL_PERSUASION, difficulty)) {
         set_color(COLOR_CYAN, COLOR_BLACK, 1);
         if (r.level < 127) r.level++;
         if (r.eagerness1 < 127) r.eagerness1++;
@@ -492,8 +456,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
         move(y++, 0);
         addstr("They'll definitely meet again tomorrow.", gamelog);
         gamelog.nextMessage();
-      }
-      else if (pool[p]->skill_check(SKILL_PERSUASION, difficulty)) // Second chance to not fail horribly
+      } else if (pool[p]->skill_check(SKILL_PERSUASION, difficulty)) // Second chance to not fail horribly
       {
         if (r.level < 127) r.level++;
         if (r.eagerness1 > -128) r.eagerness1--;
@@ -506,13 +469,10 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
         move(y++, 0);
         addstr("They'll meet again tomorrow.", gamelog);
         gamelog.nextMessage();
-      }
-      else
-      {
+      } else {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         move(y++, 0);
-        if (r.recruit->talkreceptive() && r.recruit->align == ALIGN_LIBERAL)
-        {
+        if (r.recruit->talkreceptive() && r.recruit->align == ALIGN_LIBERAL) {
           addstr(r.recruit->name, gamelog);
           addstr(" isn't convinced ", gamelog);
           addstr(pool[p]->name, gamelog);
@@ -523,9 +483,7 @@ char completerecruitmeeting(recruitst &r, int p, char &clearformess)
           addstr(pool[p]->name, gamelog);
           addstr(" needs more experience.", gamelog);
           gamelog.nextMessage();
-        }
-        else
-        {
+        } else {
           addstr(pool[p]->name, gamelog);
           addstr(" comes off as slightly insane.", gamelog);
           gamelog.newline();

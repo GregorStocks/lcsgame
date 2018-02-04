@@ -63,8 +63,7 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* does end of month actions */
-void passmonth(char &clearformess, char canseethings)
-{
+void passmonth(char &clearformess, char canseethings) {
   short oldlaw[LAWNUM];
   memmove(oldlaw, law, sizeof(short) * LAWNUM);
   int l, v, p;
@@ -72,17 +71,14 @@ void passmonth(char &clearformess, char canseethings)
   //TIME ADVANCE
   day = 1;
   month++;
-  if (month == 13)
-  {
+  if (month == 13) {
     month = 1;
     year++;
   }
 
-  switch (endgamestate)
-  {
+  switch (endgamestate) {
   case ENDGAME_NONE:
-    if (publicmood(-1) > 60)
-    {
+    if (publicmood(-1) > 60) {
       endgamestate = ENDGAME_CCS_APPEARANCE;
       attitude[VIEW_CONSERVATIVECRIMESQUAD] = 0;
     }
@@ -108,8 +104,7 @@ void passmonth(char &clearformess, char canseethings)
 
   //YOUR PAPER AND PUBLIC OPINION AND STUFF
   vector<int> nploc;
-  for (l = 0; l < len(location); l++)
-  {
+  for (l = 0; l < len(location); l++) {
     if ((location[l]->compound_walls & COMPOUND_PRINTINGPRESS) &&
         !location[l]->siege.siege &&
         location[l]->renting != RENTING_CCS) nploc.push_back(l);
@@ -120,19 +115,16 @@ void passmonth(char &clearformess, char canseethings)
   dispersalcheck(clearformess);
 
   int guardianpower = 0;
-  if (len(nploc) && !disbanding)
-  {
+  if (len(nploc) && !disbanding) {
     //DO SPECIAL EDITIONS
     int loottypeindex = choosespecialedition(clearformess);
 
-    if (loottypeindex != -1)
-    {
+    if (loottypeindex != -1) {
       guardianpower += 10 * len(nploc);
       printnews(loottypeindex, len(nploc));
 
       if (loottype[loottypeindex]->get_idname() == "LOOT_INTHQDISK" || //For special edition xml file? -XML
-          loottype[loottypeindex]->get_idname() == "LOOT_SECRETDOCUMENTS")
-      {
+          loottype[loottypeindex]->get_idname() == "LOOT_SECRETDOCUMENTS") {
         for (int l = 0; l < len(nploc); l++)
           criminalizepool(LAWFLAG_TREASON, -1, nploc[l]);
       }
@@ -169,19 +161,15 @@ void passmonth(char &clearformess, char canseethings)
         //Purge graffiti from more secure sites (or from non-secure
         //sites about once every five years), but these will
         //influence people more for the current month
-        if (securityable(location[l]->type))
-        {
+        if (securityable(location[l]->type)) {
           location[l]->changes.erase(location[l]->changes.begin() + c);
           power = 5;
-        }
-        else
-        {
+        } else {
           if (location[l]->renting == RENTING_CCS)
             location[l]->changes[c].flag = SITEBLOCK_GRAFFITI_CCS; // Convert to CCS tags
           else if (location[l]->renting == RENTING_PERMANENT)
             location[l]->changes[c].flag = SITEBLOCK_GRAFFITI; // Convert to LCS tags
-          else
-          {
+          else {
             power = 1;
             if (!LCSrandom(10))
               location[l]->changes[c].flag = SITEBLOCK_GRAFFITI_OTHER; // Convert to other tags
@@ -191,13 +179,10 @@ void passmonth(char &clearformess, char canseethings)
               location[l]->changes.erase(location[l]->changes.begin() + c); // Clean up
           }
         }
-        if (align == 1)
-        {
+        if (align == 1) {
           background_liberal_influence[VIEW_LIBERALCRIMESQUAD] += power;
           background_liberal_influence[VIEW_CONSERVATIVECRIMESQUAD] += power;
-        }
-        else if (align == -1)
-        {
+        } else if (align == -1) {
           background_liberal_influence[VIEW_LIBERALCRIMESQUAD] -= power;
           background_liberal_influence[VIEW_CONSERVATIVECRIMESQUAD] -= power;
         }
@@ -212,8 +197,7 @@ void passmonth(char &clearformess, char canseethings)
   //double tax=0;
 
   //PUBLIC OPINION NATURAL MOVES
-  for (v = 0; v < VIEWNUM; v++)
-  {
+  for (v = 0; v < VIEWNUM; v++) {
     // Liberal essays add their power to the effect of sleepers
     libpower[v] += background_liberal_influence[v];
     background_liberal_influence[v] = static_cast<short>(background_liberal_influence[v] * 0.66);
@@ -226,8 +210,7 @@ void passmonth(char &clearformess, char canseethings)
     //   continue;
     //}
     if (v == VIEW_CONSERVATIVECRIMESQUAD) continue;
-    if (v != VIEW_AMRADIO && v != VIEW_CABLENEWS)
-    {
+    if (v != VIEW_AMRADIO && v != VIEW_CABLENEWS) {
       issuebalance[v] = libpower[v] - conspower;
       mediabalance += issuebalance[v];
 
@@ -246,8 +229,7 @@ void passmonth(char &clearformess, char canseethings)
     // AM Radio and Cable News popularity slowly shift to reflect public
     // opinion over time -- if left unchecked, their subtle influence
     // on society will become a self-perpetuating Conservative nightmare!
-    else if (v == VIEW_AMRADIO || v == VIEW_CABLENEWS)
-    {
+    else if (v == VIEW_AMRADIO || v == VIEW_CABLENEWS) {
       if (publicmood(-1) < attitude[v])
         change_public_opinion(v, -1);
       else
@@ -257,14 +239,10 @@ void passmonth(char &clearformess, char canseethings)
 
   // Temporary Stalinizing Code (TODO: Implement the Stalinist Comrade Squad for changing public opinion, then remove this)
   if (stalinmode)
-    for (int v = 0; v < VIEWNUM - 3; v++)
-    {
-      if (stalinview(v, false))
-      {
+    for (int v = 0; v < VIEWNUM - 3; v++) {
+      if (stalinview(v, false)) {
         if ((attitude[v] += 3) > 100) attitude[v] = 100;
-      }
-      else
-      {
+      } else {
         if (--attitude[v] < 0) attitude[v] = 0;
       }
     }
@@ -273,8 +251,7 @@ void passmonth(char &clearformess, char canseethings)
   // Seduction monthly experience stipends for those liberals
   // who have been getting it on with their love slaves/masters
   // in the background
-  for (int s = 0; s < len(pool); s++)
-  {
+  for (int s = 0; s < len(pool); s++) {
     pool[s]->train(SKILL_SEDUCTION, loveslaves(*pool[s]) * 5);
     if (pool[s]->flag & CREATUREFLAG_LOVESLAVE)
       pool[s]->train(SKILL_SEDUCTION, 5);
@@ -286,19 +263,16 @@ void passmonth(char &clearformess, char canseethings)
    *        EYES ONLY - LCS PROPERTY - TOP SECRET         *
    *******************************************************/
 #if defined(SHOWMECHANICS) || defined(SHOWWAIT)
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     erase();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(0, 23, "LCS MONTHLY INTELLIGENCE REPORT");
     mvaddstr(2, 27, "CURRENT POLITICAL TRENDS");
     int numviews = (endgamestate >= ENDGAME_CCS_DEFEATED || newscherrybusted < 2) ? VIEWNUM - 1 : VIEWNUM;
-    for (int v = -1 - stalinmode, y = 4, x = 0, pip; v < numviews; v++)
-    {
+    for (int v = -1 - stalinmode, y = 4, x = 0, pip; v < numviews; v++) {
       if ((y - 4) * 2 >= numviews + 1 + stalinmode) y = 4, x = 40;
-      for (pip = 2; pip >= -2; pip--)
-      {
+      for (pip = 2; pip >= -2; pip--) {
         set_alignment_color(pip, true);
         if (pip == 2) mvaddchar(y, x + 22, '\x11');
         addstr("ÄÄÄ");
@@ -344,15 +318,13 @@ void passmonth(char &clearformess, char canseethings)
    *******************************************************/
 
   //ELECTIONS
-  if (month == 11)
-  {
+  if (month == 11) {
     elections(clearformess, canseethings);
     clearformess = 1;
   }
 
   //SUPREME COURT
-  if (month == 6)
-  {
+  if (month == 6) {
     supremecourt(clearformess, canseethings);
     clearformess = 1;
   }
@@ -362,8 +334,7 @@ void passmonth(char &clearformess, char canseethings)
   clearformess = 1;
 
   //DID YOU WIN?
-  if (wincheck())
-  {
+  if (wincheck()) {
     liberalagenda(1);
     savehighscore(END_WON);
     reset();
@@ -372,8 +343,7 @@ void passmonth(char &clearformess, char canseethings)
   }
 
   //CONTROL LONG DISBANDS
-  if (disbanding && year - disbandtime >= 50)
-  {
+  if (disbanding && year - disbandtime >= 50) {
     music.play(MUSIC_DEFEAT);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
@@ -411,23 +381,20 @@ void passmonth(char &clearformess, char canseethings)
   updateworld_laws(law, oldlaw);
 
   //THE SYSTEM!
-  for (p = len(pool) - 1; p >= 0; p--)
-  {
+  for (p = len(pool) - 1; p >= 0; p--) {
     if (disbanding) break;
 
     if (!pool[p]->alive) continue;
     if (pool[p]->flag & CREATUREFLAG_SLEEPER) continue;
     if (pool[p]->location == -1) continue;
 
-    if (location[pool[p]->location]->type == SITE_GOVERNMENT_POLICESTATION)
-    {
+    if (location[pool[p]->location]->type == SITE_GOVERNMENT_POLICESTATION) {
       if (clearformess)
         erase();
       else
         makedelimiter();
 
-      if (pool[p]->flag & CREATUREFLAG_MISSING)
-      {
+      if (pool[p]->flag & CREATUREFLAG_MISSING) {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         move(8, 1);
         addstr("Cops re-polluted ", gamelog);
@@ -440,9 +407,7 @@ void passmonth(char &clearformess, char canseethings)
         removesquadinfo(*pool[p]);
         delete_and_remove(pool, p);
         continue;
-      }
-      else if (pool[p]->flag & CREATUREFLAG_ILLEGALALIEN && law[LAW_IMMIGRATION] != 2)
-      {
+      } else if (pool[p]->flag & CREATUREFLAG_ILLEGALALIEN && law[LAW_IMMIGRATION] != 2) {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         move(8, 1);
         addstr(pool[p]->name, gamelog);
@@ -458,9 +423,7 @@ void passmonth(char &clearformess, char canseethings)
         removesquadinfo(*pool[p]);
         delete_and_remove(pool, p);
         continue;
-      }
-      else
-      {
+      } else {
         //TRY TO GET RACKETEERING CHARGE
         int copstrength = 100;
         if (law[LAW_POLICEBEHAVIOR] == -2) copstrength = 200;
@@ -475,19 +438,16 @@ void passmonth(char &clearformess, char canseethings)
         if (LCSrandom(copstrength) > pool[p]->juice + pool[p]->get_attribute(ATTRIBUTE_HEART, true) * 5 -
                                          pool[p]->get_attribute(ATTRIBUTE_WISDOM, true) * 5 + pool[p]->get_skill(SKILL_PSYCHOLOGY) * 5
             /*+ pool[p]->get_skill(SKILL_SURVIVAL)*5*/ &&
-            pool[p]->hireid != -1)
-        {
+            pool[p]->hireid != -1) {
           int nullify = 0;
           int p2 = getpoolcreature(pool[p]->hireid);
 
-          if (pool[p2]->alive && (pool[p2]->location == -1 || location[pool[p2]->location]->type != SITE_GOVERNMENT_PRISON))
-          { //Charge the boss with racketeering!
+          if (pool[p2]->alive && (pool[p2]->location == -1 || location[pool[p2]->location]->type != SITE_GOVERNMENT_PRISON)) { //Charge the boss with racketeering!
             criminalize(*pool[p2], LAWFLAG_RACKETEERING);
             //Rack up testimonies against the boss in court!
             pool[p2]->confessions++;
           }
-          if (!nullify)
-          { //Issue a raid on this guy's base!
+          if (!nullify) { //Issue a raid on this guy's base!
             if (pool[p]->base >= 0) location[pool[p]->base]->heat += 300;
 
             set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -525,23 +485,18 @@ void passmonth(char &clearformess, char canseethings)
         Armor prisoner(*armortype[getarmortype("ARMOR_PRISONER")]);
         pool[p]->give_armor(prisoner, NULL);
       }
-    }
-    else if (location[pool[p]->location]->type == SITE_GOVERNMENT_COURTHOUSE)
-    {
+    } else if (location[pool[p]->location]->type == SITE_GOVERNMENT_COURTHOUSE) {
       trial(*pool[p]);
       clearformess = 1;
-    }
-    else if (location[pool[p]->location]->type == SITE_GOVERNMENT_PRISON)
+    } else if (location[pool[p]->location]->type == SITE_GOVERNMENT_PRISON)
       if (prison(*pool[p])) clearformess = 1;
   }
 
   //NUKE EXECUTION VICTIMS
-  for (p = len(pool) - 1; p >= 0; p--)
-  {
+  for (p = len(pool) - 1; p >= 0; p--) {
     if (pool[p]->location == -1) continue;
 
-    if (location[pool[p]->location]->type == SITE_GOVERNMENT_PRISON && !pool[p]->alive)
-    {
+    if (location[pool[p]->location]->type == SITE_GOVERNMENT_PRISON && !pool[p]->alive) {
       removesquadinfo(*pool[p]);
       pool[p]->die();
       pool[p]->location = -1;
@@ -560,17 +515,14 @@ void passmonth(char &clearformess, char canseethings)
   if (clearformess) erase();
 
   //HEAL CLINIC PEOPLE
-  for (p = 0; p < len(pool); p++)
-  {
+  for (p = 0; p < len(pool); p++) {
     if (disbanding) break;
     if (!(pool[p]->alive)) continue;
 
-    if (pool[p]->clinic > 0)
-    {
+    if (pool[p]->clinic > 0) {
       pool[p]->clinic--;
 
-      for (int w = 0; w < BODYPARTNUM; w++)
-      {
+      for (int w = 0; w < BODYPARTNUM; w++) {
         if ((pool[p]->wound[w] & WOUND_NASTYOFF) || (pool[p]->wound[w] & WOUND_CLEANOFF))
           pool[p]->wound[w] = (char)WOUND_CLEANOFF;
         else
@@ -579,18 +531,15 @@ void passmonth(char &clearformess, char canseethings)
 
       int healthdamage = 0;
 
-      if (pool[p]->special[SPECIALWOUND_RIGHTLUNG] != 1)
-      {
+      if (pool[p]->special[SPECIALWOUND_RIGHTLUNG] != 1) {
         pool[p]->special[SPECIALWOUND_RIGHTLUNG] = 1;
         if (LCSrandom(2)) healthdamage++;
       }
-      if (pool[p]->special[SPECIALWOUND_LEFTLUNG] != 1)
-      {
+      if (pool[p]->special[SPECIALWOUND_LEFTLUNG] != 1) {
         pool[p]->special[SPECIALWOUND_LEFTLUNG] = 1;
         if (LCSrandom(2)) healthdamage++;
       }
-      if (pool[p]->special[SPECIALWOUND_HEART] != 1)
-      {
+      if (pool[p]->special[SPECIALWOUND_HEART] != 1) {
         pool[p]->special[SPECIALWOUND_HEART] = 1;
         if (LCSrandom(3)) healthdamage++;
       }
@@ -619,11 +568,9 @@ void passmonth(char &clearformess, char canseethings)
       // If at clinic and in critical condition, transfer to university hospital
       if (pool[p]->clinic > 2 &&
           pool[p]->location > -1 &&
-          location[pool[p]->location]->type == SITE_HOSPITAL_CLINIC)
-      {
+          location[pool[p]->location]->type == SITE_HOSPITAL_CLINIC) {
         int hospital = find_hospital(*pool[p]);
-        if (hospital != -1)
-        {
+        if (hospital != -1) {
           pool[p]->location = hospital;
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(8, 1);
@@ -638,8 +585,7 @@ void passmonth(char &clearformess, char canseethings)
       }
 
       // End treatment
-      if (pool[p]->clinic == 0)
-      {
+      if (pool[p]->clinic == 0) {
         pool[p]->blood = 100;
         if (clearformess)
           erase();
@@ -670,8 +616,7 @@ void passmonth(char &clearformess, char canseethings)
 }
 
 /* rename various buildings according to the new laws */
-void updateworld_laws(short *law, short *oldlaw)
-{ // NOTE: make sure to keep code here matching code in initlocation() in locations.cpp for when names are changed
+void updateworld_laws(short *law, short *oldlaw) { // NOTE: make sure to keep code here matching code in initlocation() in locations.cpp for when names are changed
   if (((law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2) ||
        (oldlaw[LAW_POLICEBEHAVIOR] == -2 && oldlaw[LAW_DEATHPENALTY] == -2)) &&
       (law[LAW_POLICEBEHAVIOR] != oldlaw[LAW_POLICEBEHAVIOR] ||

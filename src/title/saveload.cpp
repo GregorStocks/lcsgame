@@ -31,8 +31,7 @@ This file is part of Liberal Crime Squad.                                       
 // TODO: It would be really cool to be able to "export" characters.
 
 /* handles saving */
-void savegame(const char *str)
-{
+void savegame(const char *str) {
 #ifdef NOSAVE
   return;
 #endif
@@ -44,8 +43,7 @@ void savegame(const char *str)
 
   h = LCSOpenFile(str, "wb", LCSIO_PRE_HOME);
 
-  if (h != NULL)
-  {
+  if (h != NULL) {
     int lversion = version;
     fwrite(&lversion, sizeof(int), 1, h);
 
@@ -112,13 +110,11 @@ void savegame(const char *str)
     //LOCATIONS
     dummy = len(location);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (l = 0; l < len(location); l++)
-    {
+    for (l = 0; l < len(location); l++) {
       consolidateloot(location[l]->loot); // consolidate loot before saving
       dummy = len(location[l]->loot);
       fwrite(&dummy, sizeof(int), 1, h);
-      for (int l2 = 0; l2 < len(location[l]->loot); l2++)
-      {
+      for (int l2 = 0; l2 < len(location[l]->loot); l2++) {
         std::string itemStr = location[l]->loot[l2]->showXml();
         int itemSize = len(itemStr);
 
@@ -162,8 +158,7 @@ void savegame(const char *str)
     //VEHICLES
     dummy = len(vehicle);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (l = 0; l < len(vehicle); l++)
-    {
+    for (l = 0; l < len(vehicle); l++) {
       std::string vehicleStr = vehicle[l]->showXml();
       int vehicleSize = len(vehicleStr);
 
@@ -174,8 +169,7 @@ void savegame(const char *str)
     //POOL
     dummy = len(pool);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (int pl = 0; pl < len(pool); pl++)
-    {
+    for (int pl = 0; pl < len(pool); pl++) {
       std::string creatureStr = pool[pl]->showXml();
       int creatureSize = len(creatureStr);
 
@@ -183,8 +177,7 @@ void savegame(const char *str)
       fwrite(creatureStr.c_str(), creatureSize, 1, h);
       //fwrite(pool[pl],sizeof(Creature),1,h);
       //write extra interrogation data if applicable
-      if (pool[pl]->align == -1 && pool[pl]->alive)
-      {
+      if (pool[pl]->align == -1 && pool[pl]->alive) {
         interrogation *&intr = pool[pl]->activity.intr();
         fwrite(intr->techniques, sizeof(bool[6]), 1, h);
         fwrite(&intr->druguse, sizeof(int), 1, h);
@@ -192,8 +185,7 @@ void savegame(const char *str)
         //deep write rapport map
         int size = len(intr->rapport);
         fwrite(&size, sizeof(int), 1, h);
-        for (map<long, float_zero>::iterator i = intr->rapport.begin(); i != intr->rapport.end(); i++)
-        {
+        for (map<long, float_zero>::iterator i = intr->rapport.begin(); i != intr->rapport.end(); i++) {
           fwrite(&i->first, sizeof(long), 1, h);
           fwrite(&i->second, sizeof(float_zero), 1, h);
         }
@@ -213,14 +205,12 @@ void savegame(const char *str)
     //SQUADS
     dummy = len(squad);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (int sq = 0; sq < len(squad); sq++)
-    {
+    for (int sq = 0; sq < len(squad); sq++) {
       fwrite(squad[sq]->name, sizeof(char), SQUAD_NAMELEN, h);
       fwrite(&squad[sq]->activity, sizeof(activityst), 1, h);
       fwrite(&squad[sq]->id, sizeof(int), 1, h);
 
-      for (int pos = 0; pos < 6; pos++)
-      {
+      for (int pos = 0; pos < 6; pos++) {
         dummy_b = squad[sq]->squad[pos];
         fwrite(&dummy_b, sizeof(bool), 1, h);
         if (dummy_b)
@@ -230,8 +220,7 @@ void savegame(const char *str)
       consolidateloot(squad[sq]->loot); // consolidate loot before saving
       dummy = len(squad[sq]->loot);
       fwrite(&dummy, sizeof(int), 1, h);
-      for (int l2 = 0; l2 < len(squad[sq]->loot); l2++)
-      {
+      for (int l2 = 0; l2 < len(squad[sq]->loot); l2++) {
         std::string itemStr = squad[sq]->loot[l2]->showXml();
         int itemSize = len(itemStr);
 
@@ -248,16 +237,14 @@ void savegame(const char *str)
     //DATES
     dummy = len(date);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (int dt = 0; dt < len(date); dt++)
-    {
+    for (int dt = 0; dt < len(date); dt++) {
       fwrite(&date[dt]->mac_id, sizeof(long), 1, h);
       fwrite(&date[dt]->timeleft, sizeof(short), 1, h);
       fwrite(&date[dt]->city, sizeof(int), 1, h);
 
       dummy = len(date[dt]->date);
       fwrite(&dummy, sizeof(int), 1, h);
-      for (int dt2 = 0; dt2 < len(date[dt]->date); dt2++)
-      {
+      for (int dt2 = 0; dt2 < len(date[dt]->date); dt2++) {
         std::string creatureStr = date[dt]->date[dt2]->showXml();
         int creatureSize = len(creatureStr);
 
@@ -270,8 +257,7 @@ void savegame(const char *str)
     //RECRUITS
     dummy = len(recruit);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (int rt = 0; rt < len(recruit); rt++)
-    {
+    for (int rt = 0; rt < len(recruit); rt++) {
       fwrite(&recruit[rt]->recruiter_id, sizeof(long), 1, h);
       fwrite(&recruit[rt]->timeleft, sizeof(short), 1, h);
       fwrite(&recruit[rt]->level, sizeof(char), 1, h);
@@ -289,8 +275,7 @@ void savegame(const char *str)
     //NEWS STORIES
     dummy = len(newsstory);
     fwrite(&dummy, sizeof(int), 1, h);
-    for (int ns = 0; ns < len(newsstory); ns++)
-    {
+    for (int ns = 0; ns < len(newsstory); ns++) {
       fwrite(&newsstory[ns]->type, sizeof(short), 1, h);
       fwrite(&newsstory[ns]->view, sizeof(short), 1, h);
 
@@ -325,8 +310,7 @@ void savegame(const char *str)
 }
 
 /* Used by load() to create items of the correct class. */
-Item *create_item(const std::string &inputXml)
-{
+Item *create_item(const std::string &inputXml) {
   Item *it = NULL;
   CMarkup xml;
   xml.SetDoc(inputXml);
@@ -347,8 +331,7 @@ Item *create_item(const std::string &inputXml)
 }
 
 /* loads the game from save.dat */
-char load()
-{
+char load() {
   //LOAD FILE
   int loadversion;
   int l;
@@ -358,13 +341,11 @@ char load()
   FILE *h;
 
   h = LCSOpenFile("save.dat", "rb", LCSIO_PRE_HOME);
-  if (h != NULL)
-  {
+  if (h != NULL) {
     fread(&loadversion, sizeof(int), 1, h);
 
     //NUKE INVALID SAVE GAMES
-    if (loadversion < lowestloadversion)
-    {
+    if (loadversion < lowestloadversion) {
       LCSCloseFile(h);
 
       reset();
@@ -435,14 +416,12 @@ char load()
     //LOCATIONS
     fread(&dummy, sizeof(int), 1, h);
     location.resize(dummy);
-    for (l = 0; l < len(location); l++)
-    {
+    for (l = 0; l < len(location); l++) {
       location[l] = new Location;
 
       fread(&dummy, sizeof(int), 1, h);
       location[l]->loot.resize(dummy);
-      for (int l2 = 0; l2 < len(location[l]->loot); l2++)
-      {
+      for (int l2 = 0; l2 < len(location[l]->loot); l2++) {
         int itemLen;
         fread(&itemLen, sizeof(int), 1, h);
         vector<char> vec = vector<char>(itemLen + 1);
@@ -454,8 +433,7 @@ char load()
           location[l]->loot[l2] = it;
       }
       //Remove items of unknown type.
-      for (int l2 = len(location[l]->loot) - 1; l2 >= 0; l2--)
-      {
+      for (int l2 = len(location[l]->loot) - 1; l2 >= 0; l2--) {
         bool del = false;
         if (location[l]->loot[l2]->is_loot())
           del = (getloottype(location[l]->loot[l2]->get_itemtypename()) == -1);
@@ -466,8 +444,7 @@ char load()
         else if (location[l]->loot[l2]->is_armor())
           del = (getarmortype(location[l]->loot[l2]->get_itemtypename()) == -1);
 
-        if (del)
-        {
+        if (del) {
           addstr("Item type ");
           addstr(location[l]->loot[l2]->get_itemtypename());
           addstr(" does not exist. Deleting item.");
@@ -513,8 +490,7 @@ char load()
     //VEHICLES
     fread(&dummy, sizeof(int), 1, h);
     vehicle.resize(dummy);
-    for (l = 0; l < len(vehicle); l++)
-    {
+    for (l = 0; l < len(vehicle); l++) {
       int vehicleLen;
       fread(&vehicleLen, sizeof(int), 1, h);
       vector<char> vec = vector<char>(vehicleLen + 1);
@@ -526,8 +502,7 @@ char load()
     //POOL
     fread(&dummy, sizeof(int), 1, h);
     pool.resize(dummy);
-    for (int pl = 0; pl < len(pool); pl++)
-    {
+    for (int pl = 0; pl < len(pool); pl++) {
       int creatureLen;
       fread(&creatureLen, sizeof(int), 1, h);
       vector<char> vec = vector<char>(creatureLen + 1);
@@ -537,8 +512,7 @@ char load()
       //pool[pl]=new Creature;
       //fread(pool[pl],sizeof(Creature),1,h);
       //read extra interrogation data if applicable
-      if (pool[pl]->align == -1 && pool[pl]->alive)
-      {
+      if (pool[pl]->align == -1 && pool[pl]->alive) {
         interrogation *&intr = pool[pl]->activity.intr();
         intr = new interrogation;
         fread(intr->techniques, sizeof(bool[6]), 1, h);
@@ -547,8 +521,7 @@ char load()
         intr->rapport.clear();
         int size;
         fread(&size, sizeof(int), 1, h);
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
           long id;
           float_zero value;
           fread(&id, sizeof(long), 1, h);
@@ -628,21 +601,18 @@ char load()
     //SQUADS
     fread(&dummy, sizeof(int), 1, h);
     squad.resize(dummy);
-    for (int sq = 0; sq < len(squad); sq++)
-    {
+    for (int sq = 0; sq < len(squad); sq++) {
       squad[sq] = new squadst;
 
       fread(squad[sq]->name, sizeof(char), SQUAD_NAMELEN, h);
       fread(&squad[sq]->activity, sizeof(activityst), 1, h);
       fread(&squad[sq]->id, sizeof(int), 1, h);
 
-      for (int pos = 0; pos < 6; pos++)
-      {
+      for (int pos = 0; pos < 6; pos++) {
         //REBUILD SQUAD FROM POOL
         squad[sq]->squad[pos] = NULL;
         fread(&dummy_b, sizeof(bool), 1, h);
-        if (dummy_b)
-        {
+        if (dummy_b) {
           int dummy_i;
           fread(&dummy_i, sizeof(int), 1, h);
           for (int pl = 0; pl < len(pool); pl++)
@@ -653,8 +623,7 @@ char load()
 
       fread(&dummy, sizeof(int), 1, h);
       squad[sq]->loot.resize(dummy);
-      for (int l2 = 0; l2 < len(squad[sq]->loot); l2++)
-      {
+      for (int l2 = 0; l2 < len(squad[sq]->loot); l2++) {
         int itemLen;
         fread(&itemLen, sizeof(int), 1, h);
         vector<char> vec = vector<char>(itemLen + 1);
@@ -668,8 +637,7 @@ char load()
                squad[sq]->loot.erase(loot.begin()+l2--);*/
       }
       //Remove items of unknown type.
-      for (int l2 = len(squad[sq]->loot) - 1; l2 >= 0; l2--)
-      {
+      for (int l2 = len(squad[sq]->loot) - 1; l2 >= 0; l2--) {
         bool del = false;
         if (squad[sq]->loot[l2]->is_loot())
           del = (getloottype(squad[sq]->loot[l2]->get_itemtypename()) == -1);
@@ -680,8 +648,7 @@ char load()
         else if (squad[sq]->loot[l2]->is_armor())
           del = (getarmortype(squad[sq]->loot[l2]->get_itemtypename()) == -1);
 
-        if (del)
-        {
+        if (del) {
           addstr("Item type ");
           addstr(squad[sq]->loot[l2]->get_itemtypename());
           addstr(" does not exist. Deleting item.");
@@ -693,13 +660,11 @@ char load()
 
     activesquad = NULL;
     fread(&dummy_b, sizeof(bool), 1, h);
-    if (dummy_b)
-    {
+    if (dummy_b) {
       int dummy_i;
       fread(&dummy_i, sizeof(int), 1, h);
       for (int sq = 0; sq < len(squad); sq++)
-        if (squad[sq]->id == dummy_i)
-        {
+        if (squad[sq]->id == dummy_i) {
           activesquad = squad[sq];
           break;
         }
@@ -708,8 +673,7 @@ char load()
     //DATES
     fread(&dummy, sizeof(int), 1, h);
     date.resize(dummy);
-    for (int dt = 0; dt < len(date); dt++)
-    {
+    for (int dt = 0; dt < len(date); dt++) {
       date[dt] = new datest;
 
       fread(&date[dt]->mac_id, sizeof(long), 1, h);
@@ -718,8 +682,7 @@ char load()
 
       fread(&dummy, sizeof(int), 1, h);
       date[dt]->date.resize(dummy);
-      for (int dt2 = 0; dt2 < len(date[dt]->date); dt2++)
-      {
+      for (int dt2 = 0; dt2 < len(date[dt]->date); dt2++) {
         int creatureLen;
         fread(&creatureLen, sizeof(int), 1, h);
         vector<char> vec = vector<char>(creatureLen + 1);
@@ -735,8 +698,7 @@ char load()
     //RECRUITS
     fread(&dummy, sizeof(int), 1, h);
     recruit.resize(dummy);
-    for (int rt = 0; rt < len(recruit); rt++)
-    {
+    for (int rt = 0; rt < len(recruit); rt++) {
       recruit[rt] = new recruitst;
       fread(&recruit[rt]->recruiter_id, sizeof(long), 1, h);
       fread(&recruit[rt]->timeleft, sizeof(short), 1, h);
@@ -757,8 +719,7 @@ char load()
     //NEWS STORIES
     fread(&dummy, sizeof(int), 1, h);
     newsstory.resize(dummy);
-    for (int ns = 0; ns < len(newsstory); ns++)
-    {
+    for (int ns = 0; ns < len(newsstory); ns++) {
       newsstory[ns] = new newsstoryst;
 
       fread(&newsstory[ns]->type, sizeof(short), 1, h);
@@ -772,12 +733,10 @@ char load()
 
       newsstory[ns]->cr = NULL;
       fread(&dummy_b, sizeof(bool), 1, h);
-      if (dummy_b)
-      {
+      if (dummy_b) {
         fread(&dummy_l, sizeof(long), 1, h);
         for (int pl = 0; pl < len(pool); pl++)
-          if (pool[pl]->id == dummy_l)
-          {
+          if (pool[pl]->id == dummy_l) {
             newsstory[ns]->cr = pool[pl];
             break;
           }
@@ -802,10 +761,8 @@ char load()
     LCSCloseFile(h);
 
     // Check that vehicles are of existing types.
-    for (int v = 0; v < len(vehicle); v++)
-    {
-      if (getvehicletype(vehicle[v]->vtypeidname()) == -1)
-      { //Remove vehicle of non-existing type.
+    for (int v = 0; v < len(vehicle); v++) {
+      if (getvehicletype(vehicle[v]->vtypeidname()) == -1) { //Remove vehicle of non-existing type.
         addstr("Vehicle type " + vehicle[v]->vtypeidname() + " does not exist. Deleting vehicle.");
         delete_and_remove(vehicle, v--);
       }
@@ -818,7 +775,6 @@ char load()
 }
 
 /* deletes save.dat (used on endgame and for invalid save version) */
-void reset()
-{
+void reset() {
   LCSDeleteFile("save.dat", LCSIO_PRE_HOME);
 }

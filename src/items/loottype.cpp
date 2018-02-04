@@ -2,8 +2,7 @@
 
 LootType::LootType(MCD_STR xmlstring)
     : ItemType(xmlstring), stackable_(true),
-      no_quick_fencing_(false), cloth_(false)
-{
+      no_quick_fencing_(false), cloth_(false) {
   CMarkup xml;
   xml.SetDoc(xmlstring);
   xml.FindElem();
@@ -13,8 +12,7 @@ LootType::LootType(MCD_STR xmlstring)
   {
     std::string element = xml.GetTagName();
 
-    if (element == "stackable")
-    {
+    if (element == "stackable") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         stackable_ = true;
@@ -23,9 +21,7 @@ LootType::LootType(MCD_STR xmlstring)
       /*else
             errorlog << "Invalid boolean value for loot type " << idname
                       << "::stackable: " << xml.GetData() << std::endl;*/
-    }
-    else if (element == "no_quick_fencing")
-    {
+    } else if (element == "no_quick_fencing") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         no_quick_fencing_ = true;
@@ -34,9 +30,7 @@ LootType::LootType(MCD_STR xmlstring)
       /*else
             errorlog << "Invalid boolean value for loot type " << idname
                       << "::no_quick_fencing: " << xml.GetData() << std::endl;*/
-    }
-    else if (element == "cloth")
-    {
+    } else if (element == "cloth") {
       int b = stringtobool(xml.GetData());
       if (b == 1)
         cloth_ = true;

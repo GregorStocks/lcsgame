@@ -28,8 +28,7 @@ This file is part of Liberal Crime Squad.                                       
 
 #include <externs.h>
 
-enum DateResults
-{
+enum DateResults {
   DATERESULT_MEETTOMORROW,
   DATERESULT_BREAKUP,
   DATERESULT_JOINED,
@@ -37,12 +36,10 @@ enum DateResults
 };
 
 // Handles the result of a date or vacation
-static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
-{
+static int dateresult(int aroll, int troll, datest &d, int e, int p, int y) {
   music.play(MUSIC_DATING);
   std::string s = "";
-  if (aroll > troll)
-  {
+  if (aroll > troll) {
     set_color(COLOR_CYAN, COLOR_BLACK, 1);
     move(y, 0);
     y++;
@@ -54,8 +51,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
 
     getkey();
 
-    if (loveslavesleft(*pool[p]) <= 0)
-    {
+    if (loveslavesleft(*pool[p]) <= 0) {
       set_color(COLOR_YELLOW, COLOR_BLACK, 1);
 
       move(y++, 0);
@@ -93,8 +89,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
       return DATERESULT_BREAKUP;
     }
 
-    if (LCSrandom((aroll - troll) / 2) > d.date[e]->get_attribute(ATTRIBUTE_WISDOM, true))
-    {
+    if (LCSrandom((aroll - troll) / 2) > d.date[e]->get_attribute(ATTRIBUTE_WISDOM, true)) {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       move(y, 0);
       y++;
@@ -137,11 +132,8 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
       d.date.erase(d.date.begin() + e);
 
       return DATERESULT_JOINED;
-    }
-    else
-    {
-      if (d.date[e]->align == ALIGN_CONSERVATIVE && d.date[e]->get_attribute(ATTRIBUTE_WISDOM, false) > 3)
-      {
+    } else {
+      if (d.date[e]->align == ALIGN_CONSERVATIVE && d.date[e]->get_attribute(ATTRIBUTE_WISDOM, false) > 3) {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         y++;
         move(y++, 0);
@@ -150,28 +142,22 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
         move(y++, 0);
         d.date[e]->adjust_attribute(ATTRIBUTE_WISDOM, -1);
         d.date[e]->adjust_attribute(ATTRIBUTE_HEART, +1);
-      }
-      else if (d.date[e]->get_attribute(ATTRIBUTE_WISDOM, false) > 3)
-      {
+      } else if (d.date[e]->get_attribute(ATTRIBUTE_WISDOM, false) > 3) {
         d.date[e]->adjust_attribute(ATTRIBUTE_WISDOM, -1);
       }
       //Possibly date reveals map of location
-      else if (location[d.date[e]->worklocation]->mapped == 0 && !LCSrandom(d.date[e]->get_attribute(ATTRIBUTE_WISDOM, false)))
-      {
+      else if (location[d.date[e]->worklocation]->mapped == 0 && !LCSrandom(d.date[e]->get_attribute(ATTRIBUTE_WISDOM, false))) {
         y++;
         move(y++, 0);
         addstr(s + d.date[e]->name + " turns the topic of discussion to the " + location[d.date[e]->worklocation]->name + ".", gamelog);
         gamelog.newline();
         move(y++, 0);
-        if (!(location[d.date[e]->worklocation]->type <= SITE_RESIDENTIAL_SHELTER))
-        {
+        if (!(location[d.date[e]->worklocation]->type <= SITE_RESIDENTIAL_SHELTER)) {
           addstr(pool[p]->name, gamelog);
           addstr(" was able to create a map of the site with this information.", gamelog);
           gamelog.newline();
           y++;
-        }
-        else
-        {
+        } else {
           addstr(pool[p]->name, gamelog);
           addstr(" knows all about that already.", gamelog);
           gamelog.newline();
@@ -190,16 +176,13 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
 
       return DATERESULT_MEETTOMORROW;
     }
-  }
-  else if (aroll == troll)
-  {
+  } else if (aroll == troll) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(y++, 0);
     addstr(d.date[e]->name, gamelog);
     addstr(" seemed to have fun, but left early", gamelog);
     move(y++, 0);
-    switch (LCSrandom(4))
-    {
+    switch (LCSrandom(4)) {
     case 0:
       addstr(s + " to wash " + d.date[e]->hisher() + " hair.", gamelog);
       break;
@@ -214,8 +197,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
       break;
     case 4:
       addstr(s + " to take care of " + d.date[e]->hisher() + " pet", gamelog);
-      switch (LCSrandom(3 + (law[LAW_ANIMALRESEARCH] == -2)))
-      {
+      switch (LCSrandom(3 + (law[LAW_ANIMALRESEARCH] == -2))) {
       case 0:
         addstr(" cat.", gamelog);
         break;
@@ -244,12 +226,9 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
     getkey();
 
     return DATERESULT_MEETTOMORROW;
-  }
-  else
-  {
+  } else {
     //WISDOM POSSIBLE INCREASE
-    if (d.date[e]->align == -1 && aroll < troll / 2)
-    {
+    if (d.date[e]->align == -1 && aroll < troll / 2) {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       move(y++, 0);
 
@@ -277,8 +256,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
     // them has a 1 in 50 chance of ratting them out, unless the person being dated is law
     // enforcement, prison guard, or agent, in which case there is a 1 in 4 chance. -Fox
     if ((iscriminal(*pool[p])) &&
-        (!LCSrandom(50) || (LCSrandom(2) && (d.date[e]->kidnap_resistant()))))
-    {
+        (!LCSrandom(50) || (LCSrandom(2) && (d.date[e]->kidnap_resistant())))) {
       move(y++, 0);
       set_color(COLOR_RED, COLOR_BLACK, 1);
       addstr(d.date[e]->name, gamelog);
@@ -289,8 +267,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
       move(y++, 0);
       // 3/4 chance of being arrested if less than 50 juice,
       // 1/2 chance of being arrested if more than 50 juice
-      if ((pool[p]->juice < 50 && LCSrandom(2)) || LCSrandom(2))
-      {
+      if ((pool[p]->juice < 50 && LCSrandom(2)) || LCSrandom(2)) {
         // Find the police station
         long ps = find_police_station(*pool[p]);
 
@@ -310,28 +287,22 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
         delete_and_remove(d.date, e);
 
         return DATERESULT_ARRESTED;
-      }
-      else
-      {
+      } else {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr("But ", gamelog);
         addstr(pool[p]->name, gamelog);
         addstr(" escapes the police ambush!", gamelog);
         gamelog.nextMessage();
       }
-    }
-    else
-    {
+    } else {
       int ls = loveslaves(*pool[p]);
-      if (ls > 0 && LCSrandom(2))
-      {
+      if (ls > 0 && LCSrandom(2)) {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         move(y++, 0);
         addstr(s + "The date starts well, but goes horribly wrong when " + d.date[e]->name, gamelog);
         move(y++, 0);
         addstr(s + "notices " + pool[p]->name + "'s ", gamelog);
-        switch (ls)
-        {
+        switch (ls) {
         case 5:
           addstr("awe-inspiring ", gamelog);
           break;
@@ -353,21 +324,14 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
         addstr(s + " from meeting ", gamelog);
         move(y++, 0);
         int lsfound = 0;
-        for (int q = 0; q < (int)pool.size(); q++)
-        {
-          if (pool[q]->hireid == pool[p]->id && pool[q]->alive && pool[q]->flag & CREATUREFLAG_LOVESLAVE)
-          {
+        for (int q = 0; q < (int)pool.size(); q++) {
+          if (pool[q]->hireid == pool[p]->id && pool[q]->alive && pool[q]->flag & CREATUREFLAG_LOVESLAVE) {
             lsfound++;
-            if (lsfound == 1)
-            {
+            if (lsfound == 1) {
               addstr(pool[q]->name, gamelog);
-            }
-            else if (lsfound < ls)
-            {
+            } else if (lsfound < ls) {
               addstr(s + ", " + pool[q]->name, gamelog);
-            }
-            else
-            {
+            } else {
               addstr(s + " and " + pool[q]->name, gamelog);
             }
           }
@@ -375,9 +339,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
         addstr(".", gamelog);
         gamelog.newline();
         move(y++, 0);
-      }
-      else
-      {
+      } else {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         move(y++, 0);
         addstr(d.date[e]->name, gamelog);
@@ -398,8 +360,7 @@ static int dateresult(int aroll, int troll, datest &d, int e, int p, int y)
 }
 
 /* daily - date - dater p gets back from vacation */
-char completevacation(datest &d, int p, char &clearformess)
-{
+char completevacation(datest &d, int p, char &clearformess) {
   music.play(MUSIC_DATING);
   int e = 0;
 
@@ -439,24 +400,20 @@ char completevacation(datest &d, int p, char &clearformess)
   pool[p]->train(SKILL_BUSINESS,
                  max(d.date[e]->get_skill(SKILL_BUSINESS) - pool[p]->get_skill(SKILL_BUSINESS), 0));
 
-  if (d.date[e]->skill_roll(SKILL_BUSINESS))
-  {
+  if (d.date[e]->skill_roll(SKILL_BUSINESS)) {
     troll += d.date[e]->skill_roll(SKILL_BUSINESS);
     aroll += pool[p]->skill_roll(SKILL_BUSINESS);
   }
-  if (d.date[e]->skill_roll(SKILL_RELIGION))
-  {
+  if (d.date[e]->skill_roll(SKILL_RELIGION)) {
     troll += d.date[e]->skill_roll(SKILL_RELIGION);
     aroll += pool[p]->skill_roll(SKILL_RELIGION);
   }
-  if (d.date[e]->skill_roll(SKILL_SCIENCE))
-  {
+  if (d.date[e]->skill_roll(SKILL_SCIENCE)) {
     troll += d.date[e]->skill_roll(SKILL_SCIENCE);
     aroll += pool[p]->skill_roll(SKILL_SCIENCE);
   }
 
-  switch (dateresult(aroll, troll, d, e, p, 2))
-  {
+  switch (dateresult(aroll, troll, d, e, p, 2)) {
   default:
   case DATERESULT_MEETTOMORROW:
     return 0;
@@ -470,8 +427,7 @@ char completevacation(datest &d, int p, char &clearformess)
 }
 
 /* daily - date - dater p goes on some dates */
-char completedate(datest &d, int p, char &clearformess)
-{
+char completedate(datest &d, int p, char &clearformess) {
   music.play(MUSIC_DATING);
   int e;
   clearformess = 1;
@@ -481,27 +437,22 @@ char completedate(datest &d, int p, char &clearformess)
   move(0, 0);
   addstr(pool[p]->name, gamelog);
   addstr(" has ", gamelog);
-  if (len(d.date) == 1)
-  {
+  if (len(d.date) == 1) {
     if (pool[p]->clinic)
       addstr("a \"hot\" date with ", gamelog);
     else
       addstr("a hot date with ", gamelog);
-  }
-  else
+  } else
     addstr("dates to manage with ", gamelog);
-  for (e = 0; e < len(d.date); e++)
-  {
+  for (e = 0; e < len(d.date); e++) {
     addstr(d.date[e]->name, gamelog);
 
     if (e <= len(d.date) - 3)
       addstr(", ", gamelog);
     else if (e == len(d.date) - 2)
       addstr(" and ", gamelog);
-    else
-    {
-      if (pool[p]->clinic > 0)
-      {
+    else {
+      if (pool[p]->clinic > 0) {
         addstr(" at ", gamelog);
         addstr(location[pool[p]->location]->name, gamelog);
       }
@@ -513,10 +464,8 @@ char completedate(datest &d, int p, char &clearformess)
 
   getkey();
 
-  if (len(d.date) > 1 && !LCSrandom(len(d.date) > 2 ? 4 : 6))
-  {
-    switch (LCSrandom(3))
-    {
+  if (len(d.date) > 1 && !LCSrandom(len(d.date) > 2 ? 4 : 6)) {
+    switch (LCSrandom(3)) {
     case 0:
       move(2, 0);
       if (len(d.date) > 2)
@@ -550,8 +499,7 @@ char completedate(datest &d, int p, char &clearformess)
       addstr(pool[p]->name, gamelog);
       if (len(d.date) > 2)
         addstr_fl(gamelog, " realizes %s has committed to eating %d meals at once.", pool[p]->heshe(), len(d.date));
-      else
-      {
+      else {
         addstr(" mixes up the names of ", gamelog);
         addstr(d.date[0]->name, gamelog);
         addstr(" and ", gamelog);
@@ -588,8 +536,7 @@ char completedate(datest &d, int p, char &clearformess)
     return 1;
   }
 
-  for (e = len(d.date) - 1; e >= 0; e--)
-  {
+  for (e = len(d.date) - 1; e >= 0; e--) {
     erase();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(0, 0);
@@ -614,8 +561,7 @@ char completedate(datest &d, int p, char &clearformess)
     printcreatureinfo(d.date[e]);
     makedelimiter();
 
-    while (len(temp))
-    {
+    while (len(temp)) {
       if (temp.back()->is_weapon())
         d.date[e]->give_weapon(*(static_cast<Weapon *>(temp.back())), NULL); //casts -XML
       else if (temp.back()->is_armor())
@@ -651,8 +597,7 @@ char completedate(datest &d, int p, char &clearformess)
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(14, 0);
     addstr("D - Break it off.");
-    if (d.date[e]->align == -1 && !pool[p]->clinic)
-    {
+    if (d.date[e]->align == -1 && !pool[p]->clinic) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(15, 0);
       addstr("E - Just kidnap the Conservative bitch.");
@@ -664,8 +609,7 @@ char completedate(datest &d, int p, char &clearformess)
         //Has a skill that is at least half the same skill of the other person on the date.
         if (d.date[e]->get_skill(s) <= pool[p]->get_skill(s) * 2)
           thingsincommon++;
-    while (true)
-    {
+    while (true) {
       int c = getkey();
 
       short aroll = pool[p]->skill_roll(SKILL_SEDUCTION);
@@ -680,17 +624,14 @@ char completedate(datest &d, int p, char &clearformess)
 
       char test = 0;
       aroll += thingsincommon * 3;
-      if (c == 'a' && ledger.get_funds() >= 100 && !pool[p]->clinic)
-      {
+      if (c == 'a' && ledger.get_funds() >= 100 && !pool[p]->clinic) {
         ledger.subtract_funds(100, EXPENSE_DATING);
         aroll += LCSrandom(10);
         test = true;
-      }
-      else if (c == 'b')
+      } else if (c == 'b')
         test = true;
 
-      if (test)
-      {
+      if (test) {
         pool[p]->train(SKILL_SEDUCTION, LCSrandom(4) + 5);
         pool[p]->train(SKILL_SCIENCE,
                        max(d.date[e]->get_skill(SKILL_SCIENCE) - pool[p]->get_skill(SKILL_SCIENCE), 0));
@@ -699,18 +640,15 @@ char completedate(datest &d, int p, char &clearformess)
         pool[p]->train(SKILL_BUSINESS,
                        max(d.date[e]->get_skill(SKILL_BUSINESS) - pool[p]->get_skill(SKILL_BUSINESS), 0));
 
-        if (d.date[e]->get_skill(SKILL_BUSINESS))
-        {
+        if (d.date[e]->get_skill(SKILL_BUSINESS)) {
           troll += d.date[e]->skill_roll(SKILL_BUSINESS);
           aroll += pool[p]->skill_roll(SKILL_BUSINESS);
         }
-        if (d.date[e]->get_skill(SKILL_RELIGION))
-        {
+        if (d.date[e]->get_skill(SKILL_RELIGION)) {
           troll += d.date[e]->skill_roll(SKILL_RELIGION);
           aroll += pool[p]->skill_roll(SKILL_RELIGION);
         }
-        if (d.date[e]->get_skill(SKILL_SCIENCE))
-        {
+        if (d.date[e]->get_skill(SKILL_SCIENCE)) {
           troll += d.date[e]->skill_roll(SKILL_SCIENCE);
           aroll += pool[p]->skill_roll(SKILL_SCIENCE);
         }
@@ -720,10 +658,8 @@ char completedate(datest &d, int p, char &clearformess)
         break;
       }
 
-      if (c == 'c' && !pool[p]->clinic && pool[p]->blood == 100)
-      {
-        for (int e2 = len(d.date) - 1; e2 >= 0; e2--)
-        {
+      if (c == 'c' && !pool[p]->clinic && pool[p]->blood == 100) {
+        for (int e2 = len(d.date) - 1; e2 >= 0; e2--) {
           if (e2 == e) continue;
           delete_and_remove(d.date, e2);
           e = 0;
@@ -738,29 +674,24 @@ char completedate(datest &d, int p, char &clearformess)
                        max((d.date[e]->get_skill(SKILL_BUSINESS) - pool[p]->get_skill(SKILL_BUSINESS)) * 4, 0));
         return 0;
       }
-      if (c == 'd')
-      {
+      if (c == 'd') {
         delete_and_remove(d.date, e);
         break;
       }
-      if (c == 'e' && d.date[e]->align == -1 && !pool[p]->clinic)
-      {
+      if (c == 'e' && d.date[e]->align == -1 && !pool[p]->clinic) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         int bonus = 0;
         move(17, 0);
         addstr(pool[p]->name, gamelog);
 
-        if (pool[p]->get_weapon().is_ranged())
-        {
+        if (pool[p]->get_weapon().is_ranged()) {
           addstr(" comes back from the bathroom toting the ", gamelog);
           addstr(pool[p]->get_weapon().get_name(1), gamelog);
           move(18, 0);
           addstr("and threatens to blow the Conservative's brains out!", gamelog);
           gamelog.newline();
           bonus = 5;
-        }
-        else if (pool[p]->is_armed())
-        {
+        } else if (pool[p]->is_armed()) {
           addstr(" grabs the Conservative from behind, holding the ", gamelog);
           addstr(pool[p]->get_weapon().get_name(1), gamelog);
           move(18, 0);
@@ -771,8 +702,7 @@ char completedate(datest &d, int p, char &clearformess)
           else
             bonus = -1; // Conservative emboldened by the fact that you're trying
         }               // to kidnap them with a gavel or some shit like that
-        else
-        {
+        else {
           addstr(" seizes the Conservative swine from behind and warns it", gamelog);
           move(18, 0);
           if (law[LAW_FREESPEECH] != -2)
@@ -790,19 +720,15 @@ char completedate(datest &d, int p, char &clearformess)
         // but fails 15 times as often if the conservative is tough stuff.
         if ((!d.date[e]->kidnap_resistant() &&
              LCSrandom(15)) ||
-            LCSrandom(2 + bonus))
-        {
+            LCSrandom(2 + bonus)) {
 
           set_color(COLOR_GREEN, COLOR_BLACK, 1);
           move(20, 0);
           addstr(d.date[e]->name, gamelog);
-          if (bonus)
-          {
+          if (bonus) {
             addstr(" doesn't resist.", gamelog);
             gamelog.newline();
-          }
-          else
-          {
+          } else {
             addstr(" struggles and yells for help, but nobody comes.", gamelog);
             gamelog.newline();
           }
@@ -853,12 +779,9 @@ char completedate(datest &d, int p, char &clearformess)
           stat_kidnappings++;
           d.date.erase(d.date.begin() + e);
           break;
-        }
-        else
-        {
+        } else {
           int y = 20;
-          if (LCSrandom(2))
-          {
+          if (LCSrandom(2)) {
             set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
             move(y++, 0);
             addstr(d.date[e]->name, gamelog);
@@ -879,9 +802,7 @@ char completedate(datest &d, int p, char &clearformess)
 
             delete_and_remove(d.date, e);
             break;
-          }
-          else
-          {
+          } else {
             set_color(COLOR_RED, COLOR_BLACK, 1);
             move(y++, 0);
             addstr(d.date[e]->name, gamelog);
@@ -919,11 +840,9 @@ char completedate(datest &d, int p, char &clearformess)
     }
   }
 
-  if (len(d.date))
-  {
+  if (len(d.date)) {
     d.timeleft = 0;
     return 0;
-  }
-  else
+  } else
     return 1;
 }

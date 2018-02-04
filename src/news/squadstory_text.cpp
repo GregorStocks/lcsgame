@@ -1,7 +1,6 @@
 #include <externs.h>
 
-void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, char *story)
-{
+void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, char *story) {
   strcat(story, "  The events took place ");
   std::string placename = location[ns.loc]->getname();
   if (placename.substr(0, 4) == "The ")
@@ -9,8 +8,7 @@ void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, c
   int posand = placename.find('&');
   if (posand != (int)string::npos)
     placename = placename.substr(0, posand) + "and" + placename.substr(posand + 1);
-  switch (location[ns.loc]->type)
-  {
+  switch (location[ns.loc]->type) {
   case SITE_CITY_SEATTLE:
   case SITE_CITY_LOS_ANGELES:
   case SITE_CITY_NEW_YORK:
@@ -27,37 +25,25 @@ void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, c
   case SITE_OUTOFTOWN:
   case SITE_INDUSTRIAL:
   case SITE_TRAVEL:
-    if (placename == "Shopping")
-    {
+    if (placename == "Shopping") {
       placename = "Shopping Mall";
       strcat(story, "at the ");
-    }
-    else if (placename == "Travel")
-    {
+    } else if (placename == "Travel") {
       placename = "Travel Agency";
       strcat(story, "at the ");
-    }
-    else if (placename == "Outskirts and Orange County")
-    {
+    } else if (placename == "Outskirts and Orange County") {
       placename = "Orange County";
       strcat(story, "in ");
-    }
-    else if (placename == "Brooklyn and Queens")
-    {
+    } else if (placename == "Brooklyn and Queens") {
       placename = "Long Island";
       strcat(story, "on ");
-    }
-    else if (placename == "Greater Hollywood")
-    {
+    } else if (placename == "Greater Hollywood") {
       placename = "Hollywood";
       strcat(story, "in ");
-    }
-    else if (placename == "Manhattan Island")
-    {
+    } else if (placename == "Manhattan Island") {
       placename = "Manhattan";
       strcat(story, "in ");
-    }
-    else if (placename == "Arlington")
+    } else if (placename == "Arlington")
       strcat(story, "in ");
     else if (placename == "National Mall")
       strcat(story, "on the ");
@@ -65,13 +51,10 @@ void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, c
       strcat(story, "in the ");
     break;
   case SITE_BUSINESS_PAWNSHOP:
-    if (placename.find("'s") != string::npos)
-    {
+    if (placename.find("'s") != string::npos) {
       strcat(story, "at ");
       if (liberalguardian && !ccs) strcat(story, "the notorious ");
-    }
-    else
-    {
+    } else {
       strcat(story, "at the ");
       if (liberalguardian && !ccs) strcat(story, "notorious ");
     }
@@ -88,10 +71,8 @@ void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, c
     if (liberalguardian && !ccs) strcat(story, "notorious ");
     break;
   }
-  if (ccs)
-  {
-    switch (location[ns.loc]->type)
-    {
+  if (ccs) {
+    switch (location[ns.loc]->type) {
     case SITE_RESIDENTIAL_APARTMENT_UPSCALE:
       strcat(story, "University Dormitory.  ");
       break;
@@ -151,13 +132,10 @@ void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, c
       strcat(story, ".  ");
       break;
     }
-  }
-  else
+  } else
     strcat(story, placename);
-  if (liberalguardian && !ccs)
-  {
-    switch (location[ns.loc]->type)
-    {
+  if (liberalguardian && !ccs) {
+    switch (location[ns.loc]->type) {
     case SITE_RESIDENTIAL_APARTMENT_UPSCALE:
       strcat(story, ", known for its rich and snooty residents.  ");
       break;
@@ -211,40 +189,28 @@ void squadstory_text_location(newsstoryst &ns, bool liberalguardian, bool ccs, c
       strcat(story, ".  ");
       break;
     }
-  }
-  else if (!ccs)
+  } else if (!ccs)
     strcat(story, ".  ");
 }
 
-void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, char *story)
-{
-  if (ns.type == NEWSSTORY_SQUAD_SITE)
-  {
-    if (!newscherrybusted && !liberalguardian)
-    {
-      if (ns.positive)
-      {
+void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, char *story) {
+  if (ns.type == NEWSSTORY_SQUAD_SITE) {
+    if (!newscherrybusted && !liberalguardian) {
+      if (ns.positive) {
         strcat(story, "A group calling itself the Liberal Crime Squad ");
         strcat(story, "burst onto the scene of political activism yesterday, according ");
         strcat(story, "to a spokesperson from the police department.");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         strcat(story, "A group of thugs calling itself the Liberal Crime Squad ");
         strcat(story, "went on a rampage yesterday, according ");
         strcat(story, "to a spokesperson from the police department.");
       }
-    }
-    else
-    {
-      if (ns.positive)
-      {
+    } else {
+      if (ns.positive) {
         strcat(story, "The Liberal Crime Squad has struck again.  ");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         if (!liberalguardian)
           strcat(story, "The Liberal Crime Squad has gone on a rampage.  ");
         else
@@ -252,55 +218,37 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
         strcat(story, "&r");
       }
     }
-  }
-  else if (ns.type == NEWSSTORY_CCS_SITE)
-  {
-    if (newscherrybusted < 2)
-    {
-      if (ns.positive && !liberalguardian)
-      {
+  } else if (ns.type == NEWSSTORY_CCS_SITE) {
+    if (newscherrybusted < 2) {
+      if (ns.positive && !liberalguardian) {
         strcat(story, "A group of M16-wielding vigilantes calling itself the Conservative Crime Squad ");
         strcat(story, "burst onto the scene of political activism yesterday, according ");
         strcat(story, "to a spokesperson from the police department.");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         strcat(story, "A group of worthless M16-toting hicks calling itself the Conservative Crime Squad ");
         strcat(story, "went on a rampage yesterday, according ");
         strcat(story, "to a spokesperson from the police department.");
       }
-    }
-    else
-    {
-      if (ns.positive && !liberalguardian)
-      {
+    } else {
+      if (ns.positive && !liberalguardian) {
         strcat(story, "The Conservative Crime Squad has struck again.  ");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         strcat(story, "The Conservative Crime Squad has gone on another rampage.  ");
         strcat(story, "&r");
       }
     }
-  }
-  else if (ns.type == NEWSSTORY_CCS_KILLED_SITE)
-  {
-    if (newscherrybusted < 2)
-    {
-      if (ns.positive && !liberalguardian)
-      {
+  } else if (ns.type == NEWSSTORY_CCS_KILLED_SITE) {
+    if (newscherrybusted < 2) {
+      if (ns.positive && !liberalguardian) {
         strcat(story, "A group of M16-wielding vigilantes calling themselves the Conservative Crime Squad ");
         strcat(story, "burst briefly onto the scene of political activism yesterday, according ");
         strcat(story, "to a spokesperson from the police department.  ");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         strcat(story, "A group of ");
-        switch (LCSrandom(4))
-        {
+        switch (LCSrandom(4)) {
         case 0:
           strcat(story, "pathetic, ");
           break;
@@ -314,8 +262,7 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
           strcat(story, "inbred, ");
           break;
         }
-        switch (LCSrandom(4))
-        {
+        switch (LCSrandom(4)) {
         case 0:
           strcat(story, "violent, ");
           break;
@@ -330,8 +277,7 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
           break;
         }
         strcat(story, "M16-toting ");
-        switch (LCSrandom(3))
-        {
+        switch (LCSrandom(3)) {
         case 0:
           strcat(story, "hicks ");
           break;
@@ -343,8 +289,7 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
           break;
         }
         strcat(story, "calling themselves the Conservative Crime Squad went on a ");
-        switch (LCSrandom(3))
-        {
+        switch (LCSrandom(3)) {
         case 0:
           strcat(story, "suicidal ");
           break;
@@ -358,49 +303,33 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
         strcat(story, "rampage yesterday, according to a spokesperson from the police department.  ");
         strcat(story, "&r");
       }
-    }
-    else
-    {
-      if (ns.positive && !liberalguardian)
-      {
+    } else {
+      if (ns.positive && !liberalguardian) {
         strcat(story, "The Conservative Crime Squad has struck again, albeit with a tragic end.  ");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         strcat(story, "The Conservative Crime Squad has gone on another rampage, and they got what they deserved.  ");
         strcat(story, "&r");
       }
     }
-  }
-  else
-  {
-    if (!newscherrybusted && !liberalguardian)
-    {
-      if (ns.positive)
-      {
+  } else {
+    if (!newscherrybusted && !liberalguardian) {
+      if (ns.positive) {
         strcat(story, "A group calling itself the Liberal Crime Squad ");
         strcat(story, "burst briefly onto the scene of political activism yesterday, according ");
         strcat(story, "to a spokesperson from the police department.  ");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         strcat(story, "A group of thugs calling itself the Liberal Crime Squad ");
         strcat(story, "went on a suicidal rampage yesterday, according ");
         strcat(story, "to a spokesperson from the police department.  ");
         strcat(story, "&r");
       }
-    }
-    else
-    {
-      if (ns.positive)
-      {
+    } else {
+      if (ns.positive) {
         strcat(story, "The Liberal Crime Squad has struck again, albeit with a tragic end.  ");
         strcat(story, "&r");
-      }
-      else
-      {
+      } else {
         if (!liberalguardian)
           strcat(story, "The Liberal Crime Squad has gone on a rampage, and they got what they deserved.  ");
         else
@@ -412,8 +341,7 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
 
   squadstory_text_location(ns, liberalguardian, ccs, story);
 
-  if (ns.type == NEWSSTORY_SQUAD_KILLED_SITE)
-  {
+  if (ns.type == NEWSSTORY_SQUAD_KILLED_SITE) {
     if (liberalguardian)
       strcat(story, "Unfortunately, the LCS group was defeated by the forces of evil.  ");
     else if (ns.positive)
@@ -421,8 +349,7 @@ void squadstory_text_opening(newsstoryst &ns, bool liberalguardian, bool ccs, ch
     else
       strcat(story, "Fortunately, the LCS thugs were stopped by brave citizens.  ");
   }
-  if (ns.type == NEWSSTORY_CCS_KILLED_SITE)
-  {
+  if (ns.type == NEWSSTORY_CCS_KILLED_SITE) {
     if (ns.positive && !liberalguardian)
       strcat(story, "Everyone in the CCS group was arrested or killed.  ");
     else

@@ -19,20 +19,17 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* base - activate sleepers */
-void activate_sleepers()
-{
+void activate_sleepers() {
   vector<Creature *> temppool;
   // Comb the pool of Liberals for sleeper agents
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     // Select only sleepers that can work
     if (pool[p]->alive == true &&
         pool[p]->flag & CREATUREFLAG_SLEEPER &&
         pool[p]->align == ALIGN_LIBERAL &&
         pool[p]->hiding == false &&
         pool[p]->clinic == false &&
-        pool[p]->dating == false)
-    {
+        pool[p]->dating == false) {
       temppool.push_back(pool[p]);
     }
   }
@@ -43,8 +40,7 @@ void activate_sleepers()
 
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     music.play(MUSIC_SLEEPERS);
     erase();
 
@@ -64,8 +60,7 @@ void activate_sleepers()
     addstr("ACTIVITY");
 
     int y = 2;
-    for (int p = page * 9; p < len(temppool) && p < page * 9 + 9; p++, y += 2)
-    {
+    for (int p = page * 9; p < len(temppool) && p < page * 9 + 9; p++, y += 2) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddchar(y, 0, (y - 2) / 2 + 'A');
       addstr(" - ");
@@ -117,15 +112,13 @@ void activate_sleepers()
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 9 < len(temppool)) page++;
 
-    if (c >= 'a' && c <= 's')
-    {
+    if (c >= 'a' && c <= 's') {
       int p = page * 9 + (int)(c - 'a');
       if (p < len(temppool))
         activate_sleeper(temppool[p]);
     }
 
-    if (c == 't')
-    {
+    if (c == 't') {
       sorting_prompt(SORTINGCHOICE_ACTIVATESLEEPERS);
       sortliberals(temppool, activesortingchoice[SORTINGCHOICE_ACTIVATESLEEPERS], true);
     }
@@ -134,12 +127,10 @@ void activate_sleepers()
   }
 }
 
-void activate_sleeper(Creature *cr)
-{
+void activate_sleeper(Creature *cr) {
   int state = 0, choice = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
@@ -170,8 +161,7 @@ void activate_sleeper(Creature *cr)
     move(20, 40);
     addstr("Enter - Confirm Selection");
 
-    switch (state)
-    {
+    switch (state) {
     case 'a':
       set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_NONE);
       move(10, 40);
@@ -182,13 +172,10 @@ void activate_sleeper(Creature *cr)
       addstr("2 - Advocate Liberalism");
 
       move(12, 40);
-      if (subordinatesleft(*cr))
-      {
+      if (subordinatesleft(*cr)) {
         set_color(COLOR_WHITE, COLOR_BLACK, cr->activity.type == ACTIVITY_SLEEPER_RECRUIT);
         addstr("3 - Expand Sleeper Network");
-      }
-      else
-      {
+      } else {
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
         if (cr->flag & CREATUREFLAG_BRAINWASHED)
           addstr("3 - [Enlightened Can't Recruit]");
@@ -212,8 +199,7 @@ void activate_sleeper(Creature *cr)
     }
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
-    switch (cr->activity.type)
-    {
+    switch (cr->activity.type) {
     case ACTIVITY_NONE:
       move(22, 3);
       addstr(cr->name);
@@ -225,8 +211,7 @@ void activate_sleeper(Creature *cr)
       addstr(" will build support for Liberal causes.");
       break;
     case ACTIVITY_SLEEPER_RECRUIT:
-      if (subordinatesleft(*cr))
-      {
+      if (subordinatesleft(*cr)) {
         move(22, 3);
         addstr(cr->name);
         addstr(" will try to recruit additional sleeper agents.");
@@ -252,14 +237,11 @@ void activate_sleeper(Creature *cr)
     int c = getkey();
 
     if (c >= 'a' && c <= 'z') state = c;
-    if ((c >= 'a' && c <= 'z') || (c >= '1' && c <= '9'))
-    {
+    if ((c >= 'a' && c <= 'z') || (c >= '1' && c <= '9')) {
       choice = c;
-      switch (state)
-      {
+      switch (state) {
       case 'a':
-        switch (choice)
-        {
+        switch (choice) {
         default:
         case '1':
           cr->activity.type = ACTIVITY_NONE;
@@ -274,8 +256,7 @@ void activate_sleeper(Creature *cr)
         }
         break;
       case 'b':
-        switch (choice)
-        {
+        switch (choice) {
         default:
         case '1':
           cr->activity.type = ACTIVITY_SLEEPER_SPY;
@@ -291,13 +272,11 @@ void activate_sleeper(Creature *cr)
       }
     }
 
-    if (state == 'c')
-    {
+    if (state == 'c') {
       //activityst oact=cr->activity;
       cr->activity.type = ACTIVITY_SLEEPER_JOINLCS;
     }
-    if (c == 'x')
-    {
+    if (c == 'x') {
       cr->activity.type = ACTIVITY_NONE;
       break;
     }

@@ -3,15 +3,12 @@
 #include <string>
 
 /* gets a random first name */
-void firstname(std::string &str, enum gender name_gender /*=GENDER_NONE*/)
-{
+void firstname(std::string &str, enum gender name_gender /*=GENDER_NONE*/) {
   str[0] = 0;
 
   if (name_gender == GENDER_MALE ||
-      (name_gender == GENDER_NONE && LCSrandom(2)))
-  {
-    switch (LCSrandom(81))
-    {
+      (name_gender == GENDER_NONE && LCSrandom(2))) {
+    switch (LCSrandom(81)) {
     case 0:
       str = "Ryan";
       break;
@@ -259,11 +256,8 @@ void firstname(std::string &str, enum gender name_gender /*=GENDER_NONE*/)
       str = "MrDefault";
       break;
     }
-  }
-  else
-  {
-    switch (LCSrandom(54))
-    {
+  } else {
+    switch (LCSrandom(54)) {
     case 0:
       str = "Amanda";
       break;
@@ -434,12 +428,10 @@ void firstname(std::string &str, enum gender name_gender /*=GENDER_NONE*/)
 }
 
 /* gets a random last name */
-void lastname(std::string &str)
-{
+void lastname(std::string &str) {
   str[0] = 0;
 
-  switch (LCSrandom(123))
-  {
+  switch (LCSrandom(123)) {
   case 0:
     str = "King";
     break;
@@ -816,8 +808,7 @@ void lastname(std::string &str)
 }
 
 /* fills a string with a proper name */
-void GenerateName(std::string &name, enum gender name_gender)
-{
+void GenerateName(std::string &name, enum gender name_gender) {
   std::string first;
   std::string last;
   firstname(first, name_gender);

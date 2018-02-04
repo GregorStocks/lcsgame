@@ -28,8 +28,7 @@ This file is part of Liberal Crime Squad.                                       
 
 #include <externs.h>
 
-enum bouncer_reject_reason
-{
+enum bouncer_reject_reason {
   REJECTED_CCS,
   REJECTED_NUDE,
   REJECTED_WEAPONS,
@@ -46,26 +45,20 @@ enum bouncer_reject_reason
   NOT_REJECTED
 };
 
-void special_bouncer_greet_squad()
-{
+void special_bouncer_greet_squad() {
   // add a bouncer if there isn't one in the first slot
-  if (!sitealarm && location[cursite]->renting != RENTING_PERMANENT)
-  {
-    if (location[cursite]->renting == RENTING_CCS)
-    {
+  if (!sitealarm && location[cursite]->renting != RENTING_PERMANENT) {
+    if (location[cursite]->renting == RENTING_CCS) {
       makecreature(encounter[0], CREATURE_CCS_VIGILANTE);
       makecreature(encounter[1], CREATURE_CCS_VIGILANTE);
-    }
-    else if (!encounter[0].exists || encounter[0].type != CREATURE_BOUNCER)
-    {
+    } else if (!encounter[0].exists || encounter[0].type != CREATURE_BOUNCER) {
       makecreature(encounter[0], CREATURE_BOUNCER);
       makecreature(encounter[1], CREATURE_BOUNCER);
     }
   }
 }
 
-void special_bouncer_assess_squad()
-{
+void special_bouncer_assess_squad() {
   if (location[cursite]->renting == RENTING_PERMANENT) return;
 
   bool autoadmit = 0;
@@ -75,10 +68,8 @@ void special_bouncer_assess_squad()
 
   special_bouncer_greet_squad();
 
-  for (int p = 0; p < len(pool); p++)
-  {
-    if (pool[p]->base == cursite && pool[p]->type == CREATURE_BOUNCER)
-    {
+  for (int p = 0; p < len(pool); p++) {
+    if (pool[p]->base == cursite && pool[p]->type == CREATURE_BOUNCER) {
       autoadmit = 1;
       strcpy(sleepername, pool[p]->name);
       strcpy(encounter[0].name, sleepername);
@@ -89,17 +80,14 @@ void special_bouncer_assess_squad()
   //clearmessagearea();
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   move(16, 1);
-  if (autoadmit)
-  {
+  if (autoadmit) {
     addstr("Sleeper ", gamelog);
     addstr(sleepername, gamelog);
     addstr(" smirks and lets the squad in.", gamelog);
     gamelog.newline();
 
     levelmap[locx][locy][locz].special = -1;
-  }
-  else
-  {
+  } else {
     if (location[cursite]->renting == RENTING_CCS)
       addstr("The Conservative scum block the door.", gamelog);
     else
@@ -114,12 +102,9 @@ void special_bouncer_assess_squad()
   char rejected = NOT_REJECTED;
 
   // Size up the squad for entry
-  if (!autoadmit)
-  {
-    for (int s = 0; s < 6; s++)
-    {
-      if (activesquad->squad[s])
-      {
+  if (!autoadmit) {
+    for (int s = 0; s < 6; s++) {
+      if (activesquad->squad[s]) {
         // Wrong clothes? Gone
         if (activesquad->squad[s]->is_naked() && activesquad->squad[s]->animalgloss != ANIMALGLOSS_ANIMAL)
           if (rejected > REJECTED_NUDE) rejected = REJECTED_NUDE;
@@ -145,16 +130,12 @@ void special_bouncer_assess_squad()
         if (sitetype == SITE_BUSINESS_CIGARBAR &&
             (activesquad->squad[s]->gender_conservative != GENDER_MALE ||
              activesquad->squad[s]->gender_liberal == GENDER_FEMALE) &&
-            law[LAW_WOMEN] < 1)
-        {
+            law[LAW_WOMEN] < 1) {
           // Are you passing as a man? Are you skilled enough to pull it off?
-          if (activesquad->squad[s]->gender_liberal == GENDER_FEMALE)
-          {
+          if (activesquad->squad[s]->gender_liberal == GENDER_FEMALE) {
             // Not a man by your own definition either
             if (rejected > REJECTED_FEMALE) rejected = REJECTED_FEMALE;
-          }
-          else if (disguisesite(sitetype) && !(activesquad->squad[s]->skill_check(SKILL_DISGUISE, DIFFICULTY_HARD)) && law[LAW_GAY] != 2)
-          {
+          } else if (disguisesite(sitetype) && !(activesquad->squad[s]->skill_check(SKILL_DISGUISE, DIFFICULTY_HARD)) && law[LAW_GAY] != 2) {
             // Not skilled enough to pull it off
             if (rejected > REJECTED_FEMALEISH) rejected = REJECTED_FEMALEISH;
           }
@@ -167,12 +148,10 @@ void special_bouncer_assess_squad()
       }
     }
     move(17, 1);
-    switch (rejected)
-    {
+    switch (rejected) {
     case REJECTED_CCS:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(11))
-      {
+      switch (LCSrandom(11)) {
       case 0:
         addstr("\"Can I see... heh heh... some ID?\"", gamelog);
         break;
@@ -210,8 +189,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_NUDE:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(4))
-      {
+      switch (LCSrandom(4)) {
       case 0:
         addstr("\"No shirt, no underpants, no service.\"", gamelog);
         break;
@@ -228,8 +206,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_UNDERAGE:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         addstr("\"Hahaha, come back in a few years.\"", gamelog);
         break;
@@ -249,8 +226,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_FEMALE:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(4))
-      {
+      switch (LCSrandom(4)) {
       case 0:
         addstr("\"Move along ma'am, this club's for men.\"", gamelog);
         break;
@@ -267,8 +243,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_FEMALEISH:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(3))
-      {
+      switch (LCSrandom(3)) {
       case 0:
         addstr("\"You /really/ don't look like a man to me...\"", gamelog);
         break;
@@ -282,8 +257,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_DRESSCODE:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(3))
-      {
+      switch (LCSrandom(3)) {
       case 0:
         addstr("\"Check the dress code.\"", gamelog);
         break;
@@ -297,8 +271,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_SMELLFUNNY:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(6))
-      {
+      switch (LCSrandom(6)) {
       case 0:
         addstr("\"God, you smell.\"", gamelog);
         break;
@@ -326,8 +299,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_BLOODYCLOTHES:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         addstr("\"Good God! What is wrong with your clothes?\"", gamelog);
         break;
@@ -350,8 +322,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_DAMAGEDCLOTHES:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(2))
-      {
+      switch (LCSrandom(2)) {
       case 0:
         addstr("\"Good God! What is wrong with your clothes?\"", gamelog);
         break;
@@ -362,8 +333,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_SECONDRATECLOTHES:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(2))
-      {
+      switch (LCSrandom(2)) {
       case 0:
         addstr("\"That looks like you sewed it yourself.\"", gamelog);
         break;
@@ -374,8 +344,7 @@ void special_bouncer_assess_squad()
       break;
     case REJECTED_WEAPONS:
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         addstr("\"No weapons allowed.\"", gamelog);
         break;
@@ -400,8 +369,7 @@ void special_bouncer_assess_squad()
     case NOT_REJECTED:
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
 
-      switch (LCSrandom(4))
-      {
+      switch (LCSrandom(4)) {
       case 0:
         addstr("\"Keep it civil and don't drink too much.\"", gamelog);
         break;
@@ -420,31 +388,24 @@ void special_bouncer_assess_squad()
     gamelog.newline();
 
     getkey();
-  }
-  else
+  } else
     encounter[0].exists = 0;
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   for (int dx = -1; dx <= 1; dx++)
-    for (int dy = -1; dy <= 1; dy++)
-    {
-      if (levelmap[locx + dx][locy + dy][locz].flag & SITEBLOCK_DOOR)
-      {
-        if (rejected < NOT_REJECTED)
-        {
+    for (int dy = -1; dy <= 1; dy++) {
+      if (levelmap[locx + dx][locy + dy][locz].flag & SITEBLOCK_DOOR) {
+        if (rejected < NOT_REJECTED) {
           levelmap[locx + dx][locy + dy][locz].flag |= SITEBLOCK_LOCKED;
           levelmap[locx + dx][locy + dy][locz].flag |= SITEBLOCK_CLOCK;
-        }
-        else
+        } else
           levelmap[locx + dx][locy + dy][locz].flag &= ~SITEBLOCK_DOOR;
       }
     }
   encounter[0].cantbluff = 1;
 }
 
-void special_lab_cosmetics_cagedanimals()
-{
-  while (true)
-  {
+void special_lab_cosmetics_cagedanimals() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -456,12 +417,10 @@ void special_lab_cosmetics_cagedanimals()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (unlock(UNLOCK_CAGE, actual))
-      {
+      if (unlock(UNLOCK_CAGE, actual)) {
         int time = 20 + LCSrandom(10);
         if (time < 1) time = 1;
         if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
@@ -472,30 +431,26 @@ void special_lab_cosmetics_cagedanimals()
         criminalizeparty(LAWFLAG_VANDALISM);
       }
 
-      if (actual)
-      {
+      if (actual) {
         alienationcheck(0);
         noticecheck(-1);
         levelmap[locx][locy][locz].special = -1;
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_readsign(int sign)
-{
+void special_readsign(int sign) {
   clearmessagearea();
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
   switch (sign) //TODO: Log these?
   {
   case SPECIAL_SIGN_ONE:
-    switch (location[cursite]->type)
-    {
+    switch (location[cursite]->type) {
     default:
       move(16, 1);
       addstr("\"The best way not to fail is to succeed.\"");
@@ -517,8 +472,7 @@ void special_readsign(int sign)
     }
     break;
   case SPECIAL_SIGN_TWO:
-    switch (location[cursite]->type)
-    {
+    switch (location[cursite]->type) {
     default:
       move(16, 1);
       addstr("\"Great work is done by people who do great work.\"");
@@ -526,8 +480,7 @@ void special_readsign(int sign)
     }
     break;
   case SPECIAL_SIGN_THREE:
-    switch (location[cursite]->type)
-    {
+    switch (location[cursite]->type) {
     default:
       move(16, 1);
       addstr("Employees Only");
@@ -539,23 +492,18 @@ void special_readsign(int sign)
   getkey();
 }
 
-void special_nuclear_onoff()
-{
-  while (true)
-  {
+void special_nuclear_onoff() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
-    if (law[LAW_NUCLEARPOWER] == 2)
-    {
+    if (law[LAW_NUCLEARPOWER] == 2) {
       move(16, 1);
       addstr("You see the nuclear waste center control room.", gamelog);
       gamelog.newline();
       move(17, 1);
       addstr("Attempt to release nuclear waste? (Yes or No)");
-    }
-    else
-    {
+    } else {
       move(16, 1);
       addstr("You see the nuclear power plant control room.", gamelog);
       gamelog.newline();
@@ -565,28 +513,23 @@ void special_nuclear_onoff()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       clearmessagearea();
       levelmap[locx][locy][locz].special = -1;
 
       char max = DIFFICULTY_HARD;
       Creature *maxs = 0;
 
-      for (int p = 0; p < 6; p++)
-      {
-        if (activesquad->squad[p] != NULL && activesquad->squad[p]->alive)
-        {
-          if (activesquad->squad[p]->skill_check(SKILL_SCIENCE, max))
-          {
+      for (int p = 0; p < 6; p++) {
+        if (activesquad->squad[p] != NULL && activesquad->squad[p]->alive) {
+          if (activesquad->squad[p]->skill_check(SKILL_SCIENCE, max)) {
             maxs = activesquad->squad[p];
             break;
           }
         }
       }
 
-      if (maxs)
-      {
+      if (maxs) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(16, 1);
         addstr(maxs->name, gamelog);
@@ -608,8 +551,7 @@ void special_nuclear_onoff()
 
         getkey();
 
-        if (law[LAW_NUCLEARPOWER] == 2)
-        {
+        if (law[LAW_NUCLEARPOWER] == 2) {
           move(17, 1);
           addstr("The nuclear waste gets released into the state's water supply!", gamelog);
           gamelog.newline();
@@ -622,9 +564,7 @@ void special_nuclear_onoff()
           sitecrime += 25;      //Shutdown Site
 
           sitestory->crime.push_back(CRIME_SHUTDOWNREACTOR);
-        }
-        else
-        {
+        } else {
           move(16, 1);
           addstr("A deafening alarm sounds!", gamelog);
           gamelog.newline();
@@ -641,9 +581,7 @@ void special_nuclear_onoff()
 
           sitestory->crime.push_back(CRIME_SHUTDOWNREACTOR);
         }
-      }
-      else
-      {
+      } else {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(16, 1);
         addstr("After some failed attempts, and a very loud alarm, ", gamelog);
@@ -662,16 +600,13 @@ void special_nuclear_onoff()
       criminalizeparty(LAWFLAG_TERRORISM);
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_lab_genetic_cagedanimals()
-{
-  while (true)
-  {
+void special_lab_genetic_cagedanimals() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -683,12 +618,10 @@ void special_lab_genetic_cagedanimals()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (unlock(UNLOCK_CAGE_HARD, actual))
-      {
+      if (unlock(UNLOCK_CAGE_HARD, actual)) {
         int time = 20 + LCSrandom(10);
         if (time < 1) time = 1;
         if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
@@ -698,8 +631,7 @@ void special_lab_genetic_cagedanimals()
         sitestory->crime.push_back(CRIME_FREE_BEASTS);
         criminalizeparty(LAWFLAG_VANDALISM);
 
-        if (!LCSrandom(2))
-        {
+        if (!LCSrandom(2)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -708,10 +640,8 @@ void special_lab_genetic_cagedanimals()
           gamelog.newline();
 
           int numleft = LCSrandom(6) + 1;
-          for (int e = 0; e < ENCMAX; e++)
-          {
-            if (!encounter[e].exists)
-            {
+          for (int e = 0; e < ENCMAX; e++) {
+            if (!encounter[e].exists) {
               makecreature(encounter[e], CREATURE_GENETIC);
               numleft--;
             }
@@ -728,33 +658,25 @@ void special_lab_genetic_cagedanimals()
 
           sitealarm = 1;
           alienationcheck(1);
-        }
-        else
-        {
+        } else {
           alienationcheck(0);
         }
-      }
-      else if (actual)
-      {
+      } else if (actual) {
         noticecheck(-1);
       }
 
-      if (actual)
-      {
+      if (actual) {
         levelmap[locx][locy][locz].special = -1;
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_policestation_lockup()
-{
-  while (true)
-  {
+void special_policestation_lockup() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -766,17 +688,13 @@ void special_policestation_lockup()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (unlock(UNLOCK_CELL, actual))
-      {
+      if (unlock(UNLOCK_CELL, actual)) {
         int numleft = LCSrandom(8) + 2;
-        for (int e = 0; e < ENCMAX; e++)
-        {
-          if (!encounter[e].exists)
-          {
+        for (int e = 0; e < ENCMAX; e++) {
+          if (!encounter[e].exists) {
             makecreature(encounter[e], CREATURE_PRISONER);
             numleft--;
           }
@@ -800,8 +718,7 @@ void special_policestation_lockup()
         partyrescue(SPECIAL_POLICESTATION_LOCKUP);
       }
 
-      if (actual)
-      {
+      if (actual) {
         alienationcheck(1);
         noticecheck(-1, DIFFICULTY_HARD);
         levelmap[locx][locy][locz].special = -1;
@@ -811,16 +728,13 @@ void special_policestation_lockup()
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_courthouse_lockup()
-{
-  while (true)
-  {
+void special_courthouse_lockup() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -832,17 +746,13 @@ void special_courthouse_lockup()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (unlock(UNLOCK_CELL, actual))
-      {
+      if (unlock(UNLOCK_CELL, actual)) {
         int numleft = LCSrandom(8) + 2;
-        for (int e = 0; e < ENCMAX; e++)
-        {
-          if (!encounter[e].exists)
-          {
+        for (int e = 0; e < ENCMAX; e++) {
+          if (!encounter[e].exists) {
             makecreature(encounter[e], CREATURE_PRISONER);
             numleft--;
           }
@@ -866,8 +776,7 @@ void special_courthouse_lockup()
         partyrescue(SPECIAL_COURTHOUSE_LOCKUP);
       }
 
-      if (actual)
-      {
+      if (actual) {
         alienationcheck(1);
         noticecheck(-1, DIFFICULTY_HARD);
         levelmap[locx][locy][locz].special = -1;
@@ -877,17 +786,14 @@ void special_courthouse_lockup()
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_courthouse_jury()
-{
+void special_courthouse_jury() {
   int p;
-  if (sitealarm || sitealienate)
-  {
+  if (sitealarm || sitealienate) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -902,8 +808,7 @@ void special_courthouse_jury()
     return;
   }
 
-  while (true)
-  {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -915,8 +820,7 @@ void special_courthouse_jury()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       levelmap[locx][locy][locz].special = -1;
 
       char succeed = 0;
@@ -924,18 +828,14 @@ void special_courthouse_jury()
       int maxattack = 0;
       int maxp = -1;
 
-      for (p = 0; p < 6; p++)
-      {
-        if (activesquad->squad[p] != NULL)
-        {
-          if (activesquad->squad[p]->alive)
-          {
+      for (p = 0; p < 6; p++) {
+        if (activesquad->squad[p] != NULL) {
+          if (activesquad->squad[p]->alive) {
             if (activesquad->squad[p]->get_attribute(ATTRIBUTE_CHARISMA, true) +
                     activesquad->squad[p]->get_attribute(ATTRIBUTE_INTELLIGENCE, true) +
                     activesquad->squad[p]->get_skill(SKILL_PERSUASION) +
                     activesquad->squad[p]->get_skill(SKILL_LAW) >
-                maxattack)
-            {
+                maxattack) {
               maxattack = activesquad->squad[p]->get_attribute(ATTRIBUTE_CHARISMA, true) +
                           activesquad->squad[p]->get_attribute(ATTRIBUTE_INTELLIGENCE, true) +
                           activesquad->squad[p]->get_skill(SKILL_PERSUASION) +
@@ -946,8 +846,7 @@ void special_courthouse_jury()
         }
       }
 
-      if (maxp > -1)
-      {
+      if (maxp > -1) {
         int p = maxp;
 
         activesquad->squad[p]->train(SKILL_PERSUASION, 20);
@@ -956,8 +855,7 @@ void special_courthouse_jury()
         if (activesquad->squad[p]->skill_check(SKILL_PERSUASION, DIFFICULTY_HARD) &&
             activesquad->squad[p]->skill_check(SKILL_LAW, DIFFICULTY_CHALLENGING)) succeed = 1;
 
-        if (succeed)
-        {
+        if (succeed) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1027,9 +925,7 @@ void special_courthouse_jury()
 
           //INSTANT JUICE BONUS
           addjuice(*(activesquad->squad[p]), 25, 200);
-        }
-        else
-        {
+        } else {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1042,10 +938,8 @@ void special_courthouse_jury()
           getkey();
 
           int numleft = 12;
-          for (int e = 0; e < ENCMAX; e++)
-          {
-            if (!encounter[e].exists)
-            {
+          for (int e = 0; e < ENCMAX; e++) {
+            if (!encounter[e].exists) {
               makecreature(encounter[e], CREATURE_JUROR);
               numleft--;
             }
@@ -1069,16 +963,13 @@ void special_courthouse_jury()
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_prison_control(short prison_control_type)
-{
-  while (true)
-  {
+void special_prison_control(short prison_control_type) {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1097,13 +988,10 @@ void special_prison_control(short prison_control_type)
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       int numleft = LCSrandom(8) + 2;
-      if (prison_control_type == SPECIAL_PRISON_CONTROL_LOW)
-      {
-        switch (law[LAW_DEATHPENALTY])
-        {
+      if (prison_control_type == SPECIAL_PRISON_CONTROL_LOW) {
+        switch (law[LAW_DEATHPENALTY]) {
         case -1:
           numleft = LCSrandom(6) + 2;
           break;
@@ -1111,21 +999,15 @@ void special_prison_control(short prison_control_type)
           numleft = LCSrandom(3) + 1;
           break;
         }
-      }
-      else if (prison_control_type == SPECIAL_PRISON_CONTROL_MEDIUM)
-      {
-        switch (law[LAW_DEATHPENALTY])
-        {
+      } else if (prison_control_type == SPECIAL_PRISON_CONTROL_MEDIUM) {
+        switch (law[LAW_DEATHPENALTY]) {
         case 2:
           numleft = LCSrandom(4) + 1;
         case 1:
           numleft = LCSrandom(6) + 1;
         }
-      }
-      else if (prison_control_type == SPECIAL_PRISON_CONTROL_HIGH)
-      {
-        switch (law[LAW_DEATHPENALTY])
-        {
+      } else if (prison_control_type == SPECIAL_PRISON_CONTROL_HIGH) {
+        switch (law[LAW_DEATHPENALTY]) {
         case 2:
           numleft = 0;
           break;
@@ -1141,10 +1023,8 @@ void special_prison_control(short prison_control_type)
         }
       }
 
-      for (int e = 0; e < ENCMAX; e++)
-      {
-        if (!encounter[e].exists)
-        {
+      for (int e = 0; e < ENCMAX; e++) {
+        if (!encounter[e].exists) {
           makecreature(encounter[e], CREATURE_PRISONER);
           numleft--;
         }
@@ -1173,16 +1053,13 @@ void special_prison_control(short prison_control_type)
       criminalizeparty(LAWFLAG_HELPESCAPE);
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_intel_supercomputer()
-{
-  if (sitealarm || sitealienate)
-  {
+void special_intel_supercomputer() {
+  if (sitealarm || sitealienate) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1197,8 +1074,7 @@ void special_intel_supercomputer()
     return;
   }
 
-  while (true)
-  {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1210,20 +1086,17 @@ void special_intel_supercomputer()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (hack(HACK_SUPERCOMPUTER, actual))
-      {
+      if (hack(HACK_SUPERCOMPUTER, actual)) {
         clearmessagearea();
 
         //char *loot;
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(16, 1);
         addstr("The Squad obtains sensitive information", gamelog);
-        if (endgamestate >= ENDGAME_CCS_APPEARANCE && endgamestate < ENDGAME_CCS_DEFEATED && ccsexposure < CCSEXPOSURE_LCSGOTDATA)
-        {
+        if (endgamestate >= ENDGAME_CCS_APPEARANCE && endgamestate < ENDGAME_CCS_DEFEATED && ccsexposure < CCSEXPOSURE_LCSGOTDATA) {
           addstr(",", gamelog);
           move(17, 1);
           addstr("including a list of government backers of the CCS.", gamelog);
@@ -1232,9 +1105,7 @@ void special_intel_supercomputer()
           activesquad->loot.push_back(it);
 
           ccsexposure = CCSEXPOSURE_LCSGOTDATA;
-        }
-        else
-        {
+        } else {
           addstr(".", gamelog);
         }
         gamelog.newline();
@@ -1247,8 +1118,7 @@ void special_intel_supercomputer()
         getkey();
       }
 
-      if (actual)
-      {
+      if (actual) {
         int time = 20 + LCSrandom(10);
         if (time < 1) time = 1;
         if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
@@ -1263,14 +1133,12 @@ void special_intel_supercomputer()
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_graffiti()
-{
+void special_graffiti() {
   clearmessagearea();
 
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1291,18 +1159,15 @@ void special_graffiti()
   noticecheck(-1, DIFFICULTY_HARD);
   levelmap[locx][locy][locz].flag |= SITEBLOCK_GRAFFITI;
   levelmap[locx][locy][locz].flag &= ~(SITEBLOCK_GRAFFITI_CCS | SITEBLOCK_GRAFFITI_OTHER);
-  if (!location[cursite]->highsecurity)
-  {
+  if (!location[cursite]->highsecurity) {
     // Erase any previous semi-permanent graffiti here
-    for (int i = 0; i < len(location[cursite]->changes); i++)
-    {
+    for (int i = 0; i < len(location[cursite]->changes); i++) {
       if ((location[cursite]->changes[i].x == locx) &&
           (location[cursite]->changes[i].y == locy) &&
           (location[cursite]->changes[i].z == locz) &&
           ((location[cursite]->changes[i].flag == SITEBLOCK_GRAFFITI) ||
            (location[cursite]->changes[i].flag == SITEBLOCK_GRAFFITI_CCS) ||
-           (location[cursite]->changes[i].flag == SITEBLOCK_GRAFFITI_OTHER)))
-      {
+           (location[cursite]->changes[i].flag == SITEBLOCK_GRAFFITI_OTHER))) {
         location[cursite]->changes.erase(location[cursite]->changes.begin() + i);
         break;
       }
@@ -1313,8 +1178,7 @@ void special_graffiti()
     location[cursite]->changes.push_back(change);
   }
   sitecrime++;
-  for (int i = 0; i < 6; i++)
-  {
+  for (int i = 0; i < 6; i++) {
     if (activesquad->squad[i])
       addjuice(*(activesquad->squad[i]), 1, 50);
   }
@@ -1325,10 +1189,8 @@ void special_graffiti()
   return;
 }
 
-void special_sweatshop_equipment()
-{
-  while (true)
-  {
+void special_sweatshop_equipment() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1340,8 +1202,7 @@ void special_sweatshop_equipment()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       int time = 20 + LCSrandom(10);
       if (time < 1) time = 1;
       if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
@@ -1357,16 +1218,13 @@ void special_sweatshop_equipment()
       criminalizeparty(LAWFLAG_VANDALISM);
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_polluter_equipment()
-{
-  while (true)
-  {
+void special_polluter_equipment() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1378,8 +1236,7 @@ void special_polluter_equipment()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       int time = 20 + LCSrandom(10);
       if (time < 1) time = 1;
       if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
@@ -1397,16 +1254,13 @@ void special_polluter_equipment()
       criminalizeparty(LAWFLAG_VANDALISM);
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_house_photos()
-{
-  while (true)
-  {
+void special_house_photos() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1418,17 +1272,14 @@ void special_house_photos()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (unlock(UNLOCK_SAFE, actual))
-      {
+      if (unlock(UNLOCK_SAFE, actual)) {
         bool empty = true;
         Item *it;
 
-        if (deagle == false)
-        {
+        if (deagle == false) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1450,8 +1301,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (LCSrandom(2))
-        {
+        if (LCSrandom(2)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1467,8 +1317,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (LCSrandom(2))
-        {
+        if (LCSrandom(2)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1484,8 +1333,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (!LCSrandom(3))
-        {
+        if (!LCSrandom(3)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1501,8 +1349,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (!LCSrandom(3))
-        {
+        if (!LCSrandom(3)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1515,8 +1362,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (!LCSrandom(3))
-        {
+        if (!LCSrandom(3)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1534,8 +1380,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (!LCSrandom(3))
-        {
+        if (!LCSrandom(3)) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1551,8 +1396,7 @@ void special_house_photos()
           empty = false;
         }
 
-        if (empty)
-        {
+        if (empty) {
           clearmessagearea();
 
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1561,9 +1405,7 @@ void special_house_photos()
           gamelog.newline();
 
           getkey();
-        }
-        else
-        {
+        } else {
           juiceparty(50, 1000);
           sitecrime += 40;
           sitestory->crime.push_back(CRIME_HOUSE_PHOTOS);
@@ -1575,24 +1417,20 @@ void special_house_photos()
         }
       }
 
-      if (actual)
-      {
+      if (actual) {
         alienationcheck(0);
         noticecheck(-1);
         levelmap[locx][locy][locz].special = -1;
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_armory()
-{
-  while (true)
-  {
+void special_armory() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1604,8 +1442,7 @@ void special_armory()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       clearmessagearea();
 
       sitealarm = 1;
@@ -1619,8 +1456,7 @@ void special_armory()
       bool empty = true;
       Item *it;
 
-      if (m249 == false && location[cursite]->type == SITE_GOVERNMENT_ARMYBASE)
-      {
+      if (m249 == false && location[cursite]->type == SITE_GOVERNMENT_ARMYBASE) {
         clearmessagearea();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1642,8 +1478,7 @@ void special_armory()
         empty = false;
       }
 
-      if (LCSrandom(2))
-      {
+      if (LCSrandom(2)) {
         clearmessagearea();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1655,8 +1490,7 @@ void special_armory()
 
         int num = 0;
 
-        do
-        {
+        do {
           Weapon *de = new Weapon(*weapontype[getweapontype("WEAPON_AUTORIFLE_M16")]);
           Clip r(*cliptype[getcliptype("CLIP_ASSAULT")]);
           de->reload(r);
@@ -1670,8 +1504,7 @@ void special_armory()
         empty = false;
       }
 
-      if (LCSrandom(2))
-      {
+      if (LCSrandom(2)) {
         clearmessagearea();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1683,8 +1516,7 @@ void special_armory()
 
         int num = 0;
 
-        do
-        {
+        do {
           Weapon *de = new Weapon(*weapontype[getweapontype("WEAPON_CARBINE_M4")]);
           Clip r(*cliptype[getcliptype("CLIP_ASSAULT")]);
           de->reload(r);
@@ -1698,8 +1530,7 @@ void special_armory()
         empty = false;
       }
 
-      if (LCSrandom(2))
-      {
+      if (LCSrandom(2)) {
         clearmessagearea();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1711,8 +1542,7 @@ void special_armory()
 
         int num = 0;
 
-        do
-        {
+        do {
           Armor *de;
           if (location[cursite]->type == SITE_GOVERNMENT_ARMYBASE)
             de = new Armor(*armortype[getarmortype("ARMOR_ARMYARMOR")]);
@@ -1725,8 +1555,7 @@ void special_armory()
         empty = false;
       }
 
-      if (empty)
-      {
+      if (empty) {
         criminalizeparty(LAWFLAG_TREASON);
 
         clearmessagearea();
@@ -1739,10 +1568,8 @@ void special_armory()
         getkey();
 
         int numleft = LCSrandom(8) + 2;
-        for (int e = 0; e < ENCMAX; e++)
-        {
-          if (!encounter[e].exists)
-          {
+        for (int e = 0; e < ENCMAX; e++) {
+          if (!encounter[e].exists) {
             if (location[cursite]->type == SITE_GOVERNMENT_ARMYBASE)
               makecreature(encounter[e], CREATURE_SOLDIER);
             else
@@ -1751,9 +1578,7 @@ void special_armory()
           }
           if (numleft == 0) break;
         }
-      }
-      else
-      {
+      } else {
         juiceparty(50, 1000);
         sitecrime += 40;
         sitestory->crime.push_back(CRIME_ARMORY);
@@ -1774,10 +1599,8 @@ void special_armory()
         getkey();
 
         int numleft = LCSrandom(4) + 2;
-        for (int e = 0; e < ENCMAX; e++)
-        {
-          if (!encounter[e].exists)
-          {
+        for (int e = 0; e < ENCMAX; e++) {
+          if (!encounter[e].exists) {
             if (location[cursite]->type == SITE_GOVERNMENT_ARMYBASE)
               makecreature(encounter[e], CREATURE_SOLDIER);
             else
@@ -1793,16 +1616,13 @@ void special_armory()
       levelmap[locx][locy][locz].special = -1;
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_corporate_files()
-{
-  while (true)
-  {
+void special_corporate_files() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1814,12 +1634,10 @@ void special_corporate_files()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
-      if (unlock(UNLOCK_SAFE, actual))
-      {
+      if (unlock(UNLOCK_SAFE, actual)) {
         clearmessagearea();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1842,8 +1660,7 @@ void special_corporate_files()
         getkey();
       }
 
-      if (actual)
-      {
+      if (actual) {
         alienationcheck(0);
         noticecheck(-1);
         levelmap[locx][locy][locz].special = -1;
@@ -1854,30 +1671,24 @@ void special_corporate_files()
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_radio_broadcaststudio()
-{
-  while (true)
-  {
+void special_radio_broadcaststudio() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
-    if (sitealarm || sitealienate)
-    {
+    if (sitealarm || sitealienate) {
       move(16, 1);
       addstr("The radio broadcasters left the equipment on in ", gamelog);
       move(17, 1);
       addstr("their rush to get out.", gamelog);
       gamelog.newline();
       addstr(" Take over the studio? (Yes or No)");
-    }
-    else
-    {
+    } else {
       move(16, 1);
       addstr("You've found a radio broadcasting room.", gamelog);
       gamelog.newline();
@@ -1887,39 +1698,31 @@ void special_radio_broadcaststudio()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
-      if (radio_broadcast())
-      {
+    if (c == 'y') {
+      if (radio_broadcast()) {
         sitestory->claimed = 2;
         levelmap[locx][locy][locz].special = -1;
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_news_broadcaststudio()
-{
-  while (true)
-  {
+void special_news_broadcaststudio() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
-    if (sitealarm || sitealienate)
-    {
+    if (sitealarm || sitealienate) {
       move(16, 1);
       addstr("The Cable News broadcasters left the equipment on in", gamelog);
       move(17, 1);
       addstr("their rush to get out.");
       gamelog.newline();
       addstr(" Take over the studio? (Yes or No)");
-    }
-    else
-    {
+    } else {
       move(16, 1);
       addstr("You've found a Cable News broadcasting studio.", gamelog);
       move(17, 1);
@@ -1928,25 +1731,20 @@ void special_news_broadcaststudio()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
-      if (news_broadcast())
-      {
+    if (c == 'y') {
+      if (news_broadcast()) {
         sitestory->claimed = 2;
         levelmap[locx][locy][locz].special = -1;
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_display_case()
-{
-  while (true)
-  {
+void special_display_case() {
+  while (true) {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1957,8 +1755,7 @@ void special_display_case()
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       int time = 20 + LCSrandom(10);
       if (time < 1) time = 1;
       if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
@@ -1974,19 +1771,15 @@ void special_display_case()
       criminalizeparty(LAWFLAG_VANDALISM);
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void spawn_security()
-{
+void spawn_security() {
   // add a bouncer if there isn't one in the first slot
-  if (!sitealarm && !encounter[0].exists)
-  {
-    switch (location[cursite]->type)
-    {
+  if (!sitealarm && !encounter[0].exists) {
+    switch (location[cursite]->type) {
     default:
     case SITE_CORPORATE_HEADQUARTERS:
     case SITE_CORPORATE_HOUSE:
@@ -2025,8 +1818,7 @@ void spawn_security()
     case SITE_BUSINESS_BARANDGRILL:
     case SITE_RESIDENTIAL_BOMBSHELTER:
     case SITE_OUTDOOR_BUNKER:
-      if (location[cursite]->renting == RENTING_CCS)
-      {
+      if (location[cursite]->renting == RENTING_CCS) {
         makecreature(encounter[0], CREATURE_CCS_VIGILANTE);
         makecreature(encounter[1], CREATURE_CCS_VIGILANTE);
       }
@@ -2034,8 +1826,7 @@ void spawn_security()
   }
 }
 
-void special_security(bool metaldetect)
-{
+void special_security(bool metaldetect) {
   char autoadmit = 0;
   char sleepername[80];
   for (int e = 0; e < ENCMAX; e++)
@@ -2043,13 +1834,10 @@ void special_security(bool metaldetect)
 
   spawn_security();
 
-  for (int p = 0; p < len(pool); p++)
-  {
-    if (pool[p]->base == cursite)
-    {
+  for (int p = 0; p < len(pool); p++) {
+    if (pool[p]->base == cursite) {
       autoadmit = 1;
-      if (pool[p]->type == encounter[0].type)
-      {
+      if (pool[p]->type == encounter[0].type) {
         autoadmit = 2;
         strcpy(sleepername, pool[p]->name);
         strcpy(encounter[0].name, sleepername);
@@ -2062,22 +1850,17 @@ void special_security(bool metaldetect)
   //clearmessagearea();
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   move(16, 1);
-  if (sitealarm)
-  {
+  if (sitealarm) {
     addstr("The security checkpoint is abandoned.", gamelog);
     gamelog.newline();
     levelmap[locx][locy][locz].special = SPECIAL_NONE;
     return;
-  }
-  else if (autoadmit)
-  {
+  } else if (autoadmit) {
     addstr("The squad flashes ID badges.", gamelog);
     metaldetect = false;
     gamelog.newline();
     levelmap[locx][locy][locz].special = SPECIAL_SECURITY_SECONDVISIT;
-  }
-  else
-  {
+  } else {
     if (metaldetect)
       addstr("The squad steps into a metal detector.", gamelog);
     else
@@ -2092,10 +1875,8 @@ void special_security(bool metaldetect)
   char rejected = NOT_REJECTED;
 
   // Size up the squad for entry
-  for (int s = 0; s < 6; s++)
-  {
-    if (activesquad->squad[s])
-    {
+  for (int s = 0; s < 6; s++) {
+    if (activesquad->squad[s]) {
       // Wrong clothes? Gone
       if (activesquad->squad[s]->is_naked() && activesquad->squad[s]->animalgloss != ANIMALGLOSS_ANIMAL)
         if (rejected > REJECTED_NUDE) rejected = REJECTED_NUDE;
@@ -2121,15 +1902,13 @@ void special_security(bool metaldetect)
     }
   }
   move(17, 1);
-  switch (rejected)
-  {
+  switch (rejected) {
   case REJECTED_NUDE:
     set_color(COLOR_RED, COLOR_BLACK, 1);
     if (autoadmit)
       addstr("\"Jesus! Put some clothes on!\"", gamelog);
     else
-      switch (LCSrandom(4))
-      {
+      switch (LCSrandom(4)) {
       case 0:
         addstr("\"Get out of here you nudist!!\"", gamelog);
         break;
@@ -2147,8 +1926,7 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_UNDERAGE:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    switch (LCSrandom(4))
-    {
+    switch (LCSrandom(4)) {
     case 0:
       addstr("\"No admittance, youngster.\"", gamelog);
       break;
@@ -2166,8 +1944,7 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_DRESSCODE:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    switch (LCSrandom(1))
-    {
+    switch (LCSrandom(1)) {
     case 0:
       addstr("\"Employees only.\"", gamelog);
       break;
@@ -2176,8 +1953,7 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_SMELLFUNNY:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    switch (LCSrandom(4))
-    {
+    switch (LCSrandom(4)) {
     case 0:
       addstr("\"You don't work here, do you?\"", gamelog);
       break;
@@ -2195,8 +1971,7 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_BLOODYCLOTHES:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       addstr("\"Good God! What is wrong with your clothes?\"", gamelog);
       break;
@@ -2220,8 +1995,7 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_DAMAGEDCLOTHES:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    switch (LCSrandom(2))
-    {
+    switch (LCSrandom(2)) {
     case 0:
       addstr("\"Good God! What is wrong with your clothes?\"", gamelog);
       break;
@@ -2233,8 +2007,7 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_SECONDRATECLOTHES:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    switch (LCSrandom(2))
-    {
+    switch (LCSrandom(2)) {
     case 0:
       addstr("\"That looks like you sewed it yourself.\"", gamelog);
       break;
@@ -2246,14 +2019,11 @@ void special_security(bool metaldetect)
     break;
   case REJECTED_WEAPONS:
     set_color(COLOR_RED, COLOR_BLACK, 1);
-    if (metaldetect)
-    {
+    if (metaldetect) {
       addstr("-BEEEP- -BEEEP- -BEEEP-", gamelog);
       sitealarm = 1;
-    }
-    else
-      switch (LCSrandom(5))
-      {
+    } else
+      switch (LCSrandom(5)) {
       case 0:
         addstr("\"Put that away!\"", gamelog);
         break;
@@ -2275,8 +2045,7 @@ void special_security(bool metaldetect)
   case NOT_REJECTED:
     set_color(COLOR_GREEN, COLOR_BLACK, 1);
 
-    switch (LCSrandom(4))
-    {
+    switch (LCSrandom(4)) {
     case 0:
       addstr("\"Move along.\"", gamelog);
       break;
@@ -2298,39 +2067,31 @@ void special_security(bool metaldetect)
 
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   for (int dx = -1; dx <= 1; dx++)
-    for (int dy = -1; dy <= 1; dy++)
-    {
-      if (levelmap[locx + dx][locy + dy][locz].flag & SITEBLOCK_DOOR)
-      {
-        if (rejected < NOT_REJECTED)
-        {
+    for (int dy = -1; dy <= 1; dy++) {
+      if (levelmap[locx + dx][locy + dy][locz].flag & SITEBLOCK_DOOR) {
+        if (rejected < NOT_REJECTED) {
           levelmap[locx + dx][locy + dy][locz].flag |= SITEBLOCK_LOCKED;
           levelmap[locx + dx][locy + dy][locz].flag |= SITEBLOCK_CLOCK;
-        }
-        else
+        } else
           levelmap[locx + dx][locy + dy][locz].flag &= ~SITEBLOCK_DOOR;
       }
     }
   encounter[0].cantbluff = 1;
 }
 
-void special_security_checkpoint()
-{
+void special_security_checkpoint() {
   special_security(false);
 }
 
-void special_security_metaldetectors()
-{
+void special_security_metaldetectors() {
   special_security(true);
 }
 
-void special_security_secondvisit()
-{
+void special_security_secondvisit() {
   spawn_security();
 }
 
-void special_bank_vault()
-{
+void special_bank_vault() {
   clearmessagearea();
   move(16, 1);
   addstr("The vault door has three layers: A combo lock, ", gamelog);
@@ -2349,12 +2110,10 @@ void special_bank_vault()
 
   getkey();
 
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     if (pool[p]->type == CREATURE_BANK_MANAGER &&
         pool[p]->flag & CREATUREFLAG_SLEEPER &&
-        pool[p]->base == cursite)
-    {
+        pool[p]->base == cursite) {
       clearmessagearea();
       move(16, 1);
       addstr("Sleeper ", gamelog);
@@ -2370,16 +2129,14 @@ void special_bank_vault()
     }
   }
 
-  while (true)
-  {
+  while (true) {
     clearmessagearea();
     move(16, 1);
     addstr("Open the bank vault? (Yes or No)");
 
     int c = getkey();
 
-    if (c == 'y')
-    {
+    if (c == 'y') {
       char actual;
 
       clearmessagearea();
@@ -2392,8 +2149,7 @@ void special_bank_vault()
 
       getkey();
 
-      if (!unlock(UNLOCK_VAULT, actual))
-      {
+      if (!unlock(UNLOCK_VAULT, actual)) {
         clearmessagearea();
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(16, 1);
@@ -2405,9 +2161,7 @@ void special_bank_vault()
         getkey();
 
         levelmap[locx][locy][locz].special = -1;
-      }
-      else
-      {
+      } else {
         clearmessagearea();
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(16, 1);
@@ -2418,8 +2172,7 @@ void special_bank_vault()
 
         getkey();
 
-        if (!hack(HACK_VAULT, actual))
-        {
+        if (!hack(HACK_VAULT, actual)) {
           clearmessagearea();
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 1);
@@ -2429,9 +2182,7 @@ void special_bank_vault()
           getkey();
 
           levelmap[locx][locy][locz].special = -1;
-        }
-        else
-        {
+        } else {
           clearmessagearea();
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 1);
@@ -2445,17 +2196,13 @@ void special_bank_vault()
           Creature *manager = 0;
           bool canbreakin = false;
 
-          for (int s = 0; s < 6; s++)
-          {
+          for (int s = 0; s < 6; s++) {
             Creature *c = activesquad->squad[s];
 
-            if (c)
-            {
-              if (c->type == CREATURE_BANK_MANAGER)
-              {
+            if (c) {
+              if (c->type == CREATURE_BANK_MANAGER) {
                 manager = c;
-                if (c->joindays < 30 && !(c->flag & CREATUREFLAG_KIDNAPPED))
-                {
+                if (c->joindays < 30 && !(c->flag & CREATUREFLAG_KIDNAPPED)) {
                   clearmessagearea();
                   set_color(COLOR_WHITE, COLOR_BLACK, 1);
                   move(16, 1);
@@ -2470,8 +2217,7 @@ void special_bank_vault()
                 }
               }
 
-              if (c->prisoner && c->prisoner->type == CREATURE_BANK_MANAGER)
-              {
+              if (c->prisoner && c->prisoner->type == CREATURE_BANK_MANAGER) {
                 clearmessagearea();
                 set_color(COLOR_WHITE, COLOR_BLACK, 1);
                 move(16, 1);
@@ -2486,12 +2232,9 @@ void special_bank_vault()
             }
           }
 
-          if (!canbreakin)
-          {
-            for (int p = 0; p < len(pool); p++)
-            {
-              if (pool[p]->base == cursite && pool[p]->type == CREATURE_BANK_MANAGER)
-              {
+          if (!canbreakin) {
+            for (int p = 0; p < len(pool); p++) {
+              if (pool[p]->base == cursite && pool[p]->type == CREATURE_BANK_MANAGER) {
                 clearmessagearea();
                 set_color(COLOR_WHITE, COLOR_BLACK, 1);
                 move(16, 1);
@@ -2516,8 +2259,7 @@ void special_bank_vault()
             }
           }
 
-          if (canbreakin)
-          {
+          if (canbreakin) {
             criminalizeparty(LAWFLAG_BANKROBBERY);
             sitecrime += 20;
             sitestory->crime.push_back(CRIME_BANKVAULTROBBERY);
@@ -2526,11 +2268,8 @@ void special_bank_vault()
             levelmap[locx][locy + 1][locz].flag &= ~SITEBLOCK_DOOR;
             levelmap[locx][locy - 1][locz].flag &= ~SITEBLOCK_DOOR;
             levelmap[locx][locy][locz].special = -1;
-          }
-          else
-          {
-            if (manager)
-            {
+          } else {
+            if (manager) {
               clearmessagearea();
               set_color(COLOR_WHITE, COLOR_BLACK, 1);
               move(16, 1);
@@ -2539,9 +2278,7 @@ void special_bank_vault()
               gamelog.newline();
 
               getkey();
-            }
-            else
-            {
+            } else {
               clearmessagearea();
               set_color(COLOR_WHITE, COLOR_BLACK, 1);
               move(16, 1);
@@ -2554,24 +2291,20 @@ void special_bank_vault()
         }
       }
 
-      if (actual)
-      {
+      if (actual) {
         alienationcheck(0);
         noticecheck(-1);
       }
 
       return;
-    }
-    else if (c == 'n')
+    } else if (c == 'n')
       return;
   }
 }
 
-void special_bank_teller()
-{
+void special_bank_teller() {
   if (sitealarm || sitealienate ||
-      location[cursite]->siege.siege)
-  {
+      location[cursite]->siege.siege) {
     clearmessagearea(false);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
@@ -2580,9 +2313,7 @@ void special_bank_teller()
     levelmap[locx][locy][locz].special = -1;
 
     getkey();
-  }
-  else
-  {
+  } else {
     clearmessagearea(false);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
@@ -2598,8 +2329,7 @@ void special_bank_teller()
   }
 }
 
-void special_bank_money()
-{
+void special_bank_money() {
   static int swat_counter = 0;
 
   clearmessagearea(false);
@@ -2623,8 +2353,7 @@ void special_bank_money()
     postalarmtimer += 20;
   else if (sitealarm && postalarmtimer <= 80 && LCSrandom(2))
     postalarmtimer = 81;
-  else if (sitealarm && postalarmtimer > 80 && LCSrandom(2) && swat_counter < 2)
-  {
+  else if (sitealarm && postalarmtimer > 80 && LCSrandom(2) && swat_counter < 2) {
     getkey();
 
     move(17, 1);
@@ -2636,10 +2365,8 @@ void special_bank_money()
     swat_counter++;
 
     int swatnum = 9;
-    for (int e = 0; e < ENCMAX; e++)
-    {
-      if (!encounter[e].exists)
-      {
+    for (int e = 0; e < ENCMAX; e++) {
+      if (!encounter[e].exists) {
         makecreature(encounter[e], CREATURE_SWAT);
         swatnum--;
         if (swatnum <= 0) break;
@@ -2650,23 +2377,19 @@ void special_bank_money()
   getkey();
 }
 
-void special_oval_office()
-{
+void special_oval_office() {
   // Clear entire Oval Office area
   for (int dx = -1; dx <= 1; dx++)
-    for (int dy = -1; dy <= 1; dy++)
-    {
+    for (int dy = -1; dy <= 1; dy++) {
       if (levelmap[locx + dx][locy + dy][locz].special == SPECIAL_OVAL_OFFICE_NW ||
           levelmap[locx + dx][locy + dy][locz].special == SPECIAL_OVAL_OFFICE_NE ||
           levelmap[locx + dx][locy + dy][locz].special == SPECIAL_OVAL_OFFICE_SW ||
-          levelmap[locx + dx][locy + dy][locz].special == SPECIAL_OVAL_OFFICE_SE)
-      {
+          levelmap[locx + dx][locy + dy][locz].special == SPECIAL_OVAL_OFFICE_SE) {
         levelmap[locx + dx][locy + dy][locz].special = -1;
       }
     }
 
-  if (sitealarm)
-  {
+  if (sitealarm) {
     for (int e = 0; e < ENCMAX; e++)
       encounter[e].exists = 0;
 
@@ -2687,9 +2410,7 @@ void special_oval_office()
 
     enemyattack();
     creatureadvance();
-  }
-  else
-  {
+  } else {
     for (int e = 0; e < ENCMAX; e++)
       encounter[e].exists = 0;
 
@@ -2707,11 +2428,9 @@ void special_oval_office()
   }
 }
 
-void special_ccs_boss()
-{
+void special_ccs_boss() {
   if (sitealarm || sitealienate ||
-      location[cursite]->siege.siege)
-  {
+      location[cursite]->siege.siege) {
     clearmessagearea(false);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
@@ -2729,9 +2448,7 @@ void special_ccs_boss()
     makecreature(encounter[3], CREATURE_CCS_VIGILANTE);
     makecreature(encounter[4], CREATURE_CCS_VIGILANTE);
     makecreature(encounter[5], CREATURE_CCS_VIGILANTE);
-  }
-  else
-  {
+  } else {
     clearmessagearea(false);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);

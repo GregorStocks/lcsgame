@@ -23,16 +23,14 @@ This file is part of Liberal Crime Squad.                                       
 
 // Finds a location with the corresponding type and returns
 // its index in the location array
-int findlocation(int type, int city = -1)
-{
+int findlocation(int type, int city = -1) {
   if (!multipleCityMode) city = -1;
   for (int i = 0; i < len(location); i++)
     if (location[i]->type == type && (location[i]->city == city || city == -1)) return i;
   return -1;
 }
 
-int findlocation_id(int id)
-{
+int findlocation_id(int id) {
   for (int i = 0; i < len(location); i++)
     if (location[i]->id == id) return i;
   return -1;
@@ -40,10 +38,8 @@ int findlocation_id(int id)
 
 // Locations - Construct a new location with the specified parameters
 Location::Location(char type_, int parent_)
-    : type(type_), city(-1), parent(parent_), renting(RENTING_NOCONTROL), needcar(false), hidden(false), upgradable(false)
-{
-  if (this->parent != -1)
-  {
+    : type(type_), city(-1), parent(parent_), renting(RENTING_NOCONTROL), needcar(false), hidden(false), upgradable(false) {
+  if (this->parent != -1) {
     this->needcar = location[this->parent]->needcar;
     this->mapped = location[this->parent]->mapped;
     this->area = location[this->parent]->area;
@@ -54,15 +50,13 @@ Location::Location(char type_, int parent_)
   initlocation(*this);
 }
 
-Location *Location::addchild(char type_)
-{
+Location *Location::addchild(char type_) {
   Location *newloc = new Location(type_, findlocation(this->type, this->city));
   location.push_back(newloc);
   return newloc;
 }
 
-void Location::init()
-{
+void Location::init() {
   haveflag = 0;
   newrental = 0;
   heat = 0;
@@ -82,28 +76,23 @@ void Location::init()
  *  0: first part of place name is long, and if there's a city at the end it's short
  *  1: first part of the name is short unless the place itself is a city in which case it's long, and if there's a city at the end it's short
  *  2: entire name is short, no matter what */
-string Location::getname(signed char shortname_, bool include_city)
-{
+string Location::getname(signed char shortname_, bool include_city) {
   string str;
   if (!multipleCityMode) include_city = false;
 
-  if ((shortname_ >= 1 && type != city) || shortname_ >= 2)
-  {
+  if ((shortname_ >= 1 && type != city) || shortname_ >= 2) {
     if (this->front_business != -1)
       str = this->front_shortname;
     else
       str = this->shortname;
-  }
-  else
-  {
+  } else {
     if (this->front_business != -1)
       str = this->front_name;
     else
       str = this->name;
   }
 
-  if (include_city && type != city)
-  {
+  if (include_city && type != city) {
     string cityname = location[findlocation(city, city)]->getname(shortname_ + 2);
     if (str == "Downtown")
       return str + " " + cityname;
@@ -123,10 +112,8 @@ string Location::getname(signed char shortname_, bool include_city)
   return str;
 }
 
-string Location::city_description()
-{
-  switch (type)
-  {
+string Location::city_description() {
+  switch (type) {
   case SITE_CITY_SEATTLE:
     return "Birthplace of the LCS.";
   case SITE_CITY_LOS_ANGELES:
@@ -148,11 +135,9 @@ string Location::city_description()
   }
 }
 
-bool Location::can_be_fortified()
-{
+bool Location::can_be_fortified() {
   if (!upgradable) return false;
-  switch (type)
-  {
+  switch (type) {
   default:
     return !fortified();
   case SITE_OUTDOOR_BUNKER:
@@ -161,10 +146,8 @@ bool Location::can_be_fortified()
   }
 }
 
-bool Location::fortified()
-{
-  switch (type)
-  {
+bool Location::fortified() {
+  switch (type) {
   default:
     return compound_walls & COMPOUND_BASIC;
   case SITE_OUTDOOR_BUNKER:
@@ -172,17 +155,14 @@ bool Location::fortified()
   }
 }
 
-bool Location::can_be_trapped()
-{
+bool Location::can_be_trapped() {
   if (!upgradable) return false;
   return !trapped();
 }
 
-bool Location::can_install_tanktraps()
-{
+bool Location::can_install_tanktraps() {
   if (!upgradable) return false;
-  switch (type)
-  {
+  switch (type) {
   default:
     return !tank_traps();
   case SITE_BUSINESS_BARANDGRILL:
@@ -192,10 +172,8 @@ bool Location::can_install_tanktraps()
   }
 }
 
-bool Location::tank_traps()
-{
-  switch (type)
-  {
+bool Location::tank_traps() {
+  switch (type) {
   default:
     return compound_walls & COMPOUND_TANKTRAPS;
   case SITE_OUTDOOR_BUNKER:
@@ -204,11 +182,9 @@ bool Location::tank_traps()
   }
 }
 
-bool Location::can_have_businessfront()
-{
+bool Location::can_have_businessfront() {
   if (!upgradable) return false;
-  switch (type)
-  {
+  switch (type) {
   default:
     return !has_business_front();
   case SITE_BUSINESS_BARANDGRILL:
@@ -218,28 +194,23 @@ bool Location::can_have_businessfront()
   }
 }
 
-bool Location::has_business_front()
-{
+bool Location::has_business_front() {
   return front_business != -1 ||
          type == SITE_BUSINESS_BARANDGRILL;
 }
 
-bool Location::bomb_resistant()
-{
+bool Location::bomb_resistant() {
   return type == SITE_RESIDENTIAL_BOMBSHELTER;
 }
 
-bool Location::part_of_justice_system()
-{
+bool Location::part_of_justice_system() {
   return type == SITE_GOVERNMENT_POLICESTATION ||
          type == SITE_GOVERNMENT_COURTHOUSE ||
          type == SITE_GOVERNMENT_PRISON;
 }
 
-bool Location::duplicatelocation()
-{
-  for (int l = 0; l < len(location); l++)
-  {
+bool Location::duplicatelocation() {
+  for (int l = 0; l < len(location); l++) {
     if (location[l] == this)
       continue;
 
@@ -253,23 +224,19 @@ bool Location::duplicatelocation()
   return 0;
 }
 
-void Location::update_heat_protection()
-{
+void Location::update_heat_protection() {
   int l;
-  for (l = 0; l < len(location); l++)
-  {
+  for (l = 0; l < len(location); l++) {
     if (location[l] == this)
       break;
   }
-  if (l == len(location))
-  {
+  if (l == len(location)) {
     heat_protection = 0;
     return;
   }
   int numpres = 0;
   heat_protection = 0;
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     if (pool[p]->location != l) continue; // People not at this base don't count
     if (!pool[p]->alive) continue;        // Dead people don't count
     numpres++;
@@ -277,8 +244,7 @@ void Location::update_heat_protection()
 
   // Determine how effective your current safehouse
   // is at keeping the police confused
-  switch (location[l]->type)
-  {
+  switch (location[l]->type) {
   case SITE_INDUSTRY_WAREHOUSE:
     if (location[l]->front_business != -1)
       heat_protection += 12; // Business front -- high protection
@@ -308,8 +274,7 @@ void Location::update_heat_protection()
     heat_protection += 2; // Some if the flag isn't
   else if (law[LAW_FLAGBURNING] == -2 && !(location[l]->haveflag))
     heat_protection -= 2; // Lose some if it is and you have no flag
-  else
-  {
+  else {
   } // None if it isn't and you have no flag
 
   if (heat_protection < 0) heat_protection = 0;
@@ -318,21 +283,18 @@ void Location::update_heat_protection()
   if (heat_protection > 95) heat_protection = 95;
 }
 
-void Location::rename(const char *name_, const char *shortname_)
-{
+void Location::rename(const char *name_, const char *shortname_) {
   strcpy(this->name, name_);
   strcpy(this->shortname, shortname_);
 }
 
 /* daily - seeds and names a site (will re-seed and rename if used after start) */
-void initlocation(Location &loc)
-{ // NOTE: make sure to keep code here matching code in updateworld_laws() in monthly.cpp for when names are changed
+void initlocation(Location &loc) { // NOTE: make sure to keep code here matching code in updateworld_laws() in monthly.cpp for when names are changed
   loc.init();
 
   char str[80];
 
-  switch (loc.type)
-  {
+  switch (loc.type) {
   case SITE_CITY_SEATTLE:
     loc.rename("Seattle", "SEA");
     break;
@@ -376,42 +338,31 @@ void initlocation(Location &loc)
     loc.rename("Travel", "Travel");
     break;
   case SITE_GOVERNMENT_POLICESTATION:
-    if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2)
-    {
+    if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2) {
       loc.rename("Death Squad HQ", "Death Squad HQ");
-    }
-    else
-    {
+    } else {
       loc.rename("Police Station", "Police Station");
     }
     break;
   case SITE_GOVERNMENT_COURTHOUSE:
-    if (law[LAW_DEATHPENALTY] == -2)
-    {
+    if (law[LAW_DEATHPENALTY] == -2) {
       loc.rename("Halls of Ultimate Judgment", "Judge Hall");
-    }
-    else
-    {
+    } else {
       loc.rename("Courthouse", "Courthouse");
     }
     break;
   case SITE_GOVERNMENT_FIRESTATION:
-    if (law[LAW_FREESPEECH] == -2)
-    {
+    if (law[LAW_FREESPEECH] == -2) {
       loc.rename("Fireman HQ", "Fireman HQ");
       loc.hidden = false;
-    }
-    else
-    {
+    } else {
       loc.rename("Fire Station", "Fire Station");
       loc.hidden = true;
     }
     break;
   case SITE_GOVERNMENT_PRISON:
-    if (law[LAW_PRISONS] == -2)
-    {
-      switch (LCSrandom(5))
-      {
+    if (law[LAW_PRISONS] == -2) {
+      switch (LCSrandom(5)) {
       case 0:
         strcpy(loc.name, "Happy");
         break;
@@ -429,8 +380,7 @@ void initlocation(Location &loc)
         break;
       }
       strcat(loc.name, " ");
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         strcat(loc.name, "Valley");
         break;
@@ -449,41 +399,30 @@ void initlocation(Location &loc)
       }
       strcat(loc.name, " Forced Labor Camp");
       strcpy(loc.shortname, "Joycamp");
-    }
-    else
-    {
+    } else {
       lastname(loc.name, true);
       strcat(loc.name, " Prison");
       strcpy(loc.shortname, "Prison");
     }
     break;
   case SITE_INDUSTRY_NUCLEAR:
-    if (law[LAW_NUCLEARPOWER] == 2)
-    {
+    if (law[LAW_NUCLEARPOWER] == 2) {
       loc.rename("Nuclear Waste Center", "NWaste Center");
-    }
-    else
-    {
+    } else {
       loc.rename("Nuclear Power Plant", "NPower Plant");
     }
     break;
   case SITE_GOVERNMENT_INTELLIGENCEHQ:
-    if (law[LAW_PRIVACY] == -2 && law[LAW_POLICEBEHAVIOR] == -2)
-    {
+    if (law[LAW_PRIVACY] == -2 && law[LAW_POLICEBEHAVIOR] == -2) {
       loc.rename("Ministry of Love", "Miniluv");
-    }
-    else
-    {
+    } else {
       loc.rename("Intelligence HQ", "Int. HQ");
     }
     break;
   case SITE_GOVERNMENT_ARMYBASE:
-    if (law[LAW_MILITARY] == -2)
-    {
+    if (law[LAW_MILITARY] == -2) {
       loc.rename("Ministry of Peace", "Minipax");
-    }
-    else
-    {
+    } else {
       lastname(loc.name, true);
       strcat(loc.name, " Army Base");
       strcpy(loc.shortname, "Army Base");
@@ -516,14 +455,12 @@ void initlocation(Location &loc)
     loc.rename("Homeless Shelter", "Shelter");
     break;
   case SITE_INDUSTRY_WAREHOUSE:
-    do
-    {
+    do {
       strcpy(loc.name, "Abandoned ");
       /*lastname(loc.name,true);
          strcat(loc.name," ");*/
 
-      switch (LCSrandom(10))
-      {
+      switch (LCSrandom(10)) {
       case 0:
         strcat(loc.name, "Meat Plant");
         strcpy(loc.shortname, "Meat Plant");
@@ -568,8 +505,7 @@ void initlocation(Location &loc)
     } while (loc.duplicatelocation());
     break;
   case SITE_INDUSTRY_POLLUTER:
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       loc.rename("Aluminum Factory", "Alum Fact");
       break;
@@ -594,8 +530,7 @@ void initlocation(Location &loc)
     loc.rename("AM Radio Station", "Radio Station");
     break;
   case SITE_RESIDENTIAL_APARTMENT_UPSCALE:
-    do
-    {
+    do {
       lastname(loc.name, true);
       strcpy(loc.shortname, loc.name);
       strcat(loc.name, " Condominiums");
@@ -603,8 +538,7 @@ void initlocation(Location &loc)
     } while (loc.duplicatelocation());
     break;
   case SITE_RESIDENTIAL_APARTMENT:
-    do
-    {
+    do {
       lastname(loc.name, true);
       strcpy(loc.shortname, loc.name);
       strcat(loc.name, " Apartments");
@@ -612,10 +546,8 @@ void initlocation(Location &loc)
     } while (loc.duplicatelocation());
     break;
   case SITE_RESIDENTIAL_TENEMENT:
-    do
-    {
-      do
-      {
+    do {
+      do {
         lastname(loc.name, true);
       } while (len(loc.name) > 7);
       strcat(loc.name, " St. Housing Projects");
@@ -657,14 +589,11 @@ void initlocation(Location &loc)
     strcpy(loc.shortname, "Sweatshop");
     break;
   case SITE_BUSINESS_CRACKHOUSE:
-    do
-    {
+    do {
       lastname(loc.name, true);
       strcat(loc.name, " St. ");
-      if (law[LAW_DRUGS] == 2)
-      {
-        switch (LCSrandom(4))
-        {
+      if (law[LAW_DRUGS] == 2) {
+        switch (LCSrandom(4)) {
         case 0:
           strcat(loc.name, "Recreational Drugs Center");
           strcpy(loc.shortname, "Drugs Center");
@@ -682,9 +611,7 @@ void initlocation(Location &loc)
           strcpy(loc.shortname, "Dispensary");
           break;
         }
-      }
-      else
-      {
+      } else {
         strcat(loc.name, "Crack House");
         strcpy(loc.shortname, "Crack House");
       }
@@ -692,8 +619,7 @@ void initlocation(Location &loc)
     break;
   case SITE_BUSINESS_JUICEBAR:
     strcpy(loc.name, "");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Natural");
       break;
@@ -711,8 +637,7 @@ void initlocation(Location &loc)
       break;
     }
     strcat(loc.name, " ");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Diet");
       break;
@@ -734,8 +659,7 @@ void initlocation(Location &loc)
     break;
   case SITE_BUSINESS_VEGANCOOP:
     strcpy(loc.name, "");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Asparagus");
       break;
@@ -753,8 +677,7 @@ void initlocation(Location &loc)
       break;
     }
     strcat(loc.name, " ");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Forest");
       break;
@@ -776,8 +699,7 @@ void initlocation(Location &loc)
     break;
   case SITE_BUSINESS_INTERNETCAFE:
     strcpy(loc.name, "");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Electric");
       break;
@@ -795,8 +717,7 @@ void initlocation(Location &loc)
       break;
     }
     strcat(loc.name, " ");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Panda");
       break;
@@ -825,8 +746,7 @@ void initlocation(Location &loc)
     break;
   case SITE_BUSINESS_LATTESTAND:
     strcpy(loc.name, "");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Frothy");
       break;
@@ -844,8 +764,7 @@ void initlocation(Location &loc)
       break;
     }
     strcat(loc.name, " ");
-    switch (LCSrandom(5))
-    {
+    switch (LCSrandom(5)) {
     case 0:
       strcat(loc.name, "Mug");
       break;
@@ -886,17 +805,13 @@ void initlocation(Location &loc)
 }
 
 /* transfer all loot from some source (such as a squad or another location) to a location, and deal with money properly */
-void Location::getloot(vector<Item *> &loot)
-{
+void Location::getloot(vector<Item *> &loot) {
   for (int l = len(loot) - 1; l >= 0; l--)
-    if (loot[l]->is_money())
-    {
+    if (loot[l]->is_money()) {
       Money *m = static_cast<Money *>(loot[l]); //cast -XML
       ledger.add_funds(m->get_amount(), INCOME_THIEVERY);
       delete loot[l];
-    }
-    else
-    { // Empty squad inventory into base inventory
+    } else { // Empty squad inventory into base inventory
       this->loot.push_back(loot[l]);
     }
   loot.clear();

@@ -35,11 +35,9 @@
 #include <externs.h>
 
 // Add an age estimate to a person's name
-void add_age(Creature &person)
-{
+void add_age(Creature &person) {
   // Who knows how old the purple gorilla/tank/flaming bunny/dog is?
-  if (person.animalgloss != ANIMALGLOSS_NONE)
-  {
+  if (person.animalgloss != ANIMALGLOSS_NONE) {
     addstr(" (?)");
     return;
   }
@@ -48,8 +46,7 @@ void add_age(Creature &person)
   addstr(" (");
 
   // Almost precise estimates of child and teen ages
-  if (person.age < 20)
-  {
+  if (person.age < 20) {
     // Inaccuracy in estimating age should be the same every
     // time a character is queried. I'm using the day of the
     // month the character was born on to determine this.
@@ -57,8 +54,7 @@ void add_age(Creature &person)
     addstr("?");
   }
   // More rough estimates of everyone else
-  else
-  {
+  else {
     if (person.age < 30)
       addstr("20s");
     else if (person.age < 40)
@@ -93,10 +89,8 @@ void add_age(Creature &person)
 }
 
 /* rolls up a proper name for a creature */
-void Creature::namecreature()
-{
-  if (!dontname)
-  {
+void Creature::namecreature() {
+  if (!dontname) {
     generate_name(name, gender_liberal);
     strcpy(propername, name);
     dontname = true;
@@ -104,8 +98,7 @@ void Creature::namecreature()
 }
 
 /* fills a string with a proper name */
-void generate_name(char *str, char gender)
-{
+void generate_name(char *str, char gender) {
   char first[80];
   char last[80];
 
@@ -116,23 +109,19 @@ void generate_name(char *str, char gender)
 }
 
 /* get a first and last name for the same person */
-void generate_name(char *first, char *last, char gender)
-{
-  do
-  {
+void generate_name(char *first, char *last, char gender) {
+  do {
     firstname(first, gender);
     lastname(last, gender == GENDER_WHITEMALEPATRIARCH);
   } while (strcmp(first, last) == 0);
 }
 
 /* get a first, middle, and last name for the same person */
-void generate_long_name(char *first, char *middle, char *last, char gender)
-{
+void generate_long_name(char *first, char *middle, char *last, char gender) {
   // pick either male or female so we can have 75% chance of first and middle names having matching genders
   if (gender == GENDER_NEUTRAL)
     gender = (LCSrandom(2) ? GENDER_MALE : GENDER_FEMALE);
-  do
-  {
+  do {
     firstname(first, gender);
     if (LCSrandom(2))                                                                                     // middle name is a first name
       firstname(middle, (gender == GENDER_WHITEMALEPATRIARCH || LCSrandom(2) ? gender : GENDER_NEUTRAL)); // 25% chance for middle name of other gender unless white male patriarch
@@ -143,8 +132,7 @@ void generate_long_name(char *first, char *middle, char *last, char gender)
 }
 
 /* gets a random first name */
-void firstname(char *str, char gender)
-{
+void firstname(char *str, char gender) {
   static const char *male_first_names[] =
       {
           "Aaron", "Abdel", "Abner", "Abraham",
@@ -521,8 +509,7 @@ void firstname(char *str, char gender)
     nametable = GENDER_WHITEMALEPATRIARCH;
 
   // Assign a name from the available names for each gender
-  if (gender == GENDER_MALE)
-  {
+  if (gender == GENDER_MALE) {
     // Roll on the number of gender-specific names,
     // plus the number of gender-neutral names
     roll = LCSrandom(len(male_first_names) +
@@ -533,9 +520,7 @@ void firstname(char *str, char gender)
       nametable = GENDER_MALE;
     else
       nametable = GENDER_NEUTRAL;
-  }
-  else if (gender == GENDER_FEMALE)
-  {
+  } else if (gender == GENDER_FEMALE) {
     // (Same here, just use the number of female names instead)
     roll = LCSrandom(len(female_first_names) +
                      len(gender_neutral_first_names));
@@ -886,8 +871,7 @@ void lastname(char *str, bool archconservative)
   strcpy(str, "");
 
   // For non-Arch-Conservatives, pick from ALL last names
-  if (!archconservative)
-  {
+  if (!archconservative) {
     // Roll on the number of non-Arch-Conservative last names,
     // plus the number of regular last names
     int roll = LCSrandom(len(regular_last_names) +

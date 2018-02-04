@@ -29,22 +29,17 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* handles end of round stuff for everyone */
-void creatureadvance()
-{
+void creatureadvance() {
   int e;
-  for (int p = 0; p < 6; p++)
-  {
+  for (int p = 0; p < 6; p++) {
     if (activesquad->squad[p] == NULL) continue;
     if (!activesquad->squad[p]->alive) continue;
 
     advancecreature(*activesquad->squad[p]);
-    if (activesquad->squad[p]->prisoner != NULL)
-    {
+    if (activesquad->squad[p]->prisoner != NULL) {
       advancecreature(*activesquad->squad[p]->prisoner);
-      if (!activesquad->squad[p]->prisoner->alive)
-      {
-        if (activesquad->squad[p]->prisoner->squadid == -1)
-        {
+      if (!activesquad->squad[p]->prisoner->alive) {
+        if (activesquad->squad[p]->prisoner->squadid == -1) {
           clearmessagearea();
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 1);
@@ -75,10 +70,8 @@ void creatureadvance()
     }
   }
 
-  if (location[cursite]->siege.siege)
-  {
-    for (int p = 0; p < len(pool); p++)
-    {
+  if (location[cursite]->siege.siege) {
+    for (int p = 0; p < len(pool); p++) {
       if (!pool[p]->alive) continue;
       if (pool[p]->squadid != -1) continue;
       if (pool[p]->location != cursite) continue;
@@ -89,16 +82,14 @@ void creatureadvance()
     autopromote(cursite);
   }
 
-  for (e = 0; e < ENCMAX; e++)
-  {
+  for (e = 0; e < ENCMAX; e++) {
     if (!encounter[e].exists) continue;
     if (!encounter[e].alive) continue;
 
     advancecreature(encounter[e]);
   }
 
-  if (mode != GAMEMODE_CHASECAR)
-  {
+  if (mode != GAMEMODE_CHASECAR) {
     //TAKE THE INJURED WITH YOU
     squadgrab_immobile(0);
 
@@ -106,21 +97,17 @@ void creatureadvance()
     squadgrab_immobile(1);
   }
 
-  for (e = ENCMAX - 1; e >= 0; e--)
-  {
+  for (e = ENCMAX - 1; e >= 0; e--) {
     if (!encounter[e].exists) continue;
     if (!encounter[e].alive) delenc(e, 1);
   }
 
-  if (mode == GAMEMODE_SITE)
-  {
+  if (mode == GAMEMODE_SITE) {
     if (sitealarm && sitecrime > 10) postalarmtimer++;
 
-    if (sitealarmtimer > 0 && !sitealarm && sitecrime > 5)
-    {
+    if (sitealarmtimer > 0 && !sitealarm && sitecrime > 5) {
       sitealarmtimer--;
-      if (sitealarmtimer <= 0)
-      {
+      if (sitealarmtimer <= 0) {
         sitealarmtimer = 0;
 
         clearmessagearea();
@@ -140,48 +127,38 @@ void creatureadvance()
       }
     }
 
-    for (int z = 0; z < MAPZ; z++)
-    {
+    for (int z = 0; z < MAPZ; z++) {
       bool stairs = 0; // Will check if higher levels are accessible
 
-      for (int y = 0; y < MAPY; y++)
-      {
-        for (int x = 0; x < MAPX; x++)
-        {
+      for (int y = 0; y < MAPY; y++) {
+        for (int x = 0; x < MAPX; x++) {
           if (levelmap[x][y][z].flag & SITEBLOCK_EXIT) continue;
 
           if (levelmap[x][y][z].special != -1)
             if (levelmap[x][y][z].special & SPECIAL_STAIRS_UP) stairs = 1;
 
           // Extinguish ending fires
-          if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_END)
-          {
-            if (!LCSrandom(15))
-            {
+          if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_END) {
+            if (!LCSrandom(15)) {
               levelmap[x][y][z].flag &= ~SITEBLOCK_FIRE_END;
               levelmap[x][y][z].flag |= SITEBLOCK_DEBRIS;
             }
           }
 
           // Cool/spread peak fires
-          if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_PEAK)
-          {
+          if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_PEAK) {
             siteonfire = 1;
-            if (!LCSrandom(10))
-            {
+            if (!LCSrandom(10)) {
               levelmap[x][y][z].flag &= ~SITEBLOCK_FIRE_PEAK;
               levelmap[x][y][z].flag |= SITEBLOCK_FIRE_END;
-            }
-            else if (!LCSrandom(4)) // Spread fire
+            } else if (!LCSrandom(4)) // Spread fire
             {
               int dir = LCSrandom(4); // Random initial direction
               int tries = 0;          // Will try all four directions before giving up
 
-              while (tries < 4)
-              {
+              while (tries < 4) {
                 int xmod = 0, ymod = 0;
-                switch (dir)
-                {
+                switch (dir) {
                 case 0:
                   xmod = -1;
                   break;
@@ -202,8 +179,7 @@ void creatureadvance()
                     !(levelmap[x + xmod][y + ymod][z].flag & SITEBLOCK_FIRE_PEAK) &&
                     !(levelmap[x + xmod][y + ymod][z].flag & SITEBLOCK_FIRE_END) &&
                     !(levelmap[x + xmod][y + ymod][z].flag & SITEBLOCK_EXIT) &&
-                    !(levelmap[x + xmod][y + ymod][z].flag & SITEBLOCK_METAL))
-                {
+                    !(levelmap[x + xmod][y + ymod][z].flag & SITEBLOCK_METAL)) {
                   // Spread it
                   levelmap[x + xmod][y + ymod][z].flag |= SITEBLOCK_FIRE_START;
                   break;
@@ -221,8 +197,7 @@ void creatureadvance()
                     !(levelmap[x][y][z + 1].flag & SITEBLOCK_DEBRIS) &&
                     !(levelmap[x][y][z + 1].flag & SITEBLOCK_FIRE_PEAK) &&
                     !(levelmap[x][y][z + 1].flag & SITEBLOCK_FIRE_END) &&
-                    !(levelmap[x][y][z + 1].flag & SITEBLOCK_METAL))
-                {
+                    !(levelmap[x][y][z + 1].flag & SITEBLOCK_METAL)) {
                   // Spread it
                   levelmap[x][y][z + 1].flag |= SITEBLOCK_FIRE_START;
                 }
@@ -232,10 +207,8 @@ void creatureadvance()
           }
 
           // Aggrivate starting fires
-          if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_START)
-          {
-            if (!LCSrandom(5))
-            {
+          if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_START) {
+            if (!LCSrandom(5)) {
               sitechangest change(x, y, z, SITEBLOCK_DEBRIS);
               location[cursite]->changes.push_back(change);
               levelmap[x][y][z].flag &= ~SITEBLOCK_BLOCK;
@@ -262,15 +235,12 @@ void creatureadvance()
 }
 
 /* handles end of round stuff for one creature */
-void advancecreature(Creature &cr)
-{
+void advancecreature(Creature &cr) {
   if (!cr.alive) return;
 
   char incaprint;
-  if (incapacitated(cr, 1, incaprint))
-  {
-    if (incaprint)
-    {
+  if (incapacitated(cr, 1, incaprint)) {
+    if (incaprint) {
       printparty();
       if (mode == GAMEMODE_CHASECAR ||
           mode == GAMEMODE_CHASEFOOT)
@@ -293,14 +263,11 @@ void advancecreature(Creature &cr)
         activesquad->squad[i]->get_skill(SKILL_FIRSTAID) > topmedicalskill)
       topmedicalskill = (topmedical = activesquad->squad[i])->get_skill(SKILL_FIRSTAID);
 
-  for (int w = 0; w < BODYPARTNUM; w++)
-  {
-    if (cr.wound[w] & WOUND_BLEEDING)
-    {
+  for (int w = 0; w < BODYPARTNUM; w++) {
+    if (cr.wound[w] & WOUND_BLEEDING) {
       if (LCSrandom(500) < cr.get_attribute(ATTRIBUTE_HEALTH, true))
         cr.wound[w] ^= WOUND_BLEEDING;
-      else if (cr.squadid != -1 && topmedical && topmedical->skill_check(SKILL_FIRSTAID, DIFFICULTY_FORMIDABLE))
-      {
+      else if (cr.squadid != -1 && topmedical && topmedical->skill_check(SKILL_FIRSTAID, DIFFICULTY_FORMIDABLE)) {
         clearmessagearea();
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         move(16, 1);
@@ -314,22 +281,19 @@ void advancecreature(Creature &cr)
         cr.wound[w] ^= WOUND_BLEEDING;
 
         getkey();
-      }
-      else
+      } else
         bleed++;
     }
   }
 
   if (mode == GAMEMODE_SITE && LCSrandom(3) &&
       ((levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_PEAK) ||
-       (levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_END)))
-  {
+       (levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_END))) {
     int burndamage = (levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_PEAK) ? LCSrandom(40) : LCSrandom(20);
     clearmessagearea();
 
     // Firefighter's bunker gear reduces burn damage
-    if (cr.get_armor().has_fireprotection())
-    {
+    if (cr.get_armor().has_fireprotection()) {
       // Base effect is 3/4 damage reduction, the denominator
       // increases with low quality or damaged gear
       int denom = 4;
@@ -345,27 +309,21 @@ void advancecreature(Creature &cr)
 
     cr.blood -= burndamage;
 
-    if (cr.blood <= 0)
-    {
+    if (cr.blood <= 0) {
       cr.die();
 
-      if (cr.squadid != -1)
-      {
+      if (cr.squadid != -1) {
         if (cr.align == 1) stat_dead++;
-      }
-      else if (cr.align == -1 && (cr.animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2))
-      {
+      } else if (cr.align == -1 && (cr.animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2)) {
         stat_kills++;
         if (location[cursite]->siege.siege) location[cursite]->siege.kills++;
         if (location[cursite]->siege.siege && cr.animalgloss == ANIMALGLOSS_TANK) location[cursite]->siege.tanks--;
-        if (location[cursite]->renting == RENTING_CCS)
-        {
+        if (location[cursite]->renting == RENTING_CCS) {
           if (cr.type == CREATURE_CCS_ARCHCONSERVATIVE) ccs_boss_kills++;
           ccs_siege_kills++;
         }
       }
-      if (cr.squadid == -1)
-      {
+      if (cr.squadid == -1) {
         sitecrime += 10;
         sitestory->crime.push_back(CRIME_KILLEDSOMEBODY);
         criminalizeparty(LAWFLAG_MURDER);
@@ -376,9 +334,7 @@ void advancecreature(Creature &cr)
       getkey();
 
       if (cr.prisoner != NULL) freehostage(cr, 1);
-    }
-    else
-    {
+    } else {
       set_color(COLOR_RED, COLOR_BLACK, 0);
       move(16, 1);
       addstr(cr.name, gamelog);
@@ -389,8 +345,7 @@ void advancecreature(Creature &cr)
     }
   }
 
-  if (bleed > 0)
-  {
+  if (bleed > 0) {
     clearmessagearea();
 
     cr.blood -= bleed;
@@ -399,27 +354,21 @@ void advancecreature(Creature &cr)
 
     cr.get_armor().set_bloody(true);
 
-    if (cr.blood <= 0)
-    {
+    if (cr.blood <= 0) {
       cr.die();
 
-      if (cr.squadid != -1)
-      {
+      if (cr.squadid != -1) {
         if (cr.align == 1) stat_dead++;
-      }
-      else if (cr.align == -1 && (cr.animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2))
-      {
+      } else if (cr.align == -1 && (cr.animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2)) {
         stat_kills++;
         if (location[cursite]->siege.siege) location[cursite]->siege.kills++;
         if (location[cursite]->siege.siege && cr.animalgloss == ANIMALGLOSS_TANK) location[cursite]->siege.tanks--;
-        if (location[cursite]->renting == RENTING_CCS)
-        {
+        if (location[cursite]->renting == RENTING_CCS) {
           if (cr.type == CREATURE_CCS_ARCHCONSERVATIVE) ccs_boss_kills++;
           ccs_siege_kills++;
         }
       }
-      if (cr.squadid == -1)
-      {
+      if (cr.squadid == -1) {
         sitecrime += 10;
         sitestory->crime.push_back(CRIME_KILLEDSOMEBODY);
         //criminalizeparty(LAWFLAG_MURDER);

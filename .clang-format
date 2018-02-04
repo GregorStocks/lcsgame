@@ -2,4 +2,3 @@ BasedOnStyle: LLVM
 Standard: Cpp03
 AllowShortIfStatementsOnASingleLine: true
 ColumnLimit: 0
-BreakBeforeBraces: Allman

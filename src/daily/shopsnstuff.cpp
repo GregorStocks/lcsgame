@@ -29,15 +29,13 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* active squad visits the hospital */
-void hospital(int loc)
-{
+void hospital(int loc) {
   music.play(MUSIC_SHOPPING);
   locatesquad(activesquad, loc);
 
   int partysize = squadsize(activesquad);
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     locheader();
@@ -71,18 +69,15 @@ void hospital(int loc)
     if (c == '0') party_status = -1;
 
     if (c >= '1' && c <= '6' && activesquad != NULL)
-      if (activesquad->squad[c - '1'] != NULL)
-      {
+      if (activesquad->squad[c - '1'] != NULL) {
         if (party_status == c - '1')
           fullstatus(party_status);
         else
           party_status = c - '1';
       }
 
-    if (c == 'f')
-    {
-      for (int p = 5; p >= 0; p--)
-      {
+    if (c == 'f') {
+      for (int p = 5; p >= 0; p--) {
         if (activesquad->squad[p] == NULL) continue;
         hospitalize(loc, *activesquad->squad[p]);
       }
@@ -92,8 +87,7 @@ void hospital(int loc)
 }
 
 /* active squad visits the arms dealer */
-void armsdealer(int loc)
-{
+void armsdealer(int loc) {
   music.play(MUSIC_SHOPPING);
   locatesquad(activesquad, loc);
   CMarkup xml; // -XML
@@ -103,8 +97,7 @@ void armsdealer(int loc)
 }
 
 /* active squad visits the pawn shop */
-void pawnshop(int loc)
-{
+void pawnshop(int loc) {
   music.play(MUSIC_SHOPPING);
   locatesquad(activesquad, loc);
   CMarkup xml; // -XML
@@ -114,8 +107,7 @@ void pawnshop(int loc)
 }
 
 /* active squad visits the car dealership */
-void dealership(int loc)
-{
+void dealership(int loc) {
   music.play(MUSIC_SHOPPING);
   short buyer = 0;
 
@@ -123,8 +115,7 @@ void dealership(int loc)
 
   int partysize = squadsize(activesquad);
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     locheader();
@@ -151,17 +142,14 @@ void dealership(int loc)
     addstr("G - Get a Liberal car");
 
     move(11, 1);
-    if (car_to_sell)
-    {
+    if (car_to_sell) {
       price = static_cast<int>(0.8 * car_to_sell->price());
 
       if (car_to_sell->get_heat())
         price /= 10;
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       addstr("S - Sell the " + car_to_sell->fullname() + " ($" + tostring(price) + ")");
-    }
-    else
-    {
+    } else {
       set_color(COLOR_BLACK, COLOR_BLACK, 1);
       addstr("S - Sell a car");
     }
@@ -203,44 +191,37 @@ void dealership(int loc)
     if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) break;
 
     //Sell the car
-    if (c == 's' && car_to_sell)
-    {
+    if (c == 's' && car_to_sell) {
       ledger.add_funds(price, INCOME_CARS);
       for (int v = len(vehicle) - 1; v >= 0; v--)
-        if (vehicle[v] == car_to_sell)
-        {
+        if (vehicle[v] == car_to_sell) {
           delete_and_remove(vehicle, v);
           break;
         }
     }
 
     // Get a car
-    if (c == 'g' && !car_to_sell)
-    {
+    if (c == 'g' && !car_to_sell) {
       int carchoice;
 
       vector<int> availablevehicle;
       vector<string> vehicleoption;
       for (int i = 0; i < len(vehicletype); i++)
-        if (vehicletype[i]->availableatshop())
-        {
+        if (vehicletype[i]->availableatshop()) {
           availablevehicle.push_back(i);
           vehicleoption.push_back(vehicletype[i]->longname() + " ($" +
                                   tostring(sleepercarsalesman ? vehicletype[i]->sleeperprice() : vehicletype[i]->price()) + ")");
         }
-      while (true)
-      {
+      while (true) {
         carchoice = choiceprompt("Choose a vehicle", "", vehicleoption, "Vehicle",
                                  true, "We don't need a Conservative car");
-        if (carchoice != -1 && (sleepercarsalesman ? vehicletype[availablevehicle[carchoice]]->sleeperprice() : vehicletype[availablevehicle[carchoice]]->price()) > ledger.get_funds())
-        {
+        if (carchoice != -1 && (sleepercarsalesman ? vehicletype[availablevehicle[carchoice]]->sleeperprice() : vehicletype[availablevehicle[carchoice]]->price()) > ledger.get_funds()) {
           set_color(COLOR_RED, COLOR_BLACK, 0);
           move(1, 1);
           addstr("You don't have enough money!");
 
           getkey();
-        }
-        else
+        } else
           break;
       }
 
@@ -279,8 +260,7 @@ void dealership(int loc)
     if (c == '0') party_status = -1;
 
     if (c >= '1' && c <= '6' && activesquad != NULL)
-      if (activesquad->squad[c - '1'] != NULL)
-      {
+      if (activesquad->squad[c - '1'] != NULL) {
         if (party_status == c - '1')
           fullstatus(party_status);
         else
@@ -290,8 +270,7 @@ void dealership(int loc)
 }
 
 /* active squad visits the department store */
-void deptstore(int loc)
-{
+void deptstore(int loc) {
   music.play(MUSIC_SHOPPING);
   locatesquad(activesquad, loc);
   CMarkup xml; // -XML
@@ -301,8 +280,7 @@ void deptstore(int loc)
 }
 
 /* active squad visits the oubliette */
-void halloweenstore(int loc)
-{
+void halloweenstore(int loc) {
   music.play(MUSIC_SHOPPING);
   locatesquad(activesquad, loc);
   CMarkup xml;
@@ -312,16 +290,14 @@ void halloweenstore(int loc)
 }
 
 /* choose buyer */
-void choose_buyer(short &buyer)
-{
+void choose_buyer(short &buyer) {
   party_status = -1;
 
   int partysize = squadsize(activesquad);
 
   if (partysize <= 1) return;
 
-  while (true)
-  {
+  while (true) {
     printparty();
 
     move(8, 20);
@@ -332,8 +308,7 @@ void choose_buyer(short &buyer)
 
     if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) return;
 
-    if (c >= '1' && c <= partysize + '1' - 1)
-    {
+    if (c >= '1' && c <= partysize + '1' - 1) {
       buyer = c - '1';
       return;
     }

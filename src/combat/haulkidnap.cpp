@@ -34,8 +34,7 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* prompt after you've said you want to kidnap someone */
-void kidnapattempt()
-{
+void kidnapattempt() {
   short kidnapper = -1;
 
   party_status = -1;
@@ -44,14 +43,12 @@ void kidnapattempt()
   char availslot[6] = {0, 0, 0, 0, 0, 0};
   for (int p = 0; p < 6; p++)
     if (activesquad->squad[p] != NULL)
-      if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner == NULL)
-      {
+      if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner == NULL) {
         available++;
         availslot[p] = 1;
       }
 
-  if (!available)
-  {
+  if (!available) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(16, 1, "No one can do the job.            ");
     mvaddstr(17, 1, "                                  ");
@@ -61,8 +58,7 @@ void kidnapattempt()
     return;
   }
 
-  do
-  {
+  do {
     printparty();
 
     move(8, 20);
@@ -88,12 +84,10 @@ void kidnapattempt()
         encounter[e].animalgloss != ANIMALGLOSS_TANK)
       target.push_back(e);
 
-  if (len(target))
-  {
+  if (len(target)) {
     int t = target[0];
 
-    if (len(target) > 1)
-    {
+    if (len(target) > 1) {
       clearcommandarea();
       clearmessagearea();
       clearmaparea();
@@ -103,8 +97,7 @@ void kidnapattempt()
       addstr("Kidnap whom?");
 
       int x = 1, y = 11;
-      for (int t2 = 0; t2 < len(target); t2++)
-      {
+      for (int t2 = 0; t2 < len(target); t2++) {
         mvaddchar(y++, x, t2 + 'A');
         addstr(" - ");
         addstr(encounter[target[t2]].name);
@@ -112,12 +105,10 @@ void kidnapattempt()
         if (y == 17) y = 11, x += 30;
       }
 
-      do
-      {
+      do {
         int c = getkey();
 
-        if (c >= 'a' && c < ('a' + ENCMAX))
-        {
+        if (c >= 'a' && c < ('a' + ENCMAX)) {
           t = c - 'a';
           if (t >= len(target))
             t = -1;
@@ -130,40 +121,32 @@ void kidnapattempt()
 
     bool amateur = 0;
 
-    if (kidnap(*activesquad->squad[kidnapper], encounter[t], amateur))
-    {
+    if (kidnap(*activesquad->squad[kidnapper], encounter[t], amateur)) {
       delenc(t, 0);
 
       int time = 20 + LCSrandom(10);
       if (time < 1) time = 1;
       if (sitealarmtimer > time || sitealarmtimer == -1) sitealarmtimer = time;
-    }
-    else
+    } else
       sitealarm = 1;
 
-    if (amateur)
-    {
+    if (amateur) {
       bool present = 0;
       for (int e = 0; e < ENCMAX; e++)
-        if (encounter[e].exists && encounter[e].alive)
-        {
+        if (encounter[e].exists && encounter[e].alive) {
           present = 1;
           break;
         }
 
-      if (present)
-      {
+      if (present) {
         alienationcheck(1);
         if (!sitealarm) sitealarm = 1;
         sitecrime += 5;
         criminalizeparty(LAWFLAG_KIDNAPPING);
-        if (activesquad->squad[kidnapper]->prisoner != NULL)
-        {
+        if (activesquad->squad[kidnapper]->prisoner != NULL) {
           if (activesquad->squad[kidnapper]->prisoner->type == CREATURE_RADIOPERSONALITY) offended_amradio = 1;
           if (activesquad->squad[kidnapper]->prisoner->type == CREATURE_NEWSANCHOR) offended_cablenews = 1;
-        }
-        else
-        {
+        } else {
           if (encounter[t].type == CREATURE_RADIOPERSONALITY) offended_amradio = 1;
           if (encounter[t].type == CREATURE_NEWSANCHOR) offended_cablenews = 1;
         }
@@ -172,9 +155,7 @@ void kidnapattempt()
 
     if (sitealarm) enemyattack();
     creatureadvance();
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(16, 1, "All of the targets are too dangerous.                ");
     mvaddstr(17, 1, "                                                     ");
@@ -184,8 +165,7 @@ void kidnapattempt()
 }
 
 /* prompt after you've said you want to release someone */
-void releasehostage()
-{
+void releasehostage() {
   short kidnapper = -1;
 
   party_status = -1;
@@ -197,8 +177,7 @@ void releasehostage()
       if (activesquad->squad[p]->alive && activesquad->squad[p]->prisoner != NULL && activesquad->squad[p]->prisoner->align != ALIGN_LIBERAL)
         available++, availslot[p] = 1;
 
-  if (!available)
-  {
+  if (!available) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr("No hostages are being held.       ");
@@ -210,8 +189,7 @@ void releasehostage()
     return;
   }
 
-  do
-  {
+  do {
     printparty();
 
     move(8, 20);
@@ -230,8 +208,7 @@ void releasehostage()
   activesquad->squad[kidnapper]->prisoner->cantbluff = 2;
   freehostage(*(activesquad->squad[kidnapper]), 2);
 
-  if (!sitealarm)
-  {
+  if (!sitealarm) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr("The hostage shouts for help!      ", gamelog);
@@ -247,10 +224,8 @@ void releasehostage()
 }
 
 /* roll on the kidnap attempt and show the results */
-bool kidnap(Creature &a, Creature &t, bool &amateur)
-{
-  if (!a.get_weapon().can_take_hostages())
-  {
+bool kidnap(Creature &a, Creature &t, bool &amateur) {
+  if (!a.get_weapon().can_take_hostages()) {
     amateur = 1;
 
     //BASIC ROLL
@@ -262,8 +237,7 @@ bool kidnap(Creature &a, Creature &t, bool &amateur)
     clearmessagearea();
 
     //HIT!
-    if (aroll > droll)
-    {
+    if (aroll > droll) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(16, 1);
       addstr(a.name, gamelog);
@@ -287,9 +261,7 @@ bool kidnap(Creature &a, Creature &t, bool &amateur)
 
       gamelog.newline();
       return 1;
-    }
-    else
-    {
+    } else {
       set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
       move(16, 1);
       addstr(a.name, gamelog);
@@ -307,9 +279,7 @@ bool kidnap(Creature &a, Creature &t, bool &amateur)
       gamelog.newline();
       return 0;
     }
-  }
-  else
-  {
+  } else {
     clearmessagearea();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -339,18 +309,14 @@ bool kidnap(Creature &a, Creature &t, bool &amateur)
 }
 
 /* hostage freed due to host unable to haul */
-void freehostage(Creature &cr, char situation)
-{
+void freehostage(Creature &cr, char situation) {
   if (cr.prisoner == NULL) return;
 
-  if (cr.prisoner->alive)
-  {
-    if (situation == 0)
-    {
+  if (cr.prisoner->alive) {
+    if (situation == 0) {
       if (cr.prisoner->squadid == -1)
         addstr(" and a hostage is freed", gamelog);
-      else
-      {
+      else {
         addstr(" and ", gamelog);
         addstr(cr.prisoner->name, gamelog);
         if (cr.prisoner->flag & CREATUREFLAG_JUSTESCAPED)
@@ -359,16 +325,13 @@ void freehostage(Creature &cr, char situation)
           addstr(" is captured", gamelog);
       }
       gamelog.newline(); //New line.
-    }
-    else if (situation == 1)
-    {
+    } else if (situation == 1) {
       clearmessagearea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(16, 1);
       if (cr.prisoner->squadid == -1)
         addstr("A hostage escapes!", gamelog);
-      else
-      {
+      else {
         addstr(cr.prisoner->name, gamelog);
         if (cr.prisoner->flag & CREATUREFLAG_JUSTESCAPED)
           addstr(" is recaptured.", gamelog);
@@ -376,18 +339,13 @@ void freehostage(Creature &cr, char situation)
           addstr(" is captured.", gamelog);
       }
       gamelog.newline(); //New line.
-    }
-    else if (situation == 2)
-    {
+    } else if (situation == 2) {
       //Don't print anything.
     }
 
-    if (cr.prisoner->squadid == -1)
-    {
-      for (int e = 0; e < ENCMAX; e++)
-      {
-        if (encounter[e].exists == 0)
-        {
+    if (cr.prisoner->squadid == -1) {
+      for (int e = 0; e < ENCMAX; e++) {
+        if (encounter[e].exists == 0) {
           encounter[e] = *cr.prisoner;
           encounter[e].exists = 1;
           conservatise(encounter[e]);
@@ -395,14 +353,10 @@ void freehostage(Creature &cr, char situation)
         }
       }
       delete cr.prisoner;
-    }
-    else
+    } else
       capturecreature(*cr.prisoner);
-  }
-  else
-  {
-    if (cr.prisoner->squadid != -1)
-    {
+  } else {
+    if (cr.prisoner->squadid != -1) {
       removesquadinfo(*cr.prisoner);
       cr.prisoner->die();
       cr.prisoner->location = -1;
@@ -411,8 +365,7 @@ void freehostage(Creature &cr, char situation)
 
   cr.prisoner = NULL;
 
-  if (situation == 1)
-  {
+  if (situation == 1) {
     printparty();
     if (mode == GAMEMODE_CHASECAR ||
         mode == GAMEMODE_CHASEFOOT)
@@ -425,13 +378,10 @@ void freehostage(Creature &cr, char situation)
 }
 
 /* haul dead/paralyzed */
-void squadgrab_immobile(char dead)
-{
+void squadgrab_immobile(char dead) {
   int p, hostslots = 0; //DRAGGING PEOPLE OUT IF POSSIBLE
-  for (p = 0; p < 6; p++)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
+  for (p = 0; p < 6; p++) {
+    if (activesquad->squad[p] != NULL) {
       if (activesquad->squad[p]->alive &&
           (activesquad->squad[p]->canwalk() ||
            (activesquad->squad[p]->flag & CREATUREFLAG_WHEELCHAIR)) &&
@@ -440,8 +390,7 @@ void squadgrab_immobile(char dead)
       else if ((!activesquad->squad[p]->alive ||
                 (!activesquad->squad[p]->canwalk() &&
                  !(activesquad->squad[p]->flag & CREATUREFLAG_WHEELCHAIR))) &&
-               activesquad->squad[p]->prisoner != NULL)
-      {
+               activesquad->squad[p]->prisoner != NULL) {
         clearmessagearea();
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         move(16, 1);
@@ -458,19 +407,14 @@ void squadgrab_immobile(char dead)
     }
   }
 
-  for (p = 5; p >= 0; p--)
-  {
-    if (activesquad->squad[p] != NULL)
-    {
+  for (p = 5; p >= 0; p--) {
+    if (activesquad->squad[p] != NULL) {
       if ((!activesquad->squad[p]->alive && dead) ||
           (activesquad->squad[p]->alive &&
            !(activesquad->squad[p]->flag & CREATUREFLAG_WHEELCHAIR) &&
-           !activesquad->squad[p]->canwalk() && !dead))
-      {
-        if (hostslots == 0)
-        {
-          if (!activesquad->squad[p]->alive)
-          {
+           !activesquad->squad[p]->canwalk() && !dead)) {
+        if (hostslots == 0) {
+          if (!activesquad->squad[p]->alive) {
             clearmessagearea();
             set_color(COLOR_YELLOW, COLOR_BLACK, 1);
             move(16, 1);
@@ -484,9 +428,7 @@ void squadgrab_immobile(char dead)
 
             activesquad->squad[p]->die();
             activesquad->squad[p]->location = -1;
-          }
-          else
-          {
+          } else {
             clearmessagearea();
             set_color(COLOR_YELLOW, COLOR_BLACK, 1);
             move(16, 1);
@@ -496,19 +438,14 @@ void squadgrab_immobile(char dead)
 
             capturecreature(*activesquad->squad[p]);
           }
-        }
-        else
-        {
-          for (int p2 = 0; p2 < 6; p2++)
-          {
+        } else {
+          for (int p2 = 0; p2 < 6; p2++) {
             if (p2 == p) continue;
-            if (activesquad->squad[p2] != NULL)
-            {
+            if (activesquad->squad[p2] != NULL) {
               if (activesquad->squad[p2]->alive &&
                   (activesquad->squad[p2]->canwalk() ||
                    (activesquad->squad[p2]->flag & CREATUREFLAG_WHEELCHAIR)) &&
-                  activesquad->squad[p2]->prisoner == NULL)
-              {
+                  activesquad->squad[p2]->prisoner == NULL) {
                 activesquad->squad[p2]->prisoner = activesquad->squad[p];
 
                 clearmessagearea();
@@ -529,8 +466,7 @@ void squadgrab_immobile(char dead)
 
         //SHUFFLE SQUAD
         bool flipstart = 0;
-        for (int pt = 0; pt < 6; pt++)
-        {
+        for (int pt = 0; pt < 6; pt++) {
           if (pt == p - 1) continue;
           if (pt == p) flipstart = 1;
           if (flipstart && pt < 5) activesquad->squad[pt] = activesquad->squad[pt + 1];
@@ -546,8 +482,7 @@ void squadgrab_immobile(char dead)
 }
 
 /* names the new hostage and stashes them in your base */
-void kidnaptransfer(Creature &cr)
-{
+void kidnaptransfer(Creature &cr) {
   Creature *newcr = new Creature;
   *newcr = cr;
   newcr->namecreature();
