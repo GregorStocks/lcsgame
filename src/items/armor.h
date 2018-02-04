@@ -30,8 +30,6 @@ class Armor : public Item
       bool is_bloody() const { return bloody_; }
       void clean_and_repair() { damaged_ = false; bloody_ = false; }
 
-      bool is_good_for_sale() const { return !bloody_ && !damaged_; }
-
       const string& get_name() const;
       long get_fencevalue() const;
       int get_make_difficulty() const;
