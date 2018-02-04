@@ -29,8 +29,7 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* checks if your liberal activity is noticed */
-void noticecheck(int exclude, int difficulty)
-{
+void noticecheck(int exclude, int difficulty) {
   if (sitealarm) return;
 
   char sneak = 0;
@@ -40,12 +39,10 @@ void noticecheck(int exclude, int difficulty)
     if (activesquad->squad[i] && activesquad->squad[i]->get_skill(SKILL_STEALTH) > sneak)
       sneak = activesquad->squad[i]->get_skill(SKILL_STEALTH), topi = i;
 
-  for (int e = 0; e < ENCMAX; e++)
-  { //Prisoners shouldn't shout for help.
+  for (int e = 0; e < ENCMAX; e++) { //Prisoners shouldn't shout for help.
     if (!strcmp(encounter[e].name, "Prisoner") || e == exclude || encounter[e].exists == false || activesquad->squad[topi]->skill_check(SKILL_STEALTH, difficulty))
       continue;
-    else
-    {
+    else {
       clearmessagearea();
 
       set_color(COLOR_RED, COLOR_BLACK, 1);
@@ -69,8 +66,7 @@ void noticecheck(int exclude, int difficulty)
 }
 
 /* checks if your liberal behavior/attack alienates anyone */
-char alienationcheck(char mistake)
-{
+char alienationcheck(char mistake) {
   if (location[cursite]->siege.siege) return 0;
 
   char alienate = 0, alienatebig = 0;
@@ -78,8 +74,7 @@ char alienationcheck(char mistake)
   int oldsitealienate = sitealienate;
 
   vector<int> noticer;
-  for (int e = 0; e < ENCMAX; e++)
-  {
+  for (int e = 0; e < ENCMAX; e++) {
     // Prisoners should never be alienated by your crimes, as
     // they're happy to have you attacking their place of holding
     //if(encounter[e].type==CREATURE_PRISONER)continue;
@@ -92,12 +87,10 @@ char alienationcheck(char mistake)
       noticer.push_back(e);
   }
 
-  if (len(noticer))
-  {
+  if (len(noticer)) {
     int n, an;
 
-    do
-    {
+    do {
       an = LCSrandom(len(noticer));
       n = noticer[an];
       noticer.erase(noticer.begin() + an);
@@ -111,8 +104,7 @@ char alienationcheck(char mistake)
     if (alienatebig) sitealienate = 2;
     if (alienate && sitealienate != 2) sitealienate = 1;
 
-    if (oldsitealienate < sitealienate)
-    {
+    if (oldsitealienate < sitealienate) {
       set_color(COLOR_YELLOW, COLOR_BLACK, 1);
 
       move(16, 1);
@@ -145,8 +137,7 @@ char alienationcheck(char mistake)
 }
 
 /* checks if conservatives see through your disguise */
-void disguisecheck(int timer)
-{
+void disguisecheck(int timer) {
   static const char *blew_stealth_check[] =
       {
           " coughs.",
@@ -162,8 +153,7 @@ void disguisecheck(int timer)
   // Only start to penalize the player's disguise/stealth checks after the first turn.
   timer--;
 
-  for (int i = 0; i < 6; i++)
-  {
+  for (int i = 0; i < 6; i++) {
     if (activesquad->squad[i] == NULL) break;
     if (activesquad->squad[i]->is_naked() &&
         activesquad->squad[i]->animalgloss != ANIMALGLOSS_ANIMAL) forcecheck = true;
@@ -173,30 +163,25 @@ void disguisecheck(int timer)
   }
 
   // Nothing suspicious going on here
-  if (sitealarmtimer == -1 && weapon < 1 && !forcecheck)
-  {
+  if (sitealarmtimer == -1 && weapon < 1 && !forcecheck) {
     if (!disguisesite(location[cursite]->type) &&
         !(levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)) return;
   }
 
   char noticed = 0;
   vector<int> noticer;
-  for (int e = 0; e < ENCMAX; e++)
-  {
+  for (int e = 0; e < ENCMAX; e++) {
     if (encounter[e].type == CREATURE_PRISONER) continue;
     if (encounter[e].exists && encounter[e].alive &&
-        encounter[e].enemy())
-    {
+        encounter[e].enemy()) {
       noticer.push_back(e);
     }
   }
 
-  if (len(noticer))
-  {
+  if (len(noticer)) {
     int n, an;
 
-    do
-    {
+    do {
       an = LCSrandom(len(noticer));
       n = noticer[an];
       noticer.erase(noticer.begin() + an);
@@ -205,8 +190,7 @@ void disguisecheck(int timer)
       int disguise_difficulty;
 
       // Determine difficulty based on enemy type
-      switch (encounter[n].type)
-      {
+      switch (encounter[n].type) {
       default:
         stealth_difficulty = DIFFICULTY_VERYEASY;
         disguise_difficulty = DIFFICULTY_VERYEASY;
@@ -248,13 +232,10 @@ void disguisecheck(int timer)
       }
 
       // Increase difficulty if Conservatives suspicious...
-      if (sitealarmtimer == 1)
-      {
+      if (sitealarmtimer == 1) {
         stealth_difficulty += 6;
         disguise_difficulty += 6;
-      }
-      else if (sitealarmtimer > 1)
-      {
+      } else if (sitealarmtimer > 1) {
         stealth_difficulty += 3;
         disguise_difficulty += 3;
       }
@@ -262,17 +243,14 @@ void disguisecheck(int timer)
       stealth_difficulty += (partysize - 1) * 3;
 
       // Make the attempt!
-      for (int i = 0; i < 6; i++)
-      {
+      for (int i = 0; i < 6; i++) {
         if (activesquad->squad[i] == NULL) break;
 
         // Try to sneak.
-        if (!spotted)
-        {
+        if (!spotted) {
           int result = activesquad->squad[i]->skill_roll(SKILL_STEALTH);
           result -= timer;
-          if (fieldskillrate == FIELDSKILLRATE_HARD && result + 1 == stealth_difficulty)
-          { // Hard more = You only learn if you just missed, and realize what you did wrong.
+          if (fieldskillrate == FIELDSKILLRATE_HARD && result + 1 == stealth_difficulty) { // Hard more = You only learn if you just missed, and realize what you did wrong.
             activesquad->squad[i]->train(SKILL_STEALTH, 10);
           }
           if (result < stealth_difficulty)
@@ -280,24 +258,18 @@ void disguisecheck(int timer)
         }
 
         // Spotted! Act casual.
-        if (spotted)
-        {
+        if (spotted) {
           // Scary weapons are not very casual.
-          if (weaponcheck(*activesquad->squad[i]) == 2)
-          {
+          if (weaponcheck(*activesquad->squad[i]) == 2) {
             noticed = true;
             break;
-          }
-          else
-          {
+          } else {
             int result = activesquad->squad[i]->skill_roll(SKILL_DISGUISE);
             result -= timer;
-            if (fieldskillrate == FIELDSKILLRATE_HARD && result + 1 == disguise_difficulty)
-            { // Hard more = You only learn if you just missed, and realize what you did wrong.
+            if (fieldskillrate == FIELDSKILLRATE_HARD && result + 1 == disguise_difficulty) { // Hard more = You only learn if you just missed, and realize what you did wrong.
               activesquad->squad[i]->train(SKILL_DISGUISE, 10);
             }
-            if (result < disguise_difficulty)
-            {
+            if (result < disguise_difficulty) {
               // That was not very casual, dude.
               if (result < 0) blew_it = i;
 
@@ -311,13 +283,10 @@ void disguisecheck(int timer)
     } while (len(noticer));
 
     // Give feedback on the Liberal Performance
-    if (!spotted)
-    {
-      for (int i = 0; i < 6; i++)
-      {
+    if (!spotted) {
+      for (int i = 0; i < 6; i++) {
         if (activesquad->squad[i] == NULL) break;
-        switch (fieldskillrate)
-        {
+        switch (fieldskillrate) {
         case FIELDSKILLRATE_FAST:
           activesquad->squad[i]->train(SKILL_STEALTH, 40);
           break;
@@ -330,8 +299,7 @@ void disguisecheck(int timer)
         }
       }
 
-      if (timer == 0)
-      {
+      if (timer == 0) {
         set_color(COLOR_CYAN, COLOR_BLACK, 1);
         move(16, 1);
 
@@ -344,19 +312,13 @@ void disguisecheck(int timer)
 
         getkey();
       }
-    }
-    else
-    {
-      if (blew_it == -1)
-      {
+    } else {
+      if (blew_it == -1) {
         int i;
-        for (i = 0; i < 6; i++)
-        {
+        for (i = 0; i < 6; i++) {
           if (activesquad->squad[i] == NULL) break;
-          if (hasdisguise(*(activesquad->squad[i])))
-          {
-            switch (fieldskillrate)
-            {
+          if (hasdisguise(*(activesquad->squad[i]))) {
+            switch (fieldskillrate) {
             case FIELDSKILLRATE_FAST:
               activesquad->squad[i]->train(SKILL_DISGUISE, 50);
               break;
@@ -371,8 +333,7 @@ void disguisecheck(int timer)
         }
       }
 
-      if (blew_it != -1 && LCSrandom(2))
-      {
+      if (blew_it != -1 && LCSrandom(2)) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         move(16, 1);
 
@@ -381,9 +342,7 @@ void disguisecheck(int timer)
         gamelog.newline();
 
         getkey();
-      }
-      else if (!noticed)
-      {
+      } else if (!noticed) {
         set_color(COLOR_CYAN, COLOR_BLACK, 1);
         move(16, 1);
 
@@ -405,19 +364,15 @@ void disguisecheck(int timer)
     set_color(COLOR_RED, COLOR_BLACK, 1);
     move(16, 1);
     addstr(encounter[n].name, gamelog);
-    if (sitealarmtimer != 0 && weapon < 1 && encounter[n].type != CREATURE_GUARDDOG)
-    {
+    if (sitealarmtimer != 0 && weapon < 1 && encounter[n].type != CREATURE_GUARDDOG) {
       if ((sitetype == SITE_RESIDENTIAL_TENEMENT ||
            sitetype == SITE_RESIDENTIAL_APARTMENT ||
            sitetype == SITE_RESIDENTIAL_APARTMENT_UPSCALE) &&
-          levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+          levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         sitealarm = 1;
 
         addstr(" shouts in alarm at the squad's Liberal Trespassing!", gamelog);
-      }
-      else
-      {
+      } else {
         addstr(" looks at the Squad suspiciously.", gamelog);
 
         int time;
@@ -428,17 +383,13 @@ void disguisecheck(int timer)
 
         if (sitealarmtimer > time || sitealarmtimer == -1)
           sitealarmtimer = time;
-        else
-        {
+        else {
           if (sitealarmtimer > 5) sitealarmtimer -= 5;
           if (sitealarmtimer <= 5) sitealarmtimer = 0;
         }
       }
-    }
-    else
-    {
-      if (weapon && encounter[n].type != CREATURE_GUARDDOG)
-      {
+    } else {
+      if (weapon && encounter[n].type != CREATURE_GUARDDOG) {
         addstr(" sees the Squad's Liberal Weapons ", gamelog);
         move(17, 1);
         if (encounter[n].align == ALIGN_CONSERVATIVE)
@@ -446,8 +397,7 @@ void disguisecheck(int timer)
         else
           addstr("and shouts for help!", gamelog);
 
-        for (int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
           if (activesquad->squad[i] == NULL) break;
           //if(weaponar[i])
           //{
@@ -455,19 +405,15 @@ void disguisecheck(int timer)
           //criminalize(*activesquad->squad[i],LAWFLAG_GUNCARRY);
           //}
         }
-      }
-      else
-      {
+      } else {
         addstr(" looks at the Squad with Intolerance ", gamelog);
         move(17, 1);
-        if (encounter[n].align == ALIGN_CONSERVATIVE)
-        {
+        if (encounter[n].align == ALIGN_CONSERVATIVE) {
           if (encounter[n].type == CREATURE_GUARDDOG)
             addstr("and launches into angry Conservative barking!", gamelog);
           else
             addstr("and lets forth a piercing Conservative alarm cry!", gamelog);
-        }
-        else
+        } else
           addstr("and shouts for help!", gamelog);
       }
 
@@ -480,8 +426,7 @@ void disguisecheck(int timer)
   }
 }
 
-char weapon_in_character(const string &wtype, const string &atype)
-{
+char weapon_in_character(const string &wtype, const string &atype) {
   if (atype == "ARMOR_LABCOAT" && wtype == "WEAPON_SYRINGE")
     return CREATURE_SCIENTIST_LABTECH;
 
@@ -501,8 +446,7 @@ char weapon_in_character(const string &wtype, const string &atype)
        wtype == "WEAPON_SHOTGUN_PUMP"))
     return CREATURE_COP;
 
-  if (wtype == "WEAPON_SMG_MP5" || wtype == "WEAPON_CARBINE_M4")
-  {
+  if (wtype == "WEAPON_SMG_MP5" || wtype == "WEAPON_CARBINE_M4") {
     if (atype == "ARMOR_SWATARMOR")
       return CREATURE_SWAT;
     else if (atype == "ARMOR_SECURITYUNIFORM" && law[LAW_GUNCONTROL] == -2)
@@ -511,8 +455,7 @@ char weapon_in_character(const string &wtype, const string &atype)
       return CREATURE_SOLDIER;
   }
 
-  if (wtype == "WEAPON_AUTORIFLE_M16" || wtype == "WEAPON_SEMIRIFLE_AR15")
-  {
+  if (wtype == "WEAPON_AUTORIFLE_M16" || wtype == "WEAPON_SEMIRIFLE_AR15") {
     // Military
     if (atype == "ARMOR_MILITARY" || atype == "ARMOR_ARMYARMOR")
       return CREATURE_SOLDIER;
@@ -549,8 +492,7 @@ char weapon_in_character(const string &wtype, const string &atype)
 }
 
 /* checks if a creature's weapon is suspicious */
-char weaponcheck(const Creature &cr, bool metaldetect)
-{
+char weaponcheck(const Creature &cr, bool metaldetect) {
   bool suspicious = cr.get_weapon().is_suspicious();
   bool concealed = cr.weapon_is_concealed();
   char incharacter = weapon_in_character(cr.get_weapon().get_itemtypename(), cr.get_armor().get_itemtypename());
@@ -561,8 +503,7 @@ char weaponcheck(const Creature &cr, bool metaldetect)
   if (hasdisguise(cr) == false)
     incharacter = -1;
 
-  if (suspicious)
-  {
+  if (suspicious) {
     if (concealed && !metaldetect)
       return 0; // Hidden weapon, nothing to see
     else if (incharacter >= 0)
@@ -574,8 +515,7 @@ char weaponcheck(const Creature &cr, bool metaldetect)
 }
 
 /* checks if a creature's uniform is appropriate to the location */
-char hasdisguise(const Creature &cr)
-{
+char hasdisguise(const Creature &cr) {
   short type = -1;
   if (cursite >= 0) type = location[cursite]->type;
   char uniformed = 0;
@@ -584,40 +524,33 @@ char hasdisguise(const Creature &cr)
   //if(activesquad->stance==SQUADSTANCE_BATTLECOLORS)
   //   return 0;
 
-  if (location[cursite]->siege.siege)
-  {
-    switch (location[cursite]->siege.siegetype)
-    {
-    case SIEGE_CIA:
-    {
+  if (location[cursite]->siege.siege) {
+    switch (location[cursite]->siege.siegetype) {
+    case SIEGE_CIA: {
       if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKSUIT") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKDRESS") uniformed = 1;
       break;
     }
-    case SIEGE_CORPORATE:
-    {
+    case SIEGE_CORPORATE: {
       if (cr.get_armor().get_itemtypename() == "ARMOR_MILITARY") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_ARMYARMOR") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_SEALSUIT") uniformed = 1;
       break;
     }
-    case SIEGE_HICKS:
-    {
+    case SIEGE_HICKS: {
       if (cr.get_armor().get_itemtypename() == "ARMOR_CLOTHES") uniformed = 2;
       if (cr.get_armor().get_itemtypename() == "ARMOR_OVERALLS") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_WIFEBEATER") uniformed = 1;
       break;
     }
-    case SIEGE_CCS:
-    {
+    case SIEGE_CCS: {
       // CCS has trained in anticipation of this tactic
       // There is no fooling them
       // (They pull this shit all the time in their own sieges)
       uniformed = 0;
       break;
     }
-    case SIEGE_POLICE:
-    {
+    case SIEGE_POLICE: {
       if (cr.get_armor().get_itemtypename() == "ARMOR_SWATARMOR" &&
           location[cursite]->siege.escalationstate == 0) uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_MILITARY" &&
@@ -628,19 +561,15 @@ char hasdisguise(const Creature &cr)
           location[cursite]->siege.escalationstate > 0) uniformed = 1;
       break;
     }
-    case SIEGE_FIREMEN:
-    {
+    case SIEGE_FIREMEN: {
       if (cr.get_armor().get_itemtypename() == "ARMOR_BUNKERGEAR") uniformed = 1;
       break;
     }
     }
-  }
-  else
-  {
+  } else {
     if ((!cr.is_naked() || cr.animalgloss == ANIMALGLOSS_ANIMAL) && cr.get_armor().get_itemtypename() != "ARMOR_HEAVYARMOR") uniformed = 1;
 
-    switch (type)
-    {
+    switch (type) {
 
     case SITE_INDUSTRY_WAREHOUSE:
     case SITE_RESIDENTIAL_SHELTER:
@@ -648,16 +577,14 @@ char hasdisguise(const Creature &cr)
       break;
     case SITE_LABORATORY_COSMETICS:
     case SITE_LABORATORY_GENETIC:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_LABCOAT") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_SECURITYUNIFORM") uniformed = (location[cursite]->highsecurity ? 1 : 2);
       }
       break;
     case SITE_GOVERNMENT_POLICESTATION:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_POLICEUNIFORM") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_POLICEARMOR") uniformed = 1;
@@ -667,8 +594,7 @@ char hasdisguise(const Creature &cr)
       }
       break;
     case SITE_GOVERNMENT_WHITE_HOUSE:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKSUIT") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKDRESS") uniformed = 1;
@@ -682,8 +608,7 @@ char hasdisguise(const Creature &cr)
       }
       break;
     case SITE_GOVERNMENT_COURTHOUSE:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKROBE") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKSUIT") uniformed = 1;
@@ -700,21 +625,17 @@ char hasdisguise(const Creature &cr)
       }
       break;
     case SITE_GOVERNMENT_PRISON:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
-        if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2)
-        {
+        if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2) {
           if (cr.get_armor().get_itemtypename() == "ARMOR_LABCOAT") uniformed = 1;
-        }
-        else if (cr.get_armor().get_itemtypename() == "ARMOR_PRISONGUARD")
+        } else if (cr.get_armor().get_itemtypename() == "ARMOR_PRISONGUARD")
           uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_PRISONER") uniformed = 1;
       }
       break;
     case SITE_GOVERNMENT_ARMYBASE:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_MILITARY") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_ARMYARMOR") uniformed = 1;
@@ -722,22 +643,19 @@ char hasdisguise(const Creature &cr)
       }
       break;
     case SITE_GOVERNMENT_INTELLIGENCEHQ:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKSUIT") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BLACKDRESS") uniformed = 1;
       }
       break;
     case SITE_GOVERNMENT_FIRESTATION:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_BUNKERGEAR") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_WORKCLOTHES") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_OVERALLS") uniformed = 1;
-        if (location[cursite]->highsecurity)
-        {
+        if (location[cursite]->highsecurity) {
           if (cr.get_armor().get_itemtypename() == "ARMOR_POLICEUNIFORM") uniformed = 1;
           if (cr.get_armor().get_itemtypename() == "ARMOR_POLICEARMOR") uniformed = 1;
           if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2 &&
@@ -747,8 +665,7 @@ char hasdisguise(const Creature &cr)
       }
       break;
     case SITE_BUSINESS_BANK:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_CHEAPSUIT") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_EXPENSIVESUIT") uniformed = 1;
@@ -758,8 +675,7 @@ char hasdisguise(const Creature &cr)
         if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2 &&
             cr.get_armor().get_itemtypename() == "ARMOR_DEATHSQUADUNIFORM") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_SWATARMOR") uniformed = (location[cursite]->highsecurity ? 1 : 2);
-        if (location[cursite]->highsecurity)
-        {
+        if (location[cursite]->highsecurity) {
           if (cr.get_armor().get_itemtypename() == "ARMOR_CIVILLIANARMOR") uniformed = 1;
         }
       }
@@ -782,14 +698,12 @@ char hasdisguise(const Creature &cr)
       uniformed = 0;
       if (cr.get_armor().get_itemtypename() == "ARMOR_WORKCLOTHES") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_HARDHAT") uniformed = 1;
-      if (location[cursite]->highsecurity)
-      {
+      if (location[cursite]->highsecurity) {
         if (cr.get_armor().get_itemtypename() == "ARMOR_SECURITYUNIFORM") uniformed = 1;
       }
       break;
     case SITE_INDUSTRY_NUCLEAR:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_LABCOAT") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_SECURITYUNIFORM") uniformed = 1;
@@ -811,16 +725,14 @@ char hasdisguise(const Creature &cr)
       if (cr.get_armor().get_itemtypename() == "ARMOR_EXPENSIVEDRESS") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_SECURITYUNIFORM") uniformed = 1;
       if (cr.get_armor().get_itemtypename() == "ARMOR_SERVANTUNIFORM") uniformed = 1;
-      if (location[cursite]->highsecurity)
-      {
+      if (location[cursite]->highsecurity) {
         if (cr.get_armor().get_itemtypename() == "ARMOR_MILITARY") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_ARMYARMOR") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_SEALSUIT") uniformed = 1;
       }
       break;
     case SITE_MEDIA_AMRADIO:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_SECURITYUNIFORM") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_EXPENSIVESUIT") uniformed = 1;
@@ -830,8 +742,7 @@ char hasdisguise(const Creature &cr)
       }
       break;
     case SITE_MEDIA_CABLENEWS:
-      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED)
-      {
+      if (levelmap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED) {
         uniformed = 0;
         if (cr.get_armor().get_itemtypename() == "ARMOR_SECURITYUNIFORM") uniformed = 1;
         if (cr.get_armor().get_itemtypename() == "ARMOR_EXPENSIVESUIT") uniformed = 1;
@@ -848,8 +759,7 @@ char hasdisguise(const Creature &cr)
     }
   }
 
-  if (!uniformed)
-  {
+  if (!uniformed) {
     if (cr.get_armor().get_itemtypename() == "ARMOR_POLICEUNIFORM") uniformed = 2;
     if (cr.get_armor().get_itemtypename() == "ARMOR_POLICEARMOR") uniformed = 2;
     if (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2 &&
@@ -864,15 +774,13 @@ char hasdisguise(const Creature &cr)
         cr.get_armor().get_itemtypename() == "ARMOR_BUNKERGEAR") uniformed = 1;
   }
 
-  if (uniformed)
-  {
+  if (uniformed) {
     int qlmax = cr.get_armor().get_quality_levels();
     int ql = cr.get_armor().get_quality() + cr.get_armor().is_damaged();
     if (ql > qlmax) // Shredded clothes are obvious
     {
       uniformed = 0;
-    }
-    else if ((ql - 1) * 2 > qlmax) // poor clothes make a poor disguise
+    } else if ((ql - 1) * 2 > qlmax) // poor clothes make a poor disguise
     {
       uniformed++;
     }
@@ -884,10 +792,8 @@ char hasdisguise(const Creature &cr)
 }
 
 /* returns true if the entire site is not open to public */
-char disguisesite(long type)
-{
-  switch (type)
-  {
+char disguisesite(long type) {
+  switch (type) {
   case SITE_LABORATORY_COSMETICS:
   case SITE_LABORATORY_GENETIC:
   case SITE_GOVERNMENT_PRISON:

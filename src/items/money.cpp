@@ -1,7 +1,6 @@
 #include <externs.h>
 
-Money::Money(const std::string &inputXml) : Item(inputXml)
-{
+Money::Money(const std::string &inputXml) : Item(inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
@@ -10,8 +9,7 @@ Money::Money(const std::string &inputXml) : Item(inputXml)
     if (xml.GetTagName() == "amount") amount_ = atoi(xml.GetData());
 }
 
-string Money::showXml() const
-{
+string Money::showXml() const {
   CMarkup xml;
   xml.AddElem("money");
   xml.IntoElem();
@@ -20,8 +18,7 @@ string Money::showXml() const
   return xml.GetDoc();
 }
 
-Money *Money::split(int number)
-{
+Money *Money::split(int number) {
   flatten();
   if (number > amount_) number = amount_;
   Money *newi = clone();
@@ -30,27 +27,22 @@ Money *Money::split(int number)
   return newi;
 }
 
-bool Money::merge(Item &i)
-{
+bool Money::merge(Item &i) {
   flatten();
-  if (i.is_money() && is_same_type(i))
-  {
+  if (i.is_money() && is_same_type(i)) {
     Money &m = static_cast<Money &>(i); //cast -XML
     m.flatten();
     take_all_from(m);
     m.set_number(0);
     return true;
-  }
-  else
+  } else
     return false;
 }
 
-bool Money::sort_compare_special(Item *other) const
-{
+bool Money::sort_compare_special(Item *other) const {
   return other && !other->is_money();
 }
 
-string Money::equip_title() const
-{
+string Money::equip_title() const {
   return "$" + tostring(amount_);
 }

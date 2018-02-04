@@ -34,8 +34,7 @@
 
 #include <externs.h>
 
-enum Pages
-{
+enum Pages {
   PAGE_LEADERS,
   PAGE_ISSUES_A,
   PAGE_ISSUES_B,
@@ -45,30 +44,23 @@ enum Pages
 };
 
 /* base - liberal agenda */
-bool liberalagenda(signed char won)
-{
+bool liberalagenda(signed char won) {
   int page = 0, y;
 
-  while (true)
-  {
+  while (true) {
     erase();
-    if (won == 1)
-    {
+    if (won == 1) {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       move(0, 0);
       addstr("The Triumph of the Liberal Agenda");
       music.play(MUSIC_VICTORY);
-    }
-    else if (won == -1 || won == -2)
-    {
+    } else if (won == -1 || won == -2) {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       move(0, 0);
       addstr("The Abject Failure of the Liberal Agenda");
       if (won == -1) music.play(MUSIC_REAGANIFIED);
       if (won == -2) music.play(MUSIC_STALINIZED);
-    }
-    else
-    {
+    } else {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(0, 0);
       addstr("The Status of the Liberal Agenda");
@@ -78,10 +70,8 @@ bool liberalagenda(signed char won)
     if (page < 0) page = PAGENUM - 1;
     if (page >= PAGENUM) page = 0;
 
-    switch (page)
-    {
-    case PAGE_LEADERS:
-    {
+    switch (page) {
+    case PAGE_LEADERS: {
 
       move(1, 0);
       addstr("ษอออออออออออออออออปฤฤฤฤฤฤฤฤฤฤยฤฤฤฤฤฤฤฤฤฤฟ");
@@ -97,8 +87,7 @@ bool liberalagenda(signed char won)
         addstr("King: ");
       else if (won == -2)
         addstr("General Secretary: ");
-      else
-      {
+      else {
         addstr("President ");
         if (execterm == 1)
           addstr("(1st Term):");
@@ -156,20 +145,15 @@ bool liberalagenda(signed char won)
         move(8, 25);
       addstr(execname[EXEC_ATTORNEY]);
 
-      if (won == -1)
-      {
+      if (won == -1) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         move(10, 0);
         addstr("The Congress consists of CEOs and televangelists.");
-      }
-      else if (won == -2)
-      {
+      } else if (won == -2) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         move(10, 0);
         addstr("The Congress consists of Stalinist Party loyalists.");
-      }
-      else
-      {
+      } else {
         int housemake[6] = {0, 0, 0, 0, 0, 0};
         for (int h = 0; h < HOUSENUM; h++)
           housemake[house[h] + 2]++;
@@ -225,8 +209,7 @@ bool liberalagenda(signed char won)
         set_color(COLOR_RED, COLOR_BLACK, 1);
       else if (won == 1)
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
-      else
-      {
+      else {
         int courtmake[6] = {0, 0, 0, 0, 0, 0};
         for (int s = 0; s < COURTNUM; s++)
           courtmake[court[s] + 2]++;
@@ -259,29 +242,22 @@ bool liberalagenda(signed char won)
       mvaddchar(9, 58, 'R');
       mvaddchar(10, 58, 'T');
 
-      if (won == -1)
-      {
+      if (won == -1) {
         mvaddstr(7, 65, "Replaced");
         mvaddstr(8, 63, "By Corporate");
         mvaddstr(9, 62, "Ethics Officers");
-      }
-      else if (won == -2)
-      {
+      } else if (won == -2) {
         mvaddstr(7, 63, "Replaced By");
         mvaddstr(8, 62, "Stalinist Show");
         mvaddstr(9, 63, "Trial Judges");
-      }
-      else
-      {
+      } else {
         y = 4;
-        for (int c = 0; c < COURTNUM; c++, y++)
-        {
+        for (int c = 0; c < COURTNUM; c++, y++) {
           set_alignment_color(court[c], true);
           mvaddstr(y, 60, courtname[c]);
         }
       }
-      for (int l = 0; l < LAWNUM; l++)
-      {
+      for (int l = 0; l < LAWNUM; l++) {
         if (won == -1 || won == -2)
           set_alignment_color(ALIGN_ARCHCONSERVATIVE, true);
         else if (won == 1 && wincondition == WINCONDITION_ELITE)
@@ -300,19 +276,15 @@ bool liberalagenda(signed char won)
     }
 
     case PAGE_ISSUES_A:
-    case PAGE_ISSUES_B:
-    {
-      if (page == PAGE_ISSUES_A)
-      {
+    case PAGE_ISSUES_B: {
+      if (page == PAGE_ISSUES_A) {
         move(1, 0);
         addstr("ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤษออออออออออปฤฤฤฤฤฤฤฤฤฤฟ");
         move(2, 0);
         addstr("ณ GENERAL SUMMARY บ ISSUES A บ ISSUES B ณ");
         move(3, 0);
         addstr("ฯอออออออออออออออออผ          ศออออออออออฯอออออออออออออออออออออออออออออออออออออออ");
-      }
-      else
-      {
+      } else {
         move(1, 0);
         addstr("ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤยฤฤฤฤฤฤฤฤฤฤษออออออออออป");
         move(2, 0);
@@ -323,8 +295,7 @@ bool liberalagenda(signed char won)
 
       int y = 4, startinglaw = 0;
       if (page == PAGE_ISSUES_B) startinglaw = 18;
-      for (int l = startinglaw; l < startinglaw + 18 && l < LAWNUM; l++, y++)
-      {
+      for (int l = startinglaw; l < startinglaw + 18 && l < LAWNUM; l++, y++) {
         if (won == -1 || won == -2)
           set_alignment_color(ALIGN_ARCHCONSERVATIVE, true);
         else
@@ -332,8 +303,7 @@ bool liberalagenda(signed char won)
 
         move(y, 0);
 
-        switch (l)
-        {
+        switch (l) {
         case LAW_WOMEN:
           if (won == -2)
             addstr("Women are usually drafted into the armed forces to fight in place of men.");
@@ -736,8 +706,7 @@ bool liberalagenda(signed char won)
     }
     }
 
-    if (won == 1)
-    {
+    if (won == 1) {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       if (wincondition == WINCONDITION_EASY)
         mvaddstr(23, 0, "The country has achieved Liberal status!");
@@ -753,9 +722,7 @@ bool liberalagenda(signed char won)
         page--;
       else if (c == 'l')
         break;
-    }
-    else if (won == -1)
-    {
+    } else if (won == -1) {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       mvaddstr(23, 0, "The country has been Reaganified.");
       mvaddstr(24, 0, "Press 'L' to view the high score list.");
@@ -768,9 +735,7 @@ bool liberalagenda(signed char won)
         page--;
       else if (c == 'l')
         break;
-    }
-    else if (won == -2)
-    {
+    } else if (won == -2) {
       set_color(COLOR_RED, COLOR_BLACK, 1);
       mvaddstr(23, 0, "The country has been Stalinized.");
       mvaddstr(24, 0, "Press 'L' to view the high score list.");
@@ -783,40 +748,33 @@ bool liberalagenda(signed char won)
         page--;
       else if (c == 'l')
         break;
-    }
-    else
-    {
+    } else {
       move(23, 0);
-      if (stalinmode)
-      {
+      if (stalinmode) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("Stalinist  ");
       }
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       addstr("Elite Liberal  ");
-      if (!stalinmode)
-      {
+      if (!stalinmode) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         addstr("-  ");
       }
       set_color(COLOR_CYAN, COLOR_BLACK, 1);
       addstr("Liberal  ");
-      if (!stalinmode)
-      {
+      if (!stalinmode) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         addstr("-  ");
       }
       set_color(COLOR_YELLOW, COLOR_BLACK, 1);
       addstr("moderate  ");
-      if (!stalinmode)
-      {
+      if (!stalinmode) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         addstr("-  ");
       }
       set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
       addstr("Conservative  ");
-      if (!stalinmode)
-      {
+      if (!stalinmode) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         addstr("-  ");
       }
@@ -875,8 +833,7 @@ bool confirmdisband()                  // concerned should be (slightly) more li
 
   string word = pickrandom(issue_phrases);
 
-  for (int pos = 0; pos < len(word);)
-  {
+  for (int pos = 0; pos < len(word);) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -896,8 +853,7 @@ bool confirmdisband()                  // concerned should be (slightly) more li
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(13, 0, "Type this Liberal phrase to confirm (press a wrong letter to rethink it):");
 
-    for (int x = 0; x < len(word); x++)
-    {
+    for (int x = 0; x < len(word); x++) {
       if (x == pos)
         set_color(COLOR_GREEN, COLOR_BLACK, 0);
       else if (x < pos)
@@ -907,21 +863,17 @@ bool confirmdisband()                  // concerned should be (slightly) more li
       mvaddchar(15, x, word[x]);
     }
 
-    if (getkey() == ::tolower(word[pos]))
-    {
+    if (getkey() == ::tolower(word[pos])) {
       pos++;
       if (word[pos] == ' ' || word[pos] == '\'' || word[pos] == '-') pos++;
-    }
-    else
+    } else
       return false;
   }
   //SET UP THE DISBAND
-  for (int p = len(pool) - 1; p >= 0; p--)
-  {
+  for (int p = len(pool) - 1; p >= 0; p--) {
     if (!pool[p]->alive)
       delete_and_remove(pool, p);
-    else if (!(pool[p]->flag & CREATUREFLAG_SLEEPER))
-    {
+    else if (!(pool[p]->flag & CREATUREFLAG_SLEEPER)) {
       removesquadinfo(*pool[p]);
       pool[p]->hiding = -1;
     }

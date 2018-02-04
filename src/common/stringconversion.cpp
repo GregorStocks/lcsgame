@@ -1,14 +1,12 @@
 #include <externs.h>
 
-std::string tostring(long i)
-{
+std::string tostring(long i) {
   std::ostringstream os;
   os << i;
   return os.str();
 }
 
-int stringtobool(std::string boolstr)
-{
+int stringtobool(std::string boolstr) {
   std::transform(boolstr.begin(), boolstr.end(), boolstr.begin(), ::tolower);
   if (boolstr == "true" || boolstr == "1" || boolstr == "on" || boolstr == "yes")
     return 1;
@@ -18,8 +16,7 @@ int stringtobool(std::string boolstr)
     return -1;
 }
 
-short creaturetype_string_to_enum(const std::string &ctname)
-{
+short creaturetype_string_to_enum(const std::string &ctname) {
   if (ctname == "CREATURE_BOUNCER")
     return CREATURE_BOUNCER;
   else if (ctname == "CREATURE_SECURITYGUARD")
@@ -236,8 +233,7 @@ short creaturetype_string_to_enum(const std::string &ctname)
     return -1;
 }
 
-int attribute_string_to_enum(const std::string &attribute)
-{
+int attribute_string_to_enum(const std::string &attribute) {
   if (attribute == "strength")
     return ATTRIBUTE_STRENGTH;
   else if (attribute == "intelligence")
@@ -256,8 +252,7 @@ int attribute_string_to_enum(const std::string &attribute)
     return -1;
 }
 
-int skill_string_to_enum(std::string skillname)
-{
+int skill_string_to_enum(std::string skillname) {
   std::transform(skillname.begin(), skillname.end(), skillname.begin(), ::tolower);
   if (skillname == "handtohand")
     return SKILL_HANDTOHAND;
@@ -325,8 +320,7 @@ int skill_string_to_enum(std::string skillname)
     return -1;
 }
 
-int gender_string_to_enum(const std::string &gender)
-{
+int gender_string_to_enum(const std::string &gender) {
   if (gender == "NEUTRAL")
     return GENDER_NEUTRAL;
   else if (gender == "MALE")
@@ -345,8 +339,7 @@ int gender_string_to_enum(const std::string &gender)
     return -1;
 }
 
-int severtype_string_to_enum(const std::string &severtype)
-{
+int severtype_string_to_enum(const std::string &severtype) {
   if (severtype == "NASTY")
     return WOUND_NASTYOFF;
   else if (severtype == "CLEAN")

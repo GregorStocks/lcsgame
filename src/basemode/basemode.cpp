@@ -62,13 +62,11 @@ This file is part of Liberal Crime Squad.                                       
 
 #include <externs.h>
 
-bool show_disbanding_screen(int &oldforcemonth)
-{
+bool show_disbanding_screen(int &oldforcemonth) {
   if (oldforcemonth == month) return true;
   music.play(MUSIC_DISBANDED);
 
-  for (int p = len(pool) - 1; p >= 0; p--)
-  {
+  for (int p = len(pool) - 1; p >= 0; p--) {
     int targetjuice = LCSrandom(100 * (year - disbandtime + 1));
     if (targetjuice > 1000) targetjuice = 1000;
     if (pool[p]->juice < targetjuice && pool[p]->hireid != -1 && !(pool[p]->flag & CREATUREFLAG_SLEEPER))
@@ -165,15 +163,13 @@ bool show_disbanding_screen(int &oldforcemonth)
   addstr(tostring(courtmake[1]) + "Cons, ");
   addstr(tostring(courtmake[0]) + "Cons+");
 
-  for (int l = 0; l < LAWNUM; l++)
-  {
+  for (int l = 0; l < LAWNUM; l++) {
     align = law[l];
     set_alignment_color(align, true);
     mvaddstr(6 + l / 3, l % 3 * 30, getlaw(l));
   }
 
-  if (stalinmode)
-  {
+  if (stalinmode) {
     int stalin = 0; // the Stalinist mood position from 1 to 78 (left=Stalinist, right=Libertarian)
     for (int v = 0; v < VIEWNUM - 3; v++)
       stalin += stalinview(v, false) ? attitude[v] : 100 - attitude[v];
@@ -247,49 +243,37 @@ bool show_disbanding_screen(int &oldforcemonth)
   return (getkey() != 'r');
 }
 
-enum CantSeeReason
-{
+enum CantSeeReason {
   CANTSEE_DATING = 1,
   CANTSEE_HIDING = 2,
   CANTSEE_OTHER = 3,
   CANTSEE_DISBANDING = 4
 };
 
-void mode_base()
-{
+void mode_base() {
   char forcewait, canseethings;
   int nonsighttime = 0, oldforcemonth = month, l = 0;
 
-  while (true)
-  {
+  while (true) {
     forcewait = 1, canseethings = 0, cantseereason = CANTSEE_OTHER;
-    if (disbanding)
-    {
+    if (disbanding) {
       cantseereason = CANTSEE_DISBANDING;
       disbanding = show_disbanding_screen(oldforcemonth);
-    }
-    else
-    {
-      for (int p = 0; p < len(pool); p++)
-      {
+    } else {
+      for (int p = 0; p < len(pool); p++) {
         if (pool[p]->alive &&
             pool[p]->align == 1 &&
             pool[p]->dating == 0 &&
             pool[p]->hiding == 0 &&
-            !(pool[p]->flag & CREATUREFLAG_SLEEPER))
-        {
-          if (!location[pool[p]->location]->part_of_justice_system())
-          {
+            !(pool[p]->flag & CREATUREFLAG_SLEEPER)) {
+          if (!location[pool[p]->location]->part_of_justice_system()) {
             canseethings = 1;
-            if (pool[p]->clinic == 0)
-            {
+            if (pool[p]->clinic == 0) {
               forcewait = 0;
               break;
             }
           }
-        }
-        else
-        {
+        } else {
           if (pool[p]->dating == 1 && cantseereason > CANTSEE_DATING)
             cantseereason = CANTSEE_DATING;
           else if (pool[p]->hiding != 0 && cantseereason > CANTSEE_HIDING)
@@ -298,10 +282,8 @@ void mode_base()
       }
     }
 
-    if (!forcewait)
-    {
-      if (nonsighttime >= 365 * 4)
-      {
+    if (!forcewait) {
+      if (nonsighttime >= 365 * 4) {
         music.play(MUSIC_BASEMODE);
         erase();
         char str[100];
@@ -321,8 +303,7 @@ void mode_base()
     }
 
     int partysize = squadsize(activesquad);
-    if (activesquad && !partysize)
-    {
+    if (activesquad && !partysize) {
       delete_and_remove(squad, getsquad(activesquad->id));
       activesquad = NULL;
     }
@@ -342,15 +323,13 @@ void mode_base()
 
     char sieged = 0, underattack = 0;
     if (siege) sieged = siege->siege;
-    if (sieged)
-    {
+    if (sieged) {
       underattack = siege->underattack;
       if (!forcewait)
         music.play(MUSIC_SIEGE);
       else
         music.play(MUSIC_DISBANDED);
-    }
-    else if (!forcewait)
+    } else if (!forcewait)
       music.play(MUSIC_BASEMODE);
     else
       music.play(MUSIC_DISBANDED);
@@ -362,19 +341,16 @@ void mode_base()
     int *num_present = new int[len(location)];
     for (int i = 0; i < len(location); i++)
       num_present[i] = 0;
-    for (int p = 0; p < len(pool); p++)
-    { // Dead people, non-liberals, and vacationers don't count
+    for (int p = 0; p < len(pool); p++) { // Dead people, non-liberals, and vacationers don't count
       if (!pool[p]->alive || pool[p]->align != 1 || pool[p]->location == -1) continue;
       num_present[pool[p]->location]++;
     }
 
     char cannotwait = 0;
-    for (l = 0; l < len(location); l++)
-    {
+    for (l = 0; l < len(location); l++) {
       if (!location[l]->siege.siege) continue;
 
-      if (location[l]->siege.underattack)
-      {
+      if (location[l]->siege.underattack) {
         // Allow siege if no liberals present
         if (num_present[l]) cannotwait = 1;
         break;
@@ -382,37 +358,29 @@ void mode_base()
     }
     delete[] num_present;
 
-    if (!forcewait)
-    {
+    if (!forcewait) {
       erase();
 
       if (activesquad != NULL) selectedsiege = -1;
 
       locheader();
-      if (selectedsiege != -1)
-      {
+      if (selectedsiege != -1) {
         printlocation(selectedsiege);
 
-        if (!location[selectedsiege]->siege.siege)
-        {
+        if (!location[selectedsiege]->siege.siege) {
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
           mvaddstr(8, 1, "I - Invest in this location");
         }
-      }
-      else if (activesquad != NULL)
+      } else if (activesquad != NULL)
         printparty();
       else
         makedelimiter();
 
-      if (sieged)
-      {
-        if (underattack)
-        {
+      if (sieged) {
+        if (underattack) {
           set_color(COLOR_RED, COLOR_BLACK, 1);
           mvaddstr(8, 1, "Under Attack");
-        }
-        else
-        {
+        } else {
           set_color(COLOR_YELLOW, COLOR_BLACK, 1);
           mvaddstr(8, 1, "Under Siege");
           int stock = 1;
@@ -422,11 +390,9 @@ void mode_base()
       }
 
       if (haveflag)
-        for (int y = 0; y < 7; y++)
-        {
+        for (int y = 0; y < 7; y++) {
           move(y + 10, 31);
-          if (y < 6)
-          {
+          if (y < 6) {
             set_color(COLOR_WHITE, y < 4 ? COLOR_BLUE : COLOR_RED, 1);
             if (y == 0)
               addstr(":.:.:.:.:");
@@ -438,9 +404,7 @@ void mode_base()
             set_color(COLOR_WHITE, COLOR_RED, 1);
             for (int x = 9; x < 18; x++)
               addch(CH_LOWER_HALF_BLOCK);
-          }
-          else
-          {
+          } else {
             set_color(COLOR_RED, COLOR_BLACK, 0);
             for (int x = 0; x < 18; x++)
               addch(CH_UPPER_HALF_BLOCK);
@@ -496,10 +460,8 @@ void mode_base()
 
       set_color(COLOR_BLACK, COLOR_BLACK, 1);
       for (int p = 0; p < len(pool); p++)
-        if (pool[p]->is_active_liberal())
-        {
-          if (pool[p]->squadid != -1)
-          {
+        if (pool[p]->is_active_liberal()) {
+          if (pool[p]->squadid != -1) {
             int sq = getsquad(pool[p]->squadid);
             if (sq != -1)
               if (squad[sq]->activity.type != ACTIVITY_NONE) continue;
@@ -511,35 +473,28 @@ void mode_base()
 
       set_color(COLOR_BLACK, COLOR_BLACK, 1);
       for (int p = 0; p < len(pool); p++)
-        if (pool[p]->is_lcs_sleeper())
-        {
+        if (pool[p]->is_lcs_sleeper()) {
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
           break;
         }
       mvaddstr(21, 25, "B - Sleepers");
 
-      if (partysize)
-      {
+      if (partysize) {
         if (activesquad->activity.type != ACTIVITY_NONE)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
           set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      }
-      else
+      } else
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
       mvaddstr(20, 1, "C - Cancel this Squad's Departure");
 
-      if (sieged)
-      {
+      if (sieged) {
         if (partysize)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
-        else
-        {
+        else {
           set_color(COLOR_BLACK, COLOR_BLACK, 1);
-          for (int p = 0; p < len(pool); p++)
-          {
-            if (pool[p]->location == selectedsiege)
-            {
+          for (int p = 0; p < len(pool); p++) {
+            if (pool[p]->location == selectedsiege) {
               set_color(COLOR_WHITE, COLOR_BLACK, 0);
               break;
             }
@@ -549,9 +504,7 @@ void mode_base()
 
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         mvaddstr(19, 23, "G - Give Up");
-      }
-      else
-      {
+      } else {
         if (partysize)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -572,8 +525,7 @@ void mode_base()
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       if (cannotwait)
         mvaddstr(23, 1, "Cannot Wait until Siege Resolved");
-      else
-      {
+      else {
         if (sieged)
           mvaddstr(23, 1, "W - Wait out the siege");
         else
@@ -583,16 +535,13 @@ void mode_base()
 
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddstr(22, 40, "S - FREE SPEECH: the Liberal Slogan");
-      if (haveflag)
-      {
+      if (haveflag) {
         if (sieged)
           set_color(COLOR_GREEN, COLOR_BLACK, 1);
         else
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         mvaddstr(22, 1, "P - PROTEST: burn the flag");
-      }
-      else
-      {
+      } else {
         if (ledger.get_funds() >= 20 && !sieged && (selectedsiege != -1 || activesquad != NULL))
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -607,8 +556,7 @@ void mode_base()
         mvaddstr(13, 39 - ((len(slogan) - 1) >> 1), slogan);
     }
 
-    switch (int c = forcewait ? 'w' : getkey())
-    {
+    switch (int c = forcewait ? 'w' : getkey()) {
     case 'x':
       return;
     case 'i':
@@ -620,8 +568,7 @@ void mode_base()
       disbanding = liberalagenda(0);
       break;
     case 'g':
-      if (sieged)
-      {
+      if (sieged) {
         giveup();
         cleangonesquads();
       }
@@ -629,13 +576,10 @@ void mode_base()
     case 'f':
       if (!sieged && partysize > 0)
         stopevil();
-      else if (underattack)
-      {
+      else if (underattack) {
         escape_engage();
         cleangonesquads();
-      }
-      else if (sieged)
-      {
+      } else if (sieged) {
         sally_forth();
         cleangonesquads();
       }
@@ -653,14 +597,12 @@ void mode_base()
       activate_sleepers();
       break;
     case TAB:
-      if (len(squad))
-      {
+      if (len(squad)) {
         if (!activesquad)
           activesquad = squad[0];
         else
           for (int sq = 0; sq < len(squad); sq++)
-            if (squad[sq] == activesquad)
-            {
+            if (squad[sq] == activesquad) {
               if (sq == len(squad) - 1)
                 activesquad = squad[0];
               else
@@ -670,23 +612,19 @@ void mode_base()
       }
       break;
     case 'z':
-      if (safenumber)
-      {
+      if (safenumber) {
         activesquad = NULL;
         for (int l = (selectedsiege == -1 || selectedsiege + 1 >= len(location)) ? 0 : selectedsiege + 1;
              l < len(location); l++)
-          if (location[l]->is_lcs_safehouse())
-          {
+          if (location[l]->is_lcs_safehouse()) {
             selectedsiege = l;
             break;
-          }
-          else if (l == len(location) - 1)
+          } else if (l == len(location) - 1)
             l = -1;
       }
       break;
     case 'e':
-      if (partysize && !underattack && activesquad->squad[0]->location != -1)
-      {
+      if (partysize && !underattack && activesquad->squad[0]->location != -1) {
         short ops = party_status;
         party_status = -1;
         equip(location[activesquad->squad[0]->location]->loot, -1);
@@ -697,15 +635,13 @@ void mode_base()
       if (len(pool)) review();
       break;
     case 'w':
-      if (forcewait || !cannotwait)
-      {
+      if (forcewait || !cannotwait) {
         char clearformess = forcewait;
         if (!canseethings) nonsighttime++;
         advanceday(clearformess, canseethings);
         if (day > monthday()) passmonth(clearformess, canseethings);
         advancelocations();
-        if (forcewait)
-        {
+        if (forcewait) {
           erase();
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
           mvaddstr(7, 5, "Time passes...", gamelog);
@@ -718,8 +654,7 @@ void mode_base()
       }
       break;
     case 'v':
-      if (len(vehicle) && partysize)
-      {
+      if (len(vehicle) && partysize) {
         short ops = party_status;
         party_status = -1;
         setvehicles();
@@ -727,45 +662,36 @@ void mode_base()
       }
       break;
     case 'p':
-      if (haveflag)
-      {
+      if (haveflag) {
         burnflag();
         stat_burns++;
-        if (selectedsiege != -1)
-        {
+        if (selectedsiege != -1) {
           location[selectedsiege]->haveflag = 0;
           if (law[LAW_FLAGBURNING] < 1)
             criminalizepool(LAWFLAG_BURNFLAG, -1, selectedsiege);
         }
-        if (activesquad)
-        {
+        if (activesquad) {
           location[activesquad->squad[0]->base]->haveflag = 0;
           if (law[LAW_FLAGBURNING] < 1)
             criminalizepool(LAWFLAG_BURNFLAG, -1, activesquad->squad[0]->base);
         }
-        if (sieged)
-        { //PUBLICITY IF BURN FLAG DURING SIEGE ESPECIALLY IF IT IS REALLY ILLEGAL
+        if (sieged) { //PUBLICITY IF BURN FLAG DURING SIEGE ESPECIALLY IF IT IS REALLY ILLEGAL
           change_public_opinion(VIEW_LIBERALCRIMESQUAD, 1);
           change_public_opinion(VIEW_FREESPEECH, 1, 1, 30);
-          if (law[LAW_FLAGBURNING] <= 0)
-          {
+          if (law[LAW_FLAGBURNING] <= 0) {
             change_public_opinion(VIEW_LIBERALCRIMESQUAD, 1);
             change_public_opinion(VIEW_FREESPEECH, 1, 1, 50);
           }
-          if (law[LAW_FLAGBURNING] <= -1)
-          {
+          if (law[LAW_FLAGBURNING] <= -1) {
             change_public_opinion(VIEW_LIBERALCRIMESQUAD, 5);
             change_public_opinion(VIEW_FREESPEECH, 2, 1, 70);
           }
-          if (law[LAW_FLAGBURNING] == -2)
-          {
+          if (law[LAW_FLAGBURNING] == -2) {
             change_public_opinion(VIEW_LIBERALCRIMESQUAD, 15);
             change_public_opinion(VIEW_FREESPEECH, 5, 1, 90);
           }
         }
-      }
-      else if (ledger.get_funds() >= 20 && !sieged && loc)
-      {
+      } else if (ledger.get_funds() >= 20 && !sieged && loc) {
         ledger.subtract_funds(20, EXPENSE_COMPOUND);
         if (loc) loc->haveflag = 1;
         stat_buys++;
@@ -784,8 +710,7 @@ void mode_base()
     case '5':
     case '6':
       if (activesquad)
-        if (activesquad->squad[c - '1'])
-        {
+        if (activesquad->squad[c - '1']) {
           if (party_status == c - '1')
             fullstatus(party_status);
           else

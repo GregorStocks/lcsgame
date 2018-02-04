@@ -62,12 +62,9 @@ the bottom of includes.h in the top src folder.
 
 #include <externs.h>
 
-std::string getactivity(activityst &act)
-{
-  switch (act.type)
-  {
-  case ACTIVITY_HOSTAGETENDING:
-  {
+std::string getactivity(activityst &act) {
+  switch (act.type) {
+  case ACTIVITY_HOSTAGETENDING: {
     std::string str = "Tending to ";
     int pl = getpoolcreature(act.arg);
     if (pl != -1)
@@ -171,18 +168,14 @@ std::string getactivity(activityst &act)
   }
 }
 
-std::string gettitle(Creature &cr)
-{
-  if (cr.align == -1)
-  {
-    if (cr.juice <= -50)
-    {
+std::string gettitle(Creature &cr) {
+  if (cr.align == -1) {
+    if (cr.juice <= -50) {
       if (law[LAW_FREESPEECH] == -2)
         return "[Darn] Worthless";
       else
         return "Damn Worthless";
-    }
-    else if (cr.juice <= -10)
+    } else if (cr.juice <= -10)
       return "Conservative Dregs";
     else if (cr.juice < 0)
       return "Conservative Punk";
@@ -190,37 +183,29 @@ std::string gettitle(Creature &cr)
       return "Mindless Conservative";
     else if (cr.juice < 50)
       return "Wrong-Thinker";
-    else if (cr.juice < 100)
-    {
+    else if (cr.juice < 100) {
       if (law[LAW_FREESPEECH] == -2)
         return "Stubborn as [Heck]";
       else
         return "Stubborn as Hell";
-    }
-    else if (cr.juice < 200)
-    {
+    } else if (cr.juice < 200) {
       if (law[LAW_FREESPEECH] == -2)
         return "Heartless [Jerk]";
       else
         return "Heartless Bastard";
-    }
-    else if (cr.juice < 500)
+    } else if (cr.juice < 500)
       return "Insane Vigilante";
     else if (cr.juice < 1000)
       return "Arch-Conservative";
     else
       return "Evil Incarnate";
-  }
-  else if (cr.align == 0)
-  {
-    if (cr.juice <= -50)
-    {
+  } else if (cr.align == 0) {
+    if (cr.juice <= -50) {
       if (law[LAW_FREESPEECH] == -2)
         return "[Darn] Worthless";
       else
         return "Damn Worthless";
-    }
-    else if (cr.juice <= -10)
+    } else if (cr.juice <= -10)
       return "Society's Dregs";
     else if (cr.juice < 0)
       return "Non-Liberal Punk";
@@ -238,17 +223,13 @@ std::string gettitle(Creature &cr)
       return "Peacemaker";
     else
       return "Peace Prize Winner";
-  }
-  else
-  {
-    if (cr.juice <= -50)
-    {
+  } else {
+    if (cr.juice <= -50) {
       if (law[LAW_FREESPEECH] == -2)
         return "[Darn] Worthless";
       else
         return "Damn Worthless";
-    }
-    else if (cr.juice <= -10)
+    } else if (cr.juice <= -10)
       return "Society's Dregs";
     else if (cr.juice < 0)
       return "Punk";
@@ -269,10 +250,8 @@ std::string gettitle(Creature &cr)
   }
 }
 
-std::string getview(short view, bool shortname)
-{
-  if (shortname) switch (view)
-    {
+std::string getview(short view, bool shortname) {
+  if (shortname) switch (view) {
     case VIEW_STALIN:
       return "Stalinism";
     case VIEW_MOOD:
@@ -335,8 +314,7 @@ std::string getview(short view, bool shortname)
       return "bugs";
     }
   else
-    switch (view)
-    {
+    switch (view) {
     case VIEW_STALIN:
       return "Stalinism";
     case VIEW_MOOD:
@@ -401,10 +379,8 @@ std::string getview(short view, bool shortname)
     }
 }
 
-std::string getlaw(int l)
-{
-  switch (l)
-  {
+std::string getlaw(int l) {
+  switch (l) {
   case LAW_ABORTION:
     return "Abortion Rights";
   case LAW_ANIMALRESEARCH:
@@ -454,8 +430,7 @@ std::string getlaw(int l)
   }
 }
 
-std::string cityname()
-{
+std::string cityname() {
   static const char *city_names[] =
       {
           /* City population < 100,000 = listed once if the city is somehow important
@@ -856,8 +831,7 @@ std::string cityname()
 }
 
 /* Allow the player to enter a name with an optional default */
-void enter_name(int y, int x, char *name, int len, const char *defname)
-{
+void enter_name(int y, int x, char *name, int len, const char *defname) {
   refresh();
   keypad(stdscr, FALSE);
   raw_output(FALSE);
@@ -872,10 +846,8 @@ void enter_name(int y, int x, char *name, int len, const char *defname)
   name[len - 1] = '\0';
 }
 
-std::string getlawflag(int type)
-{
-  switch (type)
-  {
+std::string getlawflag(int type) {
+  switch (type) {
   case LAWFLAG_TREASON:
     return "Treason";
   case LAWFLAG_TERRORISM:
@@ -944,10 +916,8 @@ std::string getlawflag(int type)
 }
 
 // shortname defaults to false
-std::string getmonth(int month, bool shortname)
-{
-  switch (month)
-  {
+std::string getmonth(int month, bool shortname) {
+  switch (month) {
   case 1:
     return (shortname ? "Jan." : "January");
   case 2:
@@ -977,10 +947,8 @@ std::string getmonth(int month, bool shortname)
   }
 }
 
-std::string getalign(signed char alignment, bool capitalize)
-{
-  switch (alignment)
-  {
+std::string getalign(signed char alignment, bool capitalize) {
+  switch (alignment) {
   case ALIGN_ARCHCONSERVATIVE:
     return "Arch-Conservative";
   case ALIGN_CONSERVATIVE:

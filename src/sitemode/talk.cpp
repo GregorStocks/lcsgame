@@ -45,33 +45,28 @@ char heyIWantToRentARoom(Creature &a, Creature &tk);
 char heyIWantToCancelMyRoom(Creature &a, Creature &tk);
 
 /* bluff, date, issues */
-char talk(Creature &a, int t)
-{
+char talk(Creature &a, int t) {
   Creature &tk = encounter[t];
 
   // TALKING TO DOGS
-  if (tk.type == CREATURE_GUARDDOG && tk.align != ALIGN_LIBERAL)
-  {
+  if (tk.type == CREATURE_GUARDDOG && tk.align != ALIGN_LIBERAL) {
     return heyMisterDog(a, tk);
   }
 
   // TALKING TO MONSTERS
-  if (tk.type == CREATURE_GENETIC && tk.align != ALIGN_LIBERAL)
-  {
+  if (tk.type == CREATURE_GENETIC && tk.align != ALIGN_LIBERAL) {
     return heyMisterMonster(a, tk);
   }
 
   // BLUFFING
-  if ((sitealarm || location[cursite]->siege.siege) && tk.enemy())
-  {
+  if ((sitealarm || location[cursite]->siege.siege) && tk.enemy()) {
     return talkInCombat(a, tk);
   }
 
   return talkToGeneric(a, tk);
 }
 
-char talkToBankTeller(Creature &a, Creature &tk)
-{
+char talkToBankTeller(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -98,8 +93,7 @@ char talkToBankTeller(Creature &a, Creature &tk)
     c = getkey();
   while (c < 'a' && c > 'c');
 
-  switch (c)
-  {
+  switch (c) {
   case 'a':
     clearcommandarea();
     clearmessagearea();
@@ -110,8 +104,7 @@ char talkToBankTeller(Creature &a, Creature &tk)
     addstr(" slips the teller a note: ", gamelog);
     set_color(COLOR_GREEN, COLOR_BLACK, 1);
     move(10, 1);
-    switch (LCSrandom(10))
-    {
+    switch (LCSrandom(10)) {
     case 0:
       addstr("KINDLY PUT MONEY IN BAG. OR ELSE.", gamelog);
       break;
@@ -147,13 +140,11 @@ char talkToBankTeller(Creature &a, Creature &tk)
 
     getkey();
 
-    if (location[cursite]->highsecurity)
-    {
+    if (location[cursite]->highsecurity) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(11, 1);
       addstr("The bank teller reads the note, ", gamelog);
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         addstr("gestures, ", gamelog);
         break;
@@ -184,14 +175,11 @@ char talkToBankTeller(Creature &a, Creature &tk)
       makecreature(encounter[1], CREATURE_MERC);
       makecreature(encounter[2], CREATURE_MERC);
       makecreature(encounter[3], CREATURE_MERC);
-    }
-    else
-    {
+    } else {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(11, 1);
       addstr("The bank teller reads the note, ", gamelog);
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         addstr("nods calmly, ", gamelog);
         break;
@@ -222,24 +210,20 @@ char talkToBankTeller(Creature &a, Creature &tk)
     }
     tk.cantbluff = 1;
     return 1;
-  case 'b':
-  {
+  case 'b': {
     clearcommandarea();
     clearmessagearea();
     clearmaparea();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     Creature *armed_liberal = NULL;
-    for (int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
       if (activesquad->squad[i] &&
-          activesquad->squad[i]->get_weapon().is_threatening())
-      {
+          activesquad->squad[i]->get_weapon().is_threatening()) {
         armed_liberal = activesquad->squad[i];
         break;
       }
     }
-    if (armed_liberal)
-    {
+    if (armed_liberal) {
       move(9, 1);
       addstr(armed_liberal->name, gamelog);
       addstr(" brandishes the ", gamelog);
@@ -277,8 +261,7 @@ char talkToBankTeller(Creature &a, Creature &tk)
     clearmessagearea();
     clearmaparea();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
-    if (roll < difficulty)
-    {
+    if (roll < difficulty) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(9, 1);
       addstr("The bank teller and dives for cover as ", gamelog);
@@ -301,9 +284,7 @@ char talkToBankTeller(Creature &a, Creature &tk)
       makecreature(encounter[3], guard);
       makecreature(encounter[4], guard);
       makecreature(encounter[5], guard);
-    }
-    else
-    {
+    } else {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(9, 1);
       addstr("The bank employees hesitantly cooperate!", gamelog);
@@ -325,8 +306,7 @@ char talkToBankTeller(Creature &a, Creature &tk)
 
       for (int x = 0; x < MAPX; x++)
         for (int y = 0; y < MAPY; y++)
-          for (int z = 0; z < MAPZ; z++)
-          {
+          for (int z = 0; z < MAPZ; z++) {
             levelmap[x][y][z].flag &= ~SITEBLOCK_LOCKED;
             if (levelmap[x][y][z].flag & SITEBLOCK_METAL)
               levelmap[x][y][z].flag &= ~SITEBLOCK_DOOR;
@@ -343,8 +323,7 @@ char talkToBankTeller(Creature &a, Creature &tk)
   }
 }
 
-char talkToGeneric(Creature &a, Creature &tk)
-{
+char talkToGeneric(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -352,8 +331,7 @@ char talkToGeneric(Creature &a, Creature &tk)
   move(9, 1);
   addstr(a.name);
   addstr(" talks to ");
-  switch (tk.align)
-  {
+  switch (tk.align) {
   case ALIGN_CONSERVATIVE:
     set_color(COLOR_RED, COLOR_BLACK, 1);
     break;
@@ -387,41 +365,32 @@ char talkToGeneric(Creature &a, Creature &tk)
   addstr("C - On second thought, don't say anything");
   if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) addstr(" while naked");
   addstr(".");
-  if (tk.type == CREATURE_LANDLORD && location[cursite]->renting == -1)
-  {
+  if (tk.type == CREATURE_LANDLORD && location[cursite]->renting == -1) {
     move(14, 1);
     addstr("D - Rent a room");
     if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) addstr(" while naked");
     addstr(".");
-  }
-  else if (tk.type == CREATURE_LANDLORD && location[cursite]->renting > 0)
-  {
+  } else if (tk.type == CREATURE_LANDLORD && location[cursite]->renting > 0) {
     move(14, 1);
     addstr("D - Stop renting a room");
     if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) addstr(" while naked");
     addstr(".");
-  }
-  else if (tk.type == CREATURE_GANGMEMBER || tk.type == CREATURE_MERC)
-  {
+  } else if (tk.type == CREATURE_GANGMEMBER || tk.type == CREATURE_MERC) {
     move(14, 1);
     addstr("D - Buy weapons");
     if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) addstr(" while naked");
     addstr(".");
-  }
-  else if (tk.type == CREATURE_BANK_TELLER)
-  {
+  } else if (tk.type == CREATURE_BANK_TELLER) {
     move(14, 1);
     addstr("D - Rob the bank");
     if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) addstr(" while naked");
     addstr(".");
   }
 
-  while (true)
-  {
+  while (true) {
     int c = getkey();
 
-    switch (c)
-    {
+    switch (c) {
     case 'a':
       return wannaHearSomethingDisturbing(a, tk);
     case 'b':
@@ -443,8 +412,7 @@ char talkToGeneric(Creature &a, Creature &tk)
   }
 }
 
-char heyIWantToCancelMyRoom(Creature &a, Creature &tk)
-{
+char heyIWantToCancelMyRoom(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -459,8 +427,7 @@ char heyIWantToCancelMyRoom(Creature &a, Creature &tk)
 
   getkey();
 
-  if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL)
-  {
+  if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
@@ -497,8 +464,7 @@ char heyIWantToCancelMyRoom(Creature &a, Creature &tk)
 
   //MOVE ALL ITEMS AND SQUAD MEMBERS
   int hs = find_homeless_shelter(cursite);
-  for (int p = 0; p < len(pool); p++)
-  {
+  for (int p = 0; p < len(pool); p++) {
     if (pool[p]->location == cursite) pool[p]->location = hs;
     if (pool[p]->base == cursite) pool[p]->base = hs;
   }
@@ -511,8 +477,7 @@ char heyIWantToCancelMyRoom(Creature &a, Creature &tk)
   return 1;
 }
 
-char heyIWantToRentARoom(Creature &a, Creature &tk)
-{
+char heyIWantToRentARoom(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -527,8 +492,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
 
   getkey();
 
-  if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL)
-  {
+  if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
@@ -544,8 +508,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
   }
 
   int rent;
-  switch (location[cursite]->type)
-  {
+  switch (location[cursite]->type) {
   default:
     rent = 200;
     break;
@@ -579,8 +542,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
   clearmessagearea();
   clearmaparea();
 
-  while (true)
-  {
+  while (true) {
     int c = 'a';
 
     if (ledger.get_funds() < rent) set_color(COLOR_BLACK, COLOR_BLACK, 1);
@@ -594,8 +556,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
 
     c = getkey();
 
-    switch (c)
-    {
+    switch (c) {
     case 'a': // Accept rent deal
       if (ledger.get_funds() < rent) break;
 
@@ -672,17 +633,14 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
       clearmaparea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       Creature *armed_liberal = NULL;
-      for (int i = 0; i < 6; i++)
-      {
+      for (int i = 0; i < 6; i++) {
         if (activesquad->squad[i] &&
-            activesquad->squad[i]->get_weapon().is_threatening())
-        {
+            activesquad->squad[i]->get_weapon().is_threatening()) {
           armed_liberal = activesquad->squad[i];
           break;
         }
       }
-      if (armed_liberal)
-      {
+      if (armed_liberal) {
         move(9, 1);
         addstr(armed_liberal->name, gamelog);
         addstr(" brandishes the ", gamelog);
@@ -711,8 +669,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
       if (armed_liberal == NULL)
         difficulty += 6;
 
-      if (roll < difficulty - 1)
-      {
+      if (roll < difficulty - 1) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(12, 1);
         addstr(tk.name, gamelog);
@@ -728,9 +685,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
 
         tk.cantbluff = 1;
         return 1;
-      }
-      else
-      {
+      } else {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         move(12, 1);
         addstr(tk.name, gamelog);
@@ -745,8 +700,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
         int rent;
 
         // Either he calls the cops...
-        if (roll < difficulty)
-        {
+        if (roll < difficulty) {
           for (int i = 0; i < 6; i++)
             if (activesquad->squad[i])
               criminalize(*(activesquad->squad[i]), LAWFLAG_EXTORTION);
@@ -767,8 +721,7 @@ char heyIWantToRentARoom(Creature &a, Creature &tk)
   }
 }
 
-char heyINeedAGun(Creature &a, Creature &tk)
-{
+char heyINeedAGun(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -784,8 +737,7 @@ char heyINeedAGun(Creature &a, Creature &tk)
 
   getkey();
 
-  if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL)
-  {
+  if (a.is_naked() && a.animalgloss != ANIMALGLOSS_ANIMAL) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
@@ -803,8 +755,7 @@ char heyINeedAGun(Creature &a, Creature &tk)
       a.get_armor().get_itemtypename() == "ARMOR_POLICEARMOR" ||
       a.get_armor().get_itemtypename() == "ARMOR_SWATARMOR" ||
       (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2 &&
-       a.get_armor().get_itemtypename() == "ARMOR_DEATHSQUADUNIFORM"))
-  {
+       a.get_armor().get_itemtypename() == "ARMOR_DEATHSQUADUNIFORM")) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
@@ -818,8 +769,7 @@ char heyINeedAGun(Creature &a, Creature &tk)
 
     return 1;
   }
-  if (sitealarm != 0)
-  {
+  if (sitealarm != 0) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
@@ -833,8 +783,7 @@ char heyINeedAGun(Creature &a, Creature &tk)
 
     return 1;
   }
-  switch (location[cursite]->type)
-  {
+  switch (location[cursite]->type) {
   case SITE_OUTDOOR_BUNKER:
   case SITE_BUSINESS_CRACKHOUSE:
   case SITE_BUSINESS_BARANDGRILL:
@@ -871,8 +820,7 @@ char heyINeedAGun(Creature &a, Creature &tk)
   }
 }
 
-char wannaHearSomethingDisturbing(Creature &a, Creature &tk)
-{
+char wannaHearSomethingDisturbing(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -895,14 +843,12 @@ char wannaHearSomethingDisturbing(Creature &a, Creature &tk)
     interested = true;
 
   if ((tk.animalgloss == ANIMALGLOSS_ANIMAL && tk.align != ALIGN_LIBERAL) ||
-      tk.animalgloss == ANIMALGLOSS_TANK)
-  {
+      tk.animalgloss == ANIMALGLOSS_TANK) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
 
-    switch (tk.type)
-    {
+    switch (tk.type) {
     case CREATURE_TANK:
       addstr(" rumbles disinterestedly.", gamelog);
       break;
@@ -918,9 +864,7 @@ char wannaHearSomethingDisturbing(Creature &a, Creature &tk)
     getkey();
 
     return 1;
-  }
-  else if (strcmp(tk.name, "Prisoner") != 0 && interested)
-  {
+  } else if (strcmp(tk.name, "Prisoner") != 0 && interested) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
@@ -933,23 +877,19 @@ char wannaHearSomethingDisturbing(Creature &a, Creature &tk)
     getkey();
 
     return talkAboutIssues(a, tk);
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(12, 1);
     addstr(tk.name, gamelog);
     addstr(" responds, ", gamelog);
     set_color(COLOR_CYAN, COLOR_BLACK, 1);
     move(13, 1);
-    if (strcmp(tk.name, "Prisoner") == 0)
-    {
+    if (strcmp(tk.name, "Prisoner") == 0) {
       if (tk.align == ALIGN_LIBERAL)
         addstr("\"Now's not the time!\"", gamelog);
       else
         addstr("\"Leave me alone.\"", gamelog);
-    }
-    else
+    } else
       addstr("\"No.\"", gamelog);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     addstr(" <turns away>", gamelog);
@@ -961,8 +901,7 @@ char wannaHearSomethingDisturbing(Creature &a, Creature &tk)
   }
 }
 
-char doYouComeHereOften(Creature &a, Creature &tk)
-{
+char doYouComeHereOften(Creature &a, Creature &tk) {
   int y = 12;
   clearcommandarea();
   clearmessagearea();
@@ -974,11 +913,9 @@ char doYouComeHereOften(Creature &a, Creature &tk)
   set_color(COLOR_GREEN, COLOR_BLACK, 1);
   move(10, 1);
   int line;
-  if (law[LAW_FREESPEECH] == -2)
-  {
+  if (law[LAW_FREESPEECH] == -2) {
     line = LCSrandom(3);
-    switch (line)
-    {
+    switch (line) {
     case 0:
       addstr("\"[What church do you go to?]\"", gamelog);
       break;
@@ -989,12 +926,9 @@ char doYouComeHereOften(Creature &a, Creature &tk)
       addstr("\"[Do you believe in abstinence education?]\"", gamelog);
       break;
     }
-  }
-  else
-  {
+  } else {
     line = LCSrandom(47);
-    switch (line)
-    {
+    switch (line) {
     case 0:
       addstr("\"Hey baby, you're kinda ugly.  I like that.\"", gamelog);
       break;
@@ -1170,14 +1104,12 @@ char doYouComeHereOften(Creature &a, Creature &tk)
     succeeded = true;
 
   if ((tk.animalgloss == ANIMALGLOSS_ANIMAL && law[LAW_ANIMALRESEARCH] != 2 && a.animalgloss != ANIMALGLOSS_ANIMAL) ||
-      tk.animalgloss == ANIMALGLOSS_TANK)
-  {
+      tk.animalgloss == ANIMALGLOSS_TANK) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(y++, 1);
     addstr(tk.name, gamelog);
 
-    switch (tk.type)
-    {
+    switch (tk.type) {
     case CREATURE_TANK:
       addstr(" shakes its turret a firm 'no'.", gamelog);
       break;
@@ -1185,8 +1117,7 @@ char doYouComeHereOften(Creature &a, Creature &tk)
       addstr(" says, ", gamelog);
       move(y, 1);
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(3))
-      {
+      switch (LCSrandom(3)) {
       case 0:
         addstr("\"No! Wrong! I'm a dog!! Jesus.\"", gamelog);
         break;
@@ -1204,8 +1135,7 @@ char doYouComeHereOften(Creature &a, Creature &tk)
       addstr(" says, ", gamelog);
       move(y, 1);
       set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (LCSrandom(8))
-      {
+      switch (LCSrandom(8)) {
       case 0:
         addstr("\"Foolish human!\"", gamelog);
         break;
@@ -1248,8 +1178,7 @@ char doYouComeHereOften(Creature &a, Creature &tk)
 
   if ((a.get_armor().get_itemtypename() == "ARMOR_POLICEUNIFORM" // Police property on armor? -XML
        || a.get_armor().get_itemtypename() == "ARMOR_POLICEARMOR" || a.get_armor().get_itemtypename() == "ARMOR_SWATARMOR" || (law[LAW_POLICEBEHAVIOR] == -2 && law[LAW_DEATHPENALTY] == -2 && a.get_armor().get_itemtypename() == "ARMOR_DEATHSQUADUNIFORM")) &&
-      tk.type == CREATURE_PROSTITUTE)
-  {
+      tk.type == CREATURE_PROSTITUTE) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(y++, 1);
     addstr(tk.name, gamelog);
@@ -1263,9 +1192,7 @@ char doYouComeHereOften(Creature &a, Creature &tk)
     getkey();
 
     tk.cantbluff = 1;
-  }
-  else if (succeeded)
-  {
+  } else if (succeeded) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(y++, 1);
     addstr(tk.name, gamelog);
@@ -1273,10 +1200,8 @@ char doYouComeHereOften(Creature &a, Creature &tk)
     set_color(COLOR_CYAN, COLOR_BLACK, 1);
     move(y++, 1);
 
-    if (law[LAW_FREESPEECH] == -2)
-    {
-      switch (line)
-      {
+    if (law[LAW_FREESPEECH] == -2) {
+      switch (line) {
       case 0:
         addstr("\"[I go to your church.]\"", gamelog);
         break;
@@ -1287,11 +1212,8 @@ char doYouComeHereOften(Creature &a, Creature &tk)
         addstr("\"[Yes.  Yes, I do.]\"", gamelog);
         break;
       }
-    }
-    else
-    {
-      switch (line)
-      {
+    } else {
+      switch (line) {
       //LIMIT          :-----------------------------------------------------------------------------:
       case 0:
         addstr("\"You're not so cute yourself.  Wanna get a room?\"", gamelog);
@@ -1447,8 +1369,7 @@ char doYouComeHereOften(Creature &a, Creature &tk)
     addstr(" and ", gamelog);
     addstr(tk.name, gamelog);
     addstr(" make plans for tonight", gamelog);
-    if (strcmp(tk.name, "Prisoner") == 0)
-    {
+    if (strcmp(tk.name, "Prisoner") == 0) {
       addstr(", and ", gamelog);
       move(y++, 1);
       addstr(tk.name, gamelog);
@@ -1461,17 +1382,14 @@ char doYouComeHereOften(Creature &a, Creature &tk)
     getkey();
 
     datest *newd = NULL;
-    for (int d = 0; d < len(date); d++)
-    {
-      if (date[d]->mac_id == a.id)
-      {
+    for (int d = 0; d < len(date); d++) {
+      if (date[d]->mac_id == a.id) {
         newd = date[d];
         break;
       }
     }
 
-    if (newd == NULL)
-    {
+    if (newd == NULL) {
       newd = new datest;
       newd->mac_id = a.id;
       newd->city = location[a.location]->city;
@@ -1489,26 +1407,20 @@ char doYouComeHereOften(Creature &a, Creature &tk)
     newd->date.push_back(newcr);
 
     delenc(&tk - encounter, 0);
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(y++, 1);
     addstr(tk.name, gamelog);
     addstr(" responds, ", gamelog);
     set_color(COLOR_RED, COLOR_BLACK, 1);
     move(y++, 1);
-    if (tk.type == CREATURE_CORPORATE_CEO)
-    {
+    if (tk.type == CREATURE_CORPORATE_CEO) {
       if (a.gender_liberal != GENDER_MALE)
         addstr("\"I'm a happily married man, sweetie.\"", gamelog);
       else
         addstr("\"This ain't Brokeback Mountain, son.\"", gamelog);
-    }
-    else if (law[LAW_FREESPEECH] == -2)
-    {
-      switch (line)
-      { // all 3 of these lines are from Darth Vader (the 3rd one from back when he's a little kid)
+    } else if (law[LAW_FREESPEECH] == -2) {
+      switch (line) { // all 3 of these lines are from Darth Vader (the 3rd one from back when he's a little kid)
       case 0:
         addstr("\"I find your lack of faith disturbing.\"", gamelog);
         break;
@@ -1519,11 +1431,8 @@ char doYouComeHereOften(Creature &a, Creature &tk)
         addstr("\"Don't count on it, slimeball!\"", gamelog);
         break;
       }
-    }
-    else
-    {
-      switch (line)
-      {
+    } else {
+      switch (line) {
       //LIMIT          :-----------------------------------------------------------------------------:
       case 0:
         addstr("\"You're such an asshole!\"", gamelog);
@@ -1771,8 +1680,7 @@ char doYouComeHereOften(Creature &a, Creature &tk)
 
   return 1;
 }
-char talkAboutIssues(Creature &a, Creature &tk)
-{
+char talkAboutIssues(Creature &a, Creature &tk) {
   int lw = LCSrandom(LAWNUM); // pick a random law to talk about
 
   bool succeeded = false;
@@ -1794,10 +1702,8 @@ char talkAboutIssues(Creature &a, Creature &tk)
   set_color(COLOR_GREEN, COLOR_BLACK, 1);
   int y = 10;
   move(y++, 1);
-  if (you_are_stupid)
-  {
-    switch (lw)
-    {
+  if (you_are_stupid) {
+    switch (lw) {
     case LAW_ABORTION:
       addstr("\"Conservatives make women turn to coat hangers.\"", gamelog);
       break;
@@ -1868,11 +1774,8 @@ char talkAboutIssues(Creature &a, Creature &tk)
       addstr("\"Prisoners don't have freedom!\"", gamelog);
       break;
     }
-  }
-  else if (issue_too_liberal)
-  {
-    switch (lw)
-    {
+  } else if (issue_too_liberal) {
+    switch (lw) {
     case LAW_ABORTION:
       addstr("\"Conservatives don't like abortion.\"", gamelog);
       break;
@@ -1940,11 +1843,8 @@ char talkAboutIssues(Creature &a, Creature &tk)
       addstr("\"Prisons still exist.\"", gamelog);
       break;
     }
-  }
-  else
-  {
-    switch (lw)
-    {
+  } else {
+    switch (lw) {
     case LAW_ABORTION:
       addstr("\"The government is systematically trying to rob women of the right ", gamelog);
       move(y++, 1);
@@ -2076,8 +1976,7 @@ char talkAboutIssues(Creature &a, Creature &tk)
   succeeded = a.skill_check(SKILL_PERSUASION, difficulty);
 
   // Prisoners never accept to join you, you must liberate them instead
-  if (succeeded && strcmp(tk.name, "Prisoner") != 0)
-  {
+  if (succeeded && strcmp(tk.name, "Prisoner") != 0) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move((++y)++, 1);
     addstr(tk.name, gamelog);
@@ -2086,10 +1985,8 @@ char talkAboutIssues(Creature &a, Creature &tk)
     move(y++, 1);
     if (tk.type == CREATURE_MUTANT && tk.get_attribute(ATTRIBUTE_INTELLIGENCE, true) < 3)
       addstr("\"Aaaahhh...\"", gamelog);
-    else
-    {
-      switch (LCSrandom(10))
-      {
+    else {
+      switch (LCSrandom(10)) {
       case 0:
         addstr("\"Dear me! Is there anything we can do?\"", gamelog);
         break;
@@ -2155,33 +2052,25 @@ char talkAboutIssues(Creature &a, Creature &tk)
 
     delenc(&tk - encounter, 0);
     return 1;
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move((++y)++, 1);
     addstr(tk.name, gamelog);
     addstr(" responds, ", gamelog);
     set_color(COLOR_CYAN, COLOR_BLACK, 1);
     if (tk.type == CREATURE_MUTANT &&
-        tk.get_attribute(ATTRIBUTE_INTELLIGENCE, true) < 3)
-    {
+        tk.get_attribute(ATTRIBUTE_INTELLIGENCE, true) < 3) {
       move(y++, 1);
       addstr("\"Ugh.  Pfft.\"", gamelog);
-    }
-    else
-    {
-      if (tk.align == ALIGN_CONSERVATIVE && you_are_stupid)
-      {
+    } else {
+      if (tk.align == ALIGN_CONSERVATIVE && you_are_stupid) {
         move(y++, 1);
         if (tk.type == CREATURE_GANGUNIT)
           addstr("\"Do you want me to arrest you?\"", gamelog);
         else if (tk.type == CREATURE_DEATHSQUAD)
           addstr("\"If you don't shut up, I'm going to shoot you.\"", gamelog);
-        else
-        {
-          switch (LCSrandom(10))
-          {
+        else {
+          switch (LCSrandom(10)) {
           case 0:
             addstr("\"Get away from me, you hippie.\"", gamelog);
             break;
@@ -2214,12 +2103,9 @@ char talkAboutIssues(Creature &a, Creature &tk)
             break;
           }
         }
-      }
-      else if (tk.align != ALIGN_LIBERAL && tk.attribute_check(ATTRIBUTE_WISDOM, DIFFICULTY_AVERAGE))
-      {
+      } else if (tk.align != ALIGN_LIBERAL && tk.attribute_check(ATTRIBUTE_WISDOM, DIFFICULTY_AVERAGE)) {
         move(y++, 1);
-        switch (lw)
-        {
+        switch (lw) {
         case LAW_ABORTION:
           addstr("\"Abortion is murder.\"", gamelog);
           break;
@@ -2287,9 +2173,7 @@ char talkAboutIssues(Creature &a, Creature &tk)
           addstr("\"Criminals deserve what they get in prison.\"", gamelog);
           break;
         }
-      }
-      else
-      {
+      } else {
         move(y++, 1);
         addstr("\"Whatever.\"", gamelog);
       }
@@ -2306,8 +2190,7 @@ char talkAboutIssues(Creature &a, Creature &tk)
   return 0;
 }
 
-char talkInCombat(Creature &a, Creature &tk)
-{
+char talkInCombat(Creature &a, Creature &tk) {
   clearcommandarea();
   clearmessagearea();
   clearmaparea();
@@ -2316,8 +2199,7 @@ char talkInCombat(Creature &a, Creature &tk)
   move(9, 1);
   addstr(a.name, gamelog);
   addstr(" talks to ", gamelog);
-  switch (tk.align)
-  {
+  switch (tk.align) {
   case ALIGN_CONSERVATIVE:
     set_color(COLOR_RED, COLOR_BLACK, 1);
     break;
@@ -2336,13 +2218,11 @@ char talkInCombat(Creature &a, Creature &tk)
   int c = 0, hostages = 0, weaponhostage = 0;
   bool cop = 0;
 
-  for (int i = 0; i < 6; i++)
-  {
+  for (int i = 0; i < 6; i++) {
     if (activesquad->squad[i] &&
         activesquad->squad[i]->prisoner &&
         activesquad->squad[i]->prisoner->alive &&
-        activesquad->squad[i]->prisoner->enemy())
-    {
+        activesquad->squad[i]->prisoner->enemy()) {
       hostages++;
       if (activesquad->squad[i]->get_weapon().can_threaten_hostages())
         weaponhostage++;
@@ -2357,8 +2237,7 @@ char talkInCombat(Creature &a, Creature &tk)
       tk.type == CREATURE_SOLDIER ||
       tk.type == CREATURE_MILITARYPOLICE ||
       tk.type == CREATURE_MILITARYOFFICER ||
-      tk.type == CREATURE_SEAL)
-  {
+      tk.type == CREATURE_SEAL) {
     cop = 1;
   }
 
@@ -2381,8 +2260,7 @@ char talkInCombat(Creature &a, Creature &tk)
   move(14, 1);
   addstr("D - Surrender to authorities");
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  while (true)
-  {
+  while (true) {
     c = getkey();
 
     if (c == 'a') break;
@@ -2391,8 +2269,7 @@ char talkInCombat(Creature &a, Creature &tk)
     if (c == 'd' && cop) break;
   }
 
-  if (c == 'a')
-  {
+  if (c == 'a') {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr(a.name, gamelog);
@@ -2400,10 +2277,8 @@ char talkInCombat(Creature &a, Creature &tk)
     move(17, 1);
     set_color(COLOR_GREEN, COLOR_BLACK, 1);
 
-    switch (LCSrandom(4))
-    {
-    case 0:
-    { // Formatting the slogan so that it always has quotes around it and punctuation
+    switch (LCSrandom(4)) {
+    case 0: { // Formatting the slogan so that it always has quotes around it and punctuation
       if (slogan[0] != '"') addchar('"', gamelog);
       addstr(slogan, gamelog);
       int last = len(slogan);
@@ -2430,15 +2305,12 @@ char talkInCombat(Creature &a, Creature &tk)
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
-    for (int e = 0; e < ENCMAX; e++)
-    {
-      if (encounter[e].exists && encounter[e].alive && encounter[e].enemy())
-      {
+    for (int e = 0; e < ENCMAX; e++) {
+      if (encounter[e].exists && encounter[e].alive && encounter[e].enemy()) {
         int attack = a.juice / 50 + attitude[VIEW_LIBERALCRIMESQUAD] / 10;
         int defense = encounter[e].attribute_roll(ATTRIBUTE_WISDOM);
 
-        if (attack > defense)
-        {
+        if (attack > defense) {
           if (encounter[e].type == CREATURE_COP ||
               encounter[e].type == CREATURE_GANGUNIT ||
               encounter[e].type == CREATURE_SWAT ||
@@ -2447,15 +2319,13 @@ char talkInCombat(Creature &a, Creature &tk)
               encounter[e].type == CREATURE_HARDENED_VETERAN ||
               encounter[e].type == CREATURE_CCS_ARCHCONSERVATIVE ||
               encounter[e].type == CREATURE_AGENT ||
-              encounter[e].type == CREATURE_SECRET_SERVICE)
-          {
+              encounter[e].type == CREATURE_SECRET_SERVICE) {
             if (LCSrandom(3)) continue;
           }
           clearmessagearea();
           move(16, 1);
           addstr(encounter[e].name, gamelog);
-          switch (LCSrandom(6))
-          {
+          switch (LCSrandom(6)) {
           case 0:
             addstr(" chickens out!", gamelog);
             break;
@@ -2482,17 +2352,14 @@ char talkInCombat(Creature &a, Creature &tk)
         }
       }
     }
-  }
-  else if (c == 'b')
-  {
+  } else if (c == 'b') {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
     addstr(a.name, gamelog);
     addstr(": ", gamelog);
     set_color(COLOR_GREEN, COLOR_BLACK, 1);
     move(17, 1);
-    switch (LCSrandom(6))
-    {
+    switch (LCSrandom(6)) {
     case 0:
       addstr("\"Back off or the hostage dies!\"", gamelog);
       break;
@@ -2527,14 +2394,11 @@ char talkInCombat(Creature &a, Creature &tk)
 
     bool noretreat = false;
 
-    if (weaponhostage)
-    {
+    if (weaponhostage) {
       int e;
-      for (e = 0; e < ENCMAX; e++)
-      {
+      for (e = 0; e < ENCMAX; e++) {
         if (encounter[e].exists && encounter[e].alive &&
-            encounter[e].enemy() && encounter[e].blood > 70)
-        {
+            encounter[e].enemy() && encounter[e].blood > 70) {
           if ((encounter[e].type == CREATURE_DEATHSQUAD ||
                encounter[e].type == CREATURE_SOLDIER ||
                encounter[e].type == CREATURE_HARDENED_VETERAN ||
@@ -2545,8 +2409,7 @@ char talkInCombat(Creature &a, Creature &tk)
                encounter[e].type == CREATURE_GANGUNIT ||
                encounter[e].type == CREATURE_SWAT ||
                encounter[e].type == CREATURE_SECRET_SERVICE) &&
-              LCSrandom(5))
-          {
+              LCSrandom(5)) {
             set_color(COLOR_WHITE, COLOR_BLACK, 1);
             clearmessagearea();
             move(16, 1);
@@ -2555,11 +2418,9 @@ char talkInCombat(Creature &a, Creature &tk)
             move(17, 1);
 
             if (encounter[e].align != ALIGN_CONSERVATIVE ||
-                (encounter[e].type == CREATURE_SECRET_SERVICE && exec[EXEC_PRESIDENT] > ALIGN_CONSERVATIVE))
-            {
+                (encounter[e].type == CREATURE_SECRET_SERVICE && exec[EXEC_PRESIDENT] > ALIGN_CONSERVATIVE)) {
               set_color(COLOR_GREEN, COLOR_BLACK, 1);
-              switch (LCSrandom(5))
-              {
+              switch (LCSrandom(5)) {
               case 0:
                 addstr("\"Let them go. Think about what you're doing.\"", gamelog);
                 break;
@@ -2576,19 +2437,15 @@ char talkInCombat(Creature &a, Creature &tk)
                 addstr("\"Slow down. We can work this out.\"", gamelog);
                 break;
               }
-            }
-            else
-            {
+            } else {
               set_color(COLOR_RED, COLOR_BLACK, 1);
               if (((encounter[e].type == CREATURE_DEATHSQUAD ||
                     encounter[e].type == CREATURE_AGENT ||
                     encounter[e].type == CREATURE_MERC ||
                     encounter[e].type == CREATURE_CCS_ARCHCONSERVATIVE ||
                     encounter[e].type == CREATURE_GANGUNIT)) &&
-                  encounter[e].align == ALIGN_CONSERVATIVE)
-              {
-                switch (LCSrandom(5))
-                {
+                  encounter[e].align == ALIGN_CONSERVATIVE) {
+                switch (LCSrandom(5)) {
                 case 0:
                   addstr("\"Hahahaha...\"", gamelog);
                   break;
@@ -2605,11 +2462,8 @@ char talkInCombat(Creature &a, Creature &tk)
                   addstr("\"Three... two...\"", gamelog);
                   break;
                 }
-              }
-              else
-              {
-                switch (LCSrandom(5))
-                {
+              } else {
+                switch (LCSrandom(5)) {
                 case 0:
                   if (hostages > 1)
                     addstr("\"Release your hostages, and nobody gets hurt.\"", gamelog);
@@ -2640,27 +2494,22 @@ char talkInCombat(Creature &a, Creature &tk)
           }
         }
       }
-      if (noretreat == false)
-      {
+      if (noretreat == false) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         clearmessagearea();
         move(16, 1);
         addstr("The ploy works! The Conservatives back off.", gamelog);
         gamelog.newline();
-        for (int i = ENCMAX; i >= 0; i--)
-        {
+        for (int i = ENCMAX; i >= 0; i--) {
           if (encounter[i].exists &&
               encounter[i].alive &&
-              encounter[i].align <= -1)
-          {
+              encounter[i].align <= -1) {
             delenc(i, 0);
           }
         }
 
         getkey();
-      }
-      else
-      {
+      } else {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         clearcommandarea();
         clearmessagearea();
@@ -2682,25 +2531,21 @@ char talkInCombat(Creature &a, Creature &tk)
         move(13, 1);
         addstr("C - No reply");
 
-        while (true)
-        {
+        while (true) {
           c = getkey();
 
           if (c == 'a' || c == 'b') break; // TODO: something to happen if you press 'c'
         }
-        if (c == 'a')
-        {
+        if (c == 'a') {
           Creature *executer = 0;
           if (a.prisoner)
             executer = &a;
           else
-            for (int i = 0; i < 6; i++)
-            {
+            for (int i = 0; i < 6; i++) {
               if (activesquad->squad[i] &&
                   activesquad->squad[i]->prisoner &&
                   activesquad->squad[i]->prisoner->alive &&
-                  activesquad->squad[i]->prisoner->enemy())
-              {
+                  activesquad->squad[i]->prisoner->enemy()) {
                 executer = activesquad->squad[i];
                 break;
               }
@@ -2708,14 +2553,11 @@ char talkInCombat(Creature &a, Creature &tk)
 
           move(16, 1);
           set_color(COLOR_RED, COLOR_BLACK, 1);
-          if (executer->get_weapon().is_ranged() && executer->get_weapon().get_ammoamount() > 0)
-          {
+          if (executer->get_weapon().is_ranged() && executer->get_weapon().get_ammoamount() > 0) {
             addstr("BLAM!", gamelog);
             gamelog.newline();
             executer->get_weapon().decrease_ammo(1); //What if it doesn't use ammo? -XML
-          }
-          else
-          {
+          } else {
             addstr("CRUNCH!", gamelog);
             gamelog.newline();
           }
@@ -2747,8 +2589,7 @@ char talkInCombat(Creature &a, Creature &tk)
 
           delete_and_nullify(executer->prisoner);
 
-          if (hostages > 1 && LCSrandom(2))
-          {
+          if (hostages > 1 && LCSrandom(2)) {
             clearmessagearea();
             set_color(COLOR_WHITE, COLOR_BLACK, 1);
             move(16, 1);
@@ -2760,8 +2601,7 @@ char talkInCombat(Creature &a, Creature &tk)
               addstr("\"Fuck! ", gamelog);
             else
               addstr("\"[No!] ", gamelog);
-            switch (LCSrandom(5))
-            {
+            switch (LCSrandom(5)) {
             case 0:
               addstr("Okay, okay, you win!\"", gamelog);
               break;
@@ -2786,17 +2626,14 @@ char talkInCombat(Creature &a, Creature &tk)
 
             getkey();
           }
-        }
-        else if (c == 'b')
-        {
+        } else if (c == 'b') {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(16, 1);
           addstr(a.name, gamelog);
           addstr(": ", gamelog);
           set_color(COLOR_GREEN, COLOR_BLACK, 1);
           move(17, 1);
-          switch (LCSrandom(5))
-          {
+          switch (LCSrandom(5)) {
           case 0:
             if (hostages > 1)
               addstr("\"Back off and we'll let the hostages go.\"", gamelog);
@@ -2826,8 +2663,7 @@ char talkInCombat(Creature &a, Creature &tk)
                 encounter[e].type == CREATURE_CCS_ARCHCONSERVATIVE ||
                 encounter[e].type == CREATURE_GANGUNIT) &&
                LCSrandom(2)) &&
-              encounter[e].align == ALIGN_CONSERVATIVE)
-          {
+              encounter[e].align == ALIGN_CONSERVATIVE) {
             clearmessagearea();
             set_color(COLOR_WHITE, COLOR_BLACK, 1);
             move(16, 1);
@@ -2835,8 +2671,7 @@ char talkInCombat(Creature &a, Creature &tk)
             addstr(": ", gamelog);
             set_color(COLOR_RED, COLOR_BLACK, 1);
             move(17, 1);
-            switch (LCSrandom(5))
-            {
+            switch (LCSrandom(5)) {
             case 0:
               addstr("\"Do I look like a loving person?\"", gamelog);
               break;
@@ -2856,9 +2691,7 @@ char talkInCombat(Creature &a, Creature &tk)
             gamelog.newline();
 
             getkey();
-          }
-          else
-          {
+          } else {
             clearmessagearea();
             set_color(COLOR_WHITE, COLOR_BLACK, 1);
             move(16, 1);
@@ -2866,8 +2699,7 @@ char talkInCombat(Creature &a, Creature &tk)
             addstr(": ", gamelog);
             set_color(COLOR_RED, COLOR_BLACK, 1);
             move(17, 1);
-            switch (LCSrandom(4))
-            {
+            switch (LCSrandom(4)) {
             case 0:
               addstr("\"Right. Let's do it.\"", gamelog);
               break;
@@ -2897,12 +2729,10 @@ char talkInCombat(Creature &a, Creature &tk)
             else
               addstr("The squad releases the hostage in the trade.", gamelog);
             gamelog.newline();
-            for (int i = 0; i < 6; i++)
-            {
+            for (int i = 0; i < 6; i++) {
               if (activesquad->squad[i] &&
                   activesquad->squad[i]->prisoner &&
-                  activesquad->squad[i]->prisoner->enemy())
-              {
+                  activesquad->squad[i]->prisoner->enemy()) {
                 delete_and_nullify(activesquad->squad[i]->prisoner);
               }
             }
@@ -2911,9 +2741,7 @@ char talkInCombat(Creature &a, Creature &tk)
           }
         }
       }
-    }
-    else
-    {
+    } else {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       clearmessagearea();
       move(16, 1);
@@ -2923,17 +2751,13 @@ char talkInCombat(Creature &a, Creature &tk)
 
       getkey();
     }
-  }
-  else if (c == 'c')
-  {
+  } else if (c == 'c') {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(16, 1);
-    if (location[cursite]->siege.siege)
-    {
+    if (location[cursite]->siege.siege) {
       addstr(a.name, gamelog);
       addstr(" ", gamelog);
-      switch (location[cursite]->siege.siegetype)
-      {
+      switch (location[cursite]->siege.siegetype) {
       case SIEGE_POLICE:
         addstr("pretends to be part of a police raid.", gamelog);
         break;
@@ -2942,8 +2766,7 @@ char talkInCombat(Creature &a, Creature &tk)
         break;
       case SIEGE_CCS:
       case SIEGE_HICKS:
-        switch (LCSrandom(2))
-        {
+        switch (LCSrandom(2)) {
         case 0:
           addstr("pretends to be Mountain ", gamelog);
           move(17, 1);
@@ -2965,8 +2788,7 @@ char talkInCombat(Creature &a, Creature &tk)
              !(levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_PEAK) ||
              !(levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_START) ||
              !(levelmap[locx][locy][locz].flag & SITEBLOCK_DEBRIS)) &&
-            !LCSrandom(10))
-        {
+            !LCSrandom(10)) {
           levelmap[locx][locy][locz].flag |= SITEBLOCK_FIRE_START;
           move(17, 1);
           addstr("The carpet smolders, then bursts into flame.", gamelog);
@@ -2976,18 +2798,14 @@ char talkInCombat(Creature &a, Creature &tk)
         }
         break;
       }
-    }
-    else //Special bluff messages for various uniforms
+    } else //Special bluff messages for various uniforms
     {
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
       if (a.get_armor().get_itemtypename() == "ARMOR_POLICEUNIFORM" ||
           a.get_armor().get_itemtypename() == "ARMOR_POLICEARMOR" ||
-          a.get_armor().get_itemtypename() == "ARMOR_SWATARMOR")
-      {
+          a.get_armor().get_itemtypename() == "ARMOR_SWATARMOR") {
         addstr("\"The situation is under control.\"", gamelog);
-      }
-      else if (a.get_armor().get_itemtypename() == "ARMOR_BUNKERGEAR")
-      {
+      } else if (a.get_armor().get_itemtypename() == "ARMOR_BUNKERGEAR") {
         if (siteonfire)
           addstr("\"Fire! Evacuate immediately!\"", gamelog);
         else
@@ -3000,17 +2818,14 @@ char talkInCombat(Creature &a, Creature &tk)
       else if (a.get_armor().get_itemtypename() == "ARMOR_DEATHSQUADUNIFORM")
         addstr("\"Non-targets please leave the site.\"", gamelog);
 
-      else if (a.get_armor().get_itemtypename() == "ARMOR_MITHRIL")
-      {
+      else if (a.get_armor().get_itemtypename() == "ARMOR_MITHRIL") {
         addstr(a.name, gamelog);
         addstr(" engraves ", gamelog);
         set_color(COLOR_CYAN, COLOR_BLACK, 1);
         addstr("Elbereth", gamelog); //Fanciful multicolor message
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr(" on the floor.", gamelog);
-      }
-      else
-      {
+      } else {
         addstr(a.name, gamelog);
         addstr(" talks like a Conservative ", gamelog);
         move(17, 1);
@@ -3024,11 +2839,9 @@ char talkInCombat(Creature &a, Creature &tk)
     bool fooled = true;
     int e;
 
-    for (e = 0; e < ENCMAX; e++)
-    {
+    for (e = 0; e < ENCMAX; e++) {
       if (encounter[e].exists && encounter[e].alive &&
-          encounter[e].enemy())
-      {
+          encounter[e].enemy()) {
         int roll = a.skill_roll(SKILL_DISGUISE);
         int diff = encounter[e].get_attribute(ATTRIBUTE_WISDOM, true) > 10 ? DIFFICULTY_CHALLENGING : DIFFICULTY_AVERAGE;
         fooled = roll >= diff;
@@ -3040,8 +2853,7 @@ char talkInCombat(Creature &a, Creature &tk)
       }
     }
 
-    switch (fieldskillrate)
-    {
+    switch (fieldskillrate) {
     case FIELDSKILLRATE_FAST:
       a.train(SKILL_DISGUISE, 50);
       break;
@@ -3053,20 +2865,16 @@ char talkInCombat(Creature &a, Creature &tk)
       break;
     }
 
-    if (!fooled)
-    {
+    if (!fooled) {
       clearmessagearea();
 
       set_color(COLOR_RED, COLOR_BLACK, 1);
       move(16, 1);
-      if (encounter[e].type == CREATURE_HICK)
-      {
+      if (encounter[e].type == CREATURE_HICK) {
         addstr("But ", gamelog);
         addstr(encounter[e].name, gamelog);
         addstr(" weren't born yesterday.", gamelog);
-      }
-      else
-      {
+      } else {
         addstr(encounter[e].name, gamelog);
         if (law[LAW_FREESPEECH] == ALIGN_ARCHCONSERVATIVE)
           addstr(" is not fooled by that [act].", gamelog);
@@ -3075,9 +2883,7 @@ char talkInCombat(Creature &a, Creature &tk)
       }
 
       getkey();
-    }
-    else
-    {
+    } else {
       clearmessagearea();
 
       set_color(COLOR_GREEN, COLOR_BLACK, 1);
@@ -3091,9 +2897,7 @@ char talkInCombat(Creature &a, Creature &tk)
           delenc(e, 0);
     }
     gamelog.newline();
-  }
-  else
-  {
+  } else {
     move(14, 1);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     addstr("The Squad is arrested.", gamelog);
@@ -3107,10 +2911,8 @@ char talkInCombat(Creature &a, Creature &tk)
       if (activesquad->loot[l]->is_loot())
         stolen++;
 
-    for (int i = 0; i < 6; i++)
-    {
-      if (activesquad->squad[i])
-      {
+    for (int i = 0; i < 6; i++) {
+      if (activesquad->squad[i]) {
         activesquad->squad[i]->crimes_suspected[LAWFLAG_THEFT] += stolen;
         capturecreature(*activesquad->squad[i]);
       }
@@ -3121,30 +2923,25 @@ char talkInCombat(Creature &a, Creature &tk)
   return 1;
 }
 
-char heyMisterDog(Creature &a, Creature &tk)
-{
+char heyMisterDog(Creature &a, Creature &tk) {
   bool success = false;
   const char *pitch;
   const char *response;
 
   // Find most Heartful Liberal
   int bestp = 0;
-  for (int p = 0; p < 6; p++)
-  {
+  for (int p = 0; p < 6; p++) {
     if (activesquad->squad[p] &&
         activesquad->squad[p]->get_attribute(ATTRIBUTE_HEART, true) >
-            activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true))
-    {
+            activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true)) {
       bestp = p;
     }
   }
 
   // Say something unbelievably hippie
-  if (activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true) >= 15)
-  {
+  if (activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true) >= 15) {
     success = true;
-    switch (LCSrandom(11))
-    {
+    switch (LCSrandom(11)) {
     case 0:
       pitch = "\"I love dogs more than people.\"";
       response = "\"A human after my own heart, in more ways than one.\"";
@@ -3191,12 +2988,10 @@ char heyMisterDog(Creature &a, Creature &tk)
       response = "\"You're pandering, but I love it.\"";
       break;
     }
-  }
-  else // or not
+  } else // or not
   {
     tk.cantbluff = 1;
-    switch (LCSrandom(11))
-    {
+    switch (LCSrandom(11)) {
     case 0:
       pitch = "\"Hi Mister Dog!\"";
       response = "\"Woof?\"";
@@ -3279,30 +3074,25 @@ char heyMisterDog(Creature &a, Creature &tk)
   return 1;
 }
 
-char heyMisterMonster(Creature &a, Creature &tk)
-{
+char heyMisterMonster(Creature &a, Creature &tk) {
   bool success = false;
   const char *pitch;
   const char *response;
 
   // Find most Heartful Liberal
   int bestp = 0;
-  for (int p = 0; p < 6; p++)
-  {
+  for (int p = 0; p < 6; p++) {
     if (activesquad->squad[p] &&
         activesquad->squad[p]->get_attribute(ATTRIBUTE_HEART, true) >
-            activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true))
-    {
+            activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true)) {
       bestp = p;
     }
   }
 
   // Say something diplomatic
-  if (activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true) >= 15)
-  {
+  if (activesquad->squad[bestp]->get_attribute(ATTRIBUTE_HEART, true) >= 15) {
     success = true;
-    switch (LCSrandom(11))
-    {
+    switch (LCSrandom(11)) {
     case 0:
       pitch = "\"I love diversity in all its forms.\"";
       response = "\"Your tolerance is impressive, human!\"";
@@ -3349,12 +3139,10 @@ char heyMisterMonster(Creature &a, Creature &tk)
       response = "\"You're a clever one.\"";
       break;
     }
-  }
-  else // or not
+  } else // or not
   {
     tk.cantbluff = 1;
-    switch (LCSrandom(11))
-    {
+    switch (LCSrandom(11)) {
     case 0:
       pitch = "\"Hi Mister Monster!\"";
       response = "\"Die in a fire!\"";

@@ -29,8 +29,7 @@ This file is part of Liberal Crime Squad.
 #include <externs.h>
 
 //Constructor.
-Log::Log()
-{
+Log::Log() {
   initialized = false; //This is set in the initialize() function.
   //Yes, next line seems redundant. However, I've had situations in the past where the compiler
   //(some compiler in windows) murdered me if I didn't do this. And I want to live.
@@ -43,18 +42,15 @@ Log::Log()
 }
 
 //The initialization function.
-bool Log::initialize(const string &_filename, bool overwrite_existing, int _newline_mode)
-{
+bool Log::initialize(const string &_filename, bool overwrite_existing, int _newline_mode) {
   filename = _filename;         //Assign the filepath.
   newline_mode = _newline_mode; //Set the newline mode
   //check If it is to append the output to the end of the log file rather than
   //to overwrite the file.
-  if (!overwrite_existing)
-  { //Yes, it is to append, so open the file in append mode, with error checking.
+  if (!overwrite_existing) { //Yes, it is to append, so open the file in append mode, with error checking.
     if (!LCSOpenFileCPP(filename, ios::out | ios::app, LCSIO_PRE_HOME, file))
-      return false; //Failed to open file.
-  }
-  else                                                                          //overwrite_existing = true. Overwrite the file.
+      return false;                                                             //Failed to open file.
+  } else                                                                        //overwrite_existing = true. Overwrite the file.
   {                                                                             //Open the file. Use the trunc parameter to ensure the file is going to be overwritten.
     if (!LCSOpenFileCPP(filename, ios::out | ios::trunc, LCSIO_PRE_HOME, file)) //With error checking.
       return false;                                                             //Failed to open file.
@@ -65,8 +61,7 @@ bool Log::initialize(const string &_filename, bool overwrite_existing, int _newl
 }
 
 //This is the actual logging function.
-bool Log::log(const string &text)
-{
+bool Log::log(const string &text) {
   if (text == "") //Check if no text given.
   {
     //No text given. No reason to continue.
@@ -80,8 +75,7 @@ bool Log::log(const string &text)
   }
   //Guard to make sure that it doesn't try to write text when the logger isn't
   //even initialized or the file isn't even loaded!
-  if (initialized && file.is_open())
-  {
+  if (initialized && file.is_open()) {
     file.clear();                      //First, clear the state flags.
     file << text;                      //Output the text.
     if (newline_mode != 0)             //If the log is supposed to be adding newlines.
@@ -91,8 +85,7 @@ bool Log::log(const string &text)
         //This for loop ensures that all the required newlines are written.
         for (int i = 0; i < newline_mode; i++)
           file << "\n";
-      }
-      else if (newline_mode == 2) //If supposed to use double lines.
+      } else if (newline_mode == 2) //If supposed to use double lines.
       {
         if (len(text) < 2) //Check if text is only one character long.
           //Text is too small to have two newlines. That means it has only
@@ -109,13 +102,11 @@ bool Log::log(const string &text)
       return false;                   //Ruh Roh! Something went wrong!
     logged_since_last_message = true; //Well, this is now true, since something was just logged.
     return true;                      //Success!
-  }
-  else
+  } else
     return false; //The logger is not initialized or the file isn't open. Something went wrong. Abort!
 }
 
-void Log::nextMessage()
-{ //This check makes sure the log is formatted correctly even when there is
+void Log::nextMessage() { //This check makes sure the log is formatted correctly even when there is
   //nothing in the buffer (a result of using newline());
   if (buffer == "")
     for (int i = 0; i < newline_mode; i++)
@@ -125,8 +116,7 @@ void Log::nextMessage()
   logged_since_last_message = false; //Reset this, since this is the "last message".
 }
 
-void Log::newline()
-{
+void Log::newline() {
   record("\n");                     //Record it/add to buffer.
   int old = newline_mode;           //Save the old newline mode.
   newlmode(1);                      //Set the newlines to one.

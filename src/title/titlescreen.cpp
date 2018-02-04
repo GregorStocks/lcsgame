@@ -62,8 +62,7 @@ This file is part of Liberal Crime Squad.                                       
 
 #include <externs.h>
 
-void mode_title()
-{
+void mode_title() {
   //title screen
   erase();
 
@@ -79,8 +78,7 @@ void mode_title()
   move(4, 39 - ((len(str) - 1) >> 1));
   addstr(str);
 
-  if (loaded)
-  {
+  if (loaded) {
     move(6, 39 - ((len(slogan) - 1) >> 1));
     addstr(slogan);
 
@@ -108,10 +106,8 @@ void mode_title()
     move(9, 47);
     addstr("Conservatives Kidnapped: ");
     addstr(stat_kidnappings);
-  }
-  else
-    switch (LCSrandom(32))
-    {
+  } else
+    switch (LCSrandom(32)) {
     case 0:
       strcpy(str, "\"Unjust laws exist; shall we be content to obey them, or shall we");
       move(6, 39 - ((len(str) - 1) >> 1));
@@ -593,8 +589,7 @@ void mode_title()
   addstr("+");
 
   int c = 0;
-  do
-  {
+  do {
     if (c == 'm') music.enableIf(!music.isEnabled());
     if (music.isEnabled())
       strcpy(str, "Press M to turn off the Music.");
@@ -609,8 +604,7 @@ void mode_title()
 
   viewhighscores();
 
-  if (!loaded)
-  {
+  if (!loaded) {
     setup_newgame();
     makecharacter();
   }

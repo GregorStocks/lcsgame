@@ -29,18 +29,14 @@ the bottom of includes.h in the top src folder.
 #include <externs.h>
 
 /* base - burn the flag */
-void burnflag()
-{
+void burnflag() {
   int flagparts = 126, flag[18][7][4], x, y;
 
   for (y = 0; y < 7; y++)
     if (y < 6)
-      for (x = 0; x < 18; x++)
-      {
-        if (x < 9 && y < 4)
-        {
-          switch (y)
-          {
+      for (x = 0; x < 18; x++) {
+        if (x < 9 && y < 4) {
+          switch (y) {
           case 0:
             flag[x][y][0] = (x % 2 ? '.' : ':');
             break;
@@ -52,9 +48,7 @@ void burnflag()
             break;
           }
           flag[x][y][2] = COLOR_BLUE;
-        }
-        else
-        {
+        } else {
           flag[x][y][0] = CH_LOWER_HALF_BLOCK;
           flag[x][y][2] = COLOR_RED;
         }
@@ -62,8 +56,7 @@ void burnflag()
         flag[x][y][3] = 1;
       }
     else
-      for (x = 0; x < 18; x++)
-      {
+      for (x = 0; x < 18; x++) {
         flag[x][y][0] = CH_UPPER_HALF_BLOCK;
         flag[x][y][1] = COLOR_RED;
         flag[x][y][2] = COLOR_BLACK;
@@ -78,30 +71,23 @@ void burnflag()
 
   bool first = true;
 
-  while (flagparts > 0)
-  {
+  while (flagparts > 0) {
     if (!first)
       for (x = 0; x < 18; x++)
-        for (y = 0; y < 7; y++)
-        {
+        for (y = 0; y < 7; y++) {
           if (flag[x][y][0] == CH_BOX_DRAWINGS_LIGHT_VERTICAL)
             flag[x][y][0] = CH_DARK_SHADE;
-          else if (flag[x][y][0] == CH_DARK_SHADE)
-          {
+          else if (flag[x][y][0] == CH_DARK_SHADE) {
             flag[x][y][0] = CH_MEDIUM_SHADE;
             flag[x][y][1] = COLOR_RED;
             flag[x][y][2] = COLOR_BLACK;
             flag[x][y][3] = 0;
-          }
-          else if (flag[x][y][0] == CH_MEDIUM_SHADE)
-          {
+          } else if (flag[x][y][0] == CH_MEDIUM_SHADE) {
             flag[x][y][0] = CH_LIGHT_SHADE;
             flag[x][y][1] = COLOR_BLACK;
             flag[x][y][2] = COLOR_BLACK;
             flag[x][y][3] = 1;
-          }
-          else if (flag[x][y][0] == CH_LIGHT_SHADE)
-          {
+          } else if (flag[x][y][0] == CH_LIGHT_SHADE) {
             flagparts--;
             flag[x][y][0] = ' ';
             flag[x][y][1] = COLOR_BLACK;
@@ -113,8 +99,7 @@ void burnflag()
       first = false;
 
     for (x = 0; x < 18; x++)
-      for (y = 0; y < 7; y++)
-      {
+      for (y = 0; y < 7; y++) {
         set_color(short(flag[x][y][1]), short(flag[x][y][2]), bool(flag[x][y][3]));
         mvaddch(y + 10, x + 31, flag[x][y][0]);
       }
@@ -122,42 +107,35 @@ void burnflag()
     pause_ms(10);
 
     bool gotnew = false;
-    while (!gotnew && flagparts > 3)
-    {
+    while (!gotnew && flagparts > 3) {
       x = LCSrandom(18), y = LCSrandom(7);
       bool conf = false;
-      if (flag[x][y][0] == ':' || flag[x][y][0] == '.' || flag[x][y][0] == CH_UPPER_HALF_BLOCK || flag[x][y][0] == CH_LOWER_HALF_BLOCK)
-      {
-        if (x > 0)
-        {
+      if (flag[x][y][0] == ':' || flag[x][y][0] == '.' || flag[x][y][0] == CH_UPPER_HALF_BLOCK || flag[x][y][0] == CH_LOWER_HALF_BLOCK) {
+        if (x > 0) {
           if (flag[x - 1][y][0] != ':' &&
               flag[x - 1][y][0] != '.' &&
               flag[x - 1][y][0] != CH_UPPER_HALF_BLOCK &&
               flag[x - 1][y][0] != CH_LOWER_HALF_BLOCK) conf = true;
         }
-        if (x < 17)
-        {
+        if (x < 17) {
           if (flag[x + 1][y][0] != ':' &&
               flag[x + 1][y][0] != '.' &&
               flag[x + 1][y][0] != CH_UPPER_HALF_BLOCK &&
               flag[x + 1][y][0] != CH_LOWER_HALF_BLOCK) conf = true;
         }
-        if (y > 0)
-        {
+        if (y > 0) {
           if (flag[x][y - 1][0] != ':' &&
               flag[x][y - 1][0] != '.' &&
               flag[x][y - 1][0] != CH_UPPER_HALF_BLOCK &&
               flag[x][y - 1][0] != CH_LOWER_HALF_BLOCK) conf = true;
         }
-        if (y < 6)
-        {
+        if (y < 6) {
           if (flag[x][y + 1][0] != ':' &&
               flag[x][y + 1][0] != '.' &&
               flag[x][y + 1][0] != CH_UPPER_HALF_BLOCK &&
               flag[x][y + 1][0] != CH_LOWER_HALF_BLOCK) conf = true;
         }
-        if (conf)
-        {
+        if (conf) {
           flag[x][y][0] = CH_BOX_DRAWINGS_LIGHT_VERTICAL;
           flag[x][y][1] = COLOR_YELLOW;
           flag[x][y][2] = COLOR_BLACK;
@@ -170,8 +148,7 @@ void burnflag()
 }
 
 /* base - new slogan */
-void getslogan()
-{
+void getslogan() {
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
   mvaddstr(16, 0, "What is your new slogan?");
@@ -181,16 +158,14 @@ void getslogan()
 }
 
 /* base - reorder party */
-void orderparty()
-{
+void orderparty() {
   party_status = -1;
 
   int partysize = squadsize(activesquad);
 
   if (partysize <= 1) return;
 
-  while (true)
-  {
+  while (true) {
     printparty();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(8, 26, "Choose squad member to move");
@@ -216,8 +191,7 @@ void orderparty()
 }
 
 /* base - go forth to stop evil */
-void stopevil()
-{
+void stopevil() {
   int l = 0, p = 0;
 
   if (!activesquad) return;
@@ -225,8 +199,7 @@ void stopevil()
   bool havecar = false;
   for (p = 0; p < 6; p++)
     if (activesquad->squad[p])
-      if (activesquad->squad[p]->pref_carid != -1)
-      {
+      if (activesquad->squad[p]->pref_carid != -1) {
         havecar = true;
         break;
       }
@@ -236,12 +209,9 @@ void stopevil()
   int page = 0, loc = -1;
 
   // Start at the city level, rather than the absolute top
-  if (multipleCityMode)
-  {
-    for (l = 0; l < len(location); l++)
-    {
-      if (location[l]->type == squad_location->city)
-      {
+  if (multipleCityMode) {
+    for (l = 0; l < len(location); l++) {
+      if (location[l]->type == squad_location->city) {
         loc = l;
         break;
       }
@@ -265,8 +235,7 @@ void stopevil()
   // Determine cost of tickets for travel
   int ticketprice = 100 * squadsize(activesquad);
 
-  while (true)
-  {
+  while (true) {
     music.play(MUSIC_STOPEVIL);
     erase();
 
@@ -275,8 +244,7 @@ void stopevil()
 
     printparty();
 
-    if (loc != -1)
-    {
+    if (loc != -1) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddstr(8, 0, location[loc]->getname(-1, true));
     }
@@ -319,8 +287,7 @@ void stopevil()
       if (location[l]->parent == loc && location[l]->renting == RENTING_NOCONTROL && !location[l]->hidden) temploc.push_back(l);
 
     int y = 10;
-    for (p = page * 11; p < len(temploc) && p < page * 11 + 11; p++)
-    {
+    for (p = page * 11; p < len(temploc) && p < page * 11 + 11; p++) {
       if (p == -1) break;
       Location *this_location = location[temploc[p]];
 
@@ -330,59 +297,42 @@ void stopevil()
       addstr(location[temploc[p]]->getname());
 
       bool show_safehouse_info = false;
-      if (this_location == squad_location)
-      {
+      if (this_location == squad_location) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         addstr(" (Current Location)");
         show_safehouse_info = true;
-      }
-      else if (this_location->renting >= 0)
-      {
+      } else if (this_location->renting >= 0) {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr(" (Safe House)");
         show_safehouse_info = true;
-      }
-      else if (this_location->renting == RENTING_CCS)
-      {
+      } else if (this_location->renting == RENTING_CCS) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr(" (Enemy Safe House)");
-      }
-      else if (this_location->closed)
-      {
+      } else if (this_location->closed) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr(" (Closed Down)");
-      }
-      else if (this_location->highsecurity)
-      {
+      } else if (this_location->highsecurity) {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         addstr(" (High Security)");
-      }
-      else if (multipleCityMode && this_location->type == squad_location->city)
-      {
+      } else if (multipleCityMode && this_location->type == squad_location->city) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         addstr(" (Current Location)");
-      }
-      else if (this_location->area != squad_location->area && !havecar)
-      {
+      } else if (this_location->area != squad_location->area && !havecar) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         addstr(" (Need Car)");
-      }
-      else if (this_location->type == SITE_TRAVEL)
-      {
+      } else if (this_location->type == SITE_TRAVEL) {
         if (ledger.get_funds() < ticketprice)
           set_color(COLOR_RED, COLOR_BLACK, 1);
         else
           set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr(" ($" + tostring(ticketprice) + ")");
       }
-      if (this_location->siege.siege > 0)
-      {
+      if (this_location->siege.siege > 0) {
         set_color(COLOR_RED, COLOR_BLACK, 0);
         addstr(" (Under Siege)");
       }
 
-      if (show_safehouse_info)
-      {
+      if (show_safehouse_info) {
         this_location->update_heat_protection();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
@@ -404,26 +354,21 @@ void stopevil()
         addstr("%");
       }
 
-      if (multipleCityMode && this_location->city == this_location->type)
-      {
+      if (multipleCityMode && this_location->city == this_location->type) {
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
         mvaddstr(y, 50, this_location->city_description());
       }
 
       y++;
     }
-    if (multipleCityMode && loc != -1 && location[loc]->type == location[loc]->city)
-    {
+    if (multipleCityMode && loc != -1 && location[loc]->type == location[loc]->city) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       mvaddchar(y + 1, 0, y - 10 + 'A');
       addstr(" - Travel to a Different City");
-      if (!havecar)
-      {
+      if (!havecar) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         addstr(" (Need Car)");
-      }
-      else
-      {
+      } else {
         if (ledger.get_funds() < ticketprice)
           set_color(COLOR_RED, COLOR_BLACK, 1);
         else
@@ -435,14 +380,12 @@ void stopevil()
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     //PAGE UP
-    if (page > 0)
-    {
+    if (page > 0) {
       move(10, 60);
       addprevpagestr();
     }
     //PAGE DOWN
-    if ((page + 1) * 11 < len(temploc))
-    {
+    if ((page + 1) * 11 < len(temploc)) {
       move(20, 60);
       addnextpagestr();
     }
@@ -461,11 +404,9 @@ void stopevil()
     //PAGE DOWN
     if ((c == interface_pgdn || c == KEY_DOWN || c == KEY_RIGHT) && (page + 1) * 11 < len(temploc)) page++;
 
-    if (c >= 'a' && c <= 'k')
-    {
+    if (c >= 'a' && c <= 'k') {
       int sq = page * 11 + c - 'a';
-      if (sq < len(temploc) && sq >= 0)
-      {
+      if (sq < len(temploc) && sq >= 0) {
         int oldloc = loc;
         loc = temploc[sq];
         if ((loc == -1 || (multipleCityMode && location[loc]->city != squad_location->city)) && !havecar)
@@ -476,16 +417,13 @@ void stopevil()
           if (location[l]->parent == loc)
             subcount++;
 
-        if (subcount == 0 || (multipleCityMode && loc >= 0 && location[loc]->city != squad_location->city))
-        {
+        if (subcount == 0 || (multipleCityMode && loc >= 0 && location[loc]->city != squad_location->city)) {
           if (!location[loc]->closed &&
-              ((location[loc]->area == squad_location->area && location[loc]->city == squad_location->city) || havecar))
-          {
+              ((location[loc]->area == squad_location->area && location[loc]->city == squad_location->city) || havecar)) {
             activesquad->activity.type = ACTIVITY_VISIT;
             activesquad->activity.arg = loc;
             return;
-          }
-          else
+          } else
             loc = oldloc;
         }
       }
@@ -498,12 +436,10 @@ void stopevil()
       activesquad->stance=0;
       }*/
 
-    if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR)
-    {
+    if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) {
       if (loc != -1 && (location[loc]->city != location[loc]->type || location[loc]->city != squad_location->city))
         loc = location[loc]->parent;
-      else
-      {
+      else {
         activesquad->activity.type = ACTIVITY_NONE; // Clear squad activity
         break;
       }
@@ -512,30 +448,24 @@ void stopevil()
 }
 
 /* base - invest in this location */
-void investlocation()
-{
+void investlocation() {
   int loc = selectedsiege;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     locheader();
     printlocation(loc);
 
-    if (!location[loc]->upgradable)
-    {
+    if (!location[loc]->upgradable) {
       if (ledger.get_funds() >= 10000)
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
       else
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
       move(16, 1);
       addstr("I - Invest in this location ($10000)");
-    }
-    else
-    {
-      if (location[loc]->can_be_fortified())
-      {
+    } else {
+      if (location[loc]->can_be_fortified()) {
         if (ledger.get_funds() >= 2000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -549,8 +479,7 @@ void investlocation()
           addstr("W - Fortify the Compound for a Siege ($2000)");
       }
 
-      if (!(location[loc]->compound_walls & COMPOUND_CAMERAS))
-      {
+      if (!(location[loc]->compound_walls & COMPOUND_CAMERAS)) {
         if (ledger.get_funds() >= 2000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -559,8 +488,7 @@ void investlocation()
         addstr("C - Place Security Cameras around the Compound ($2000)");
       }
 
-      if (location[loc]->can_be_trapped())
-      {
+      if (location[loc]->can_be_trapped()) {
         if (ledger.get_funds() >= 3000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -569,8 +497,7 @@ void investlocation()
         addstr("B - Place Booby Traps throughout the Compound ($3000)");
       }
 
-      if (location[loc]->can_install_tanktraps())
-      {
+      if (location[loc]->can_install_tanktraps()) {
         if (ledger.get_funds() >= 3000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -579,8 +506,7 @@ void investlocation()
         addstr("T - Ring the Compound with Tank Traps ($3000)");
       }
 
-      if (!(location[loc]->compound_walls & COMPOUND_GENERATOR))
-      {
+      if (!(location[loc]->compound_walls & COMPOUND_GENERATOR)) {
         if (ledger.get_funds() >= 3000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -589,16 +515,12 @@ void investlocation()
         addstr("G - Buy a Generator for emergency electricity ($3000)");
       }
 
-      if (!(location[loc]->compound_walls & COMPOUND_AAGUN))
-      {
-        if (law[LAW_GUNCONTROL] == ALIGN_ARCHCONSERVATIVE)
-        {
+      if (!(location[loc]->compound_walls & COMPOUND_AAGUN)) {
+        if (law[LAW_GUNCONTROL] == ALIGN_ARCHCONSERVATIVE) {
           if (ledger.get_funds() >= 35000) set_color(COLOR_WHITE, COLOR_BLACK, 0);
           move(13, 1);
           addstr("A - Install a perfectly legal Anti-Aircraft gun on the roof ($35,000)");
-        }
-        else
-        {
+        } else {
           if (ledger.get_funds() >= 200000)
             set_color(COLOR_WHITE, COLOR_BLACK, 0);
           else
@@ -608,8 +530,7 @@ void investlocation()
         }
       }
 
-      if (!(location[loc]->compound_walls & COMPOUND_PRINTINGPRESS))
-      {
+      if (!(location[loc]->compound_walls & COMPOUND_PRINTINGPRESS)) {
         if (ledger.get_funds() >= 3000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -618,8 +539,7 @@ void investlocation()
         addstr("P - Buy a Printing Press to start your own newspaper ($3000)");
       }
 
-      if (location[loc]->can_have_businessfront())
-      {
+      if (location[loc]->can_have_businessfront()) {
         if (ledger.get_funds() >= 3000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
@@ -642,12 +562,9 @@ void investlocation()
     int c = getkey();
 
     if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) break;
-    if (!location[loc]->upgradable)
-    {
-      if (c == 'i')
-      {
-        if (ledger.get_funds() >= 10000)
-        {
+    if (!location[loc]->upgradable) {
+      if (c == 'i') {
+        if (ledger.get_funds() >= 10000) {
           ledger.subtract_funds(10000, EXPENSE_COMPOUND);
           location[loc]->upgradable = true;
         }
@@ -655,97 +572,76 @@ void investlocation()
       continue;
     }
 
-    if (c == 'w')
-    {
-      if (location[loc]->can_be_fortified() && ledger.get_funds() >= 2000)
-      {
+    if (c == 'w') {
+      if (location[loc]->can_be_fortified() && ledger.get_funds() >= 2000) {
         ledger.subtract_funds(2000, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_BASIC;
       }
     }
 
-    if (c == 'c')
-    {
-      if (!(location[loc]->compound_walls & COMPOUND_CAMERAS) && ledger.get_funds() >= 2000)
-      {
+    if (c == 'c') {
+      if (!(location[loc]->compound_walls & COMPOUND_CAMERAS) && ledger.get_funds() >= 2000) {
         ledger.subtract_funds(2000, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_CAMERAS;
       }
     }
 
-    if (c == 'b')
-    {
-      if (location[loc]->can_be_trapped() && ledger.get_funds() >= 3000)
-      {
+    if (c == 'b') {
+      if (location[loc]->can_be_trapped() && ledger.get_funds() >= 3000) {
         ledger.subtract_funds(3000, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_TRAPS;
       }
     }
 
-    if (c == 't')
-    {
-      if (location[loc]->can_install_tanktraps() && ledger.get_funds() >= 3000)
-      {
+    if (c == 't') {
+      if (location[loc]->can_install_tanktraps() && ledger.get_funds() >= 3000) {
         ledger.subtract_funds(3000, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_TANKTRAPS;
       }
     }
 
-    if (c == 'g')
-    {
-      if (!(location[loc]->compound_walls & COMPOUND_GENERATOR) && ledger.get_funds() >= 3000)
-      {
+    if (c == 'g') {
+      if (!(location[loc]->compound_walls & COMPOUND_GENERATOR) && ledger.get_funds() >= 3000) {
         ledger.subtract_funds(3000, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_GENERATOR;
       }
     }
 
-    if (c == 'a')
-    {
+    if (c == 'a') {
       int aagunPrice = 200000;
       if (law[LAW_GUNCONTROL] == ALIGN_ARCHCONSERVATIVE)
         aagunPrice = 35000;
 
-      if (!(location[loc]->compound_walls & COMPOUND_AAGUN) && ledger.get_funds() >= aagunPrice)
-      {
+      if (!(location[loc]->compound_walls & COMPOUND_AAGUN) && ledger.get_funds() >= aagunPrice) {
         ledger.subtract_funds(aagunPrice, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_AAGUN;
       }
     }
 
-    if (c == 'p')
-    {
-      if (!(location[loc]->compound_walls & COMPOUND_PRINTINGPRESS) && ledger.get_funds() >= 3000)
-      {
+    if (c == 'p') {
+      if (!(location[loc]->compound_walls & COMPOUND_PRINTINGPRESS) && ledger.get_funds() >= 3000) {
         ledger.subtract_funds(3000, EXPENSE_COMPOUND);
         location[loc]->compound_walls |= COMPOUND_PRINTINGPRESS;
       }
     }
 
-    if (c == 'r')
-    {
-      if (ledger.get_funds() >= 150)
-      {
+    if (c == 'r') {
+      if (ledger.get_funds() >= 150) {
         ledger.subtract_funds(150, EXPENSE_COMPOUND);
         location[loc]->compound_stores += 20;
       }
     }
 
-    if (c == 'f')
-    {
-      if (location[loc]->can_have_businessfront() && ledger.get_funds() >= 3000)
-      {
+    if (c == 'f') {
+      if (location[loc]->can_have_businessfront() && ledger.get_funds() >= 3000) {
         ledger.subtract_funds(3000, EXPENSE_COMPOUND);
-        do
-        {
+        do {
           location[loc]->front_business = LCSrandom(BUSINESSFRONTNUM);
           lastname(location[loc]->front_name, true);
           strcat(location[loc]->front_name, " ");
-          switch (location[loc]->front_business)
-          {
+          switch (location[loc]->front_business) {
           case BUSINESSFRONT_INSURANCE:
-            switch (LCSrandom(7))
-            {
+            switch (LCSrandom(7)) {
             case 0:
               strcat(location[loc]->front_name, "Auto");
               strcpy(location[loc]->front_shortname, "Auto");
@@ -779,8 +675,7 @@ void investlocation()
             strcat(location[loc]->front_shortname, " Ins.");
             break;
           case BUSINESSFRONT_TEMPAGENCY:
-            switch (LCSrandom(7))
-            {
+            switch (LCSrandom(7)) {
             case 0:
               strcat(location[loc]->front_name, "Temp Agency");
               strcpy(location[loc]->front_shortname, "Agency");
@@ -812,8 +707,7 @@ void investlocation()
             }
             break;
           case BUSINESSFRONT_RESTAURANT:
-            switch (LCSrandom(7))
-            {
+            switch (LCSrandom(7)) {
             case 0:
               strcat(location[loc]->front_name, "Fried Chicken");
               strcpy(location[loc]->front_shortname, "Chicken");
@@ -845,8 +739,7 @@ void investlocation()
             }
             break;
           case BUSINESSFRONT_MISCELLANEOUS:
-            switch (LCSrandom(7))
-            {
+            switch (LCSrandom(7)) {
             case 0:
               strcat(location[loc]->front_name, "Real Estate");
               strcpy(location[loc]->front_shortname, "Realty");
@@ -885,15 +778,13 @@ void investlocation()
 }
 
 /* base - assign a vehicle to this squad */
-void setvehicles()
-{
+void setvehicles() {
   int p, l;
   if (!activesquad) return;
 
   int page = 0;
 
-  while (true)
-  {
+  while (true) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -904,24 +795,19 @@ void setvehicles()
     int x = 1, y = 10;
     char str[200];
 
-    for (l = page * 18; l < len(vehicle) && l < page * 18 + 18; l++)
-    {
+    for (l = page * 18; l < len(vehicle) && l < page * 18 + 18; l++) {
       bool this_squad = false, another_squad = false;
-      for (p = 0; p < 6; p++)
-      {
+      for (p = 0; p < 6; p++) {
         if (activesquad->squad[p] == NULL) continue;
         if (activesquad->squad[p]->alive &&
-            activesquad->squad[p]->pref_carid == vehicle[l]->id())
-        {
+            activesquad->squad[p]->pref_carid == vehicle[l]->id()) {
           this_squad = true;
           break;
         }
       }
-      for (p = 0; p < len(pool); p++)
-      {
+      for (p = 0; p < len(pool); p++) {
         if (pool[p]->squadid != -1 && pool[p]->alive &&
-            pool[p]->pref_carid == vehicle[l]->id() && pool[p]->squadid != activesquad->id)
-        {
+            pool[p]->pref_carid == vehicle[l]->id() && pool[p]->squadid != activesquad->id) {
           another_squad = true;
           break;
         }
@@ -949,14 +835,12 @@ void setvehicles()
 
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     //PAGE UP
-    if (page > 0)
-    {
+    if (page > 0) {
       move(17, 1);
       addprevpagestr();
     }
     //PAGE DOWN
-    if ((page + 1) * 18 < len(vehicle))
-    {
+    if ((page + 1) * 18 < len(vehicle)) {
       move(17, 53);
       addnextpagestr();
     }
@@ -971,18 +855,14 @@ void setvehicles()
 
     int c = getkey_cap();
 
-    if (c >= 'A' && c <= 'R')
-    {
+    if (c >= 'A' && c <= 'R') {
       int slot = c - 'A' + page * 18;
 
-      if (slot >= 0 && slot < len(vehicle))
-      {
+      if (slot >= 0 && slot < len(vehicle)) {
         bool choice = true;
-        if (activesquad->squad[0])
-        {
+        if (activesquad->squad[0]) {
           choice = false;
-          for (int c = 1; c < 6; c++)
-          {
+          for (int c = 1; c < 6; c++) {
             if (activesquad->squad[c]) //are these slots always filled in order?
             {
               choice = true;
@@ -991,18 +871,15 @@ void setvehicles()
           }
         }
         int c = '1';
-        if (choice)
-        {
+        if (choice) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           mvaddstr(8, 20, "Choose a Liberal squad member to drive it.");
 
           c = getkey();
         }
 
-        if (c >= '1' && c <= '6')
-        {
-          if (activesquad->squad[c - '1'] != NULL)
-          {
+        if (c >= '1' && c <= '6') {
+          if (activesquad->squad[c - '1'] != NULL) {
             activesquad->squad[c - '1']->pref_carid = vehicle[slot]->id();
             if (activesquad->squad[c - '1']->canwalk())
               activesquad->squad[c - '1']->pref_is_driver = 1;
@@ -1013,18 +890,14 @@ void setvehicles()
       }
     }
 
-    if (c >= 'a' && c <= 'r')
-    {
+    if (c >= 'a' && c <= 'r') {
       int slot = c - 'a' + page * 18;
 
-      if (slot >= 0 && slot < len(vehicle))
-      {
+      if (slot >= 0 && slot < len(vehicle)) {
         bool choice = true;
-        if (activesquad->squad[0])
-        {
+        if (activesquad->squad[0]) {
           choice = false;
-          for (int c = 1; c < 6; c++)
-          {
+          for (int c = 1; c < 6; c++) {
             if (activesquad->squad[c]) //are these slots always filled in order?
             {
               choice = true;
@@ -1033,18 +906,15 @@ void setvehicles()
           }
         }
         int c = '1';
-        if (choice)
-        {
+        if (choice) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           mvaddstr(8, 20, "Choose a Liberal squad member to be a passenger.");
 
           c = getkey();
         }
 
-        if (c >= '1' && c <= '6')
-        {
-          if (activesquad->squad[c - '1'])
-          {
+        if (c >= '1' && c <= '6') {
+          if (activesquad->squad[c - '1']) {
             activesquad->squad[c - '1']->pref_carid = vehicle[slot]->id();
             activesquad->squad[c - '1']->pref_is_driver = 0;
           }
@@ -1053,15 +923,12 @@ void setvehicles()
     }
 
     //SAV - adding way to remove people from vehicles.
-    if (c >= '1' && c <= '6')
-    {
+    if (c >= '1' && c <= '6') {
       // 1. Is there someone there?
-      if (activesquad->squad[c - '1'])
-      {
+      if (activesquad->squad[c - '1']) {
         // 2. Are they in a vehicle? Someday we'll want to enforce car capacity
         int vin = activesquad->squad[c - '1']->pref_carid;
-        if (vin > -1)
-        {
+        if (vin > -1) {
           activesquad->squad[c - '1']->pref_carid = -1;
           activesquad->squad[c - '1']->pref_is_driver = 0;
         }

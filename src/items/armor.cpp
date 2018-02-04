@@ -1,18 +1,15 @@
 #include <externs.h>
 
 Armor::Armor(const ArmorType &seed, int quality, int number)
-    : Item(seed, number), bloody_(false), damaged_(false), quality_(quality)
-{
+    : Item(seed, number), bloody_(false), damaged_(false), quality_(quality) {
 }
 
-Armor::Armor(const std::string &inputXml) : Item(inputXml)
-{
+Armor::Armor(const std::string &inputXml) : Item(inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
     if (tag == "bloody")
       bloody_ = stringtobool(xml.GetData()) == 1;
@@ -23,8 +20,7 @@ Armor::Armor(const std::string &inputXml) : Item(inputXml)
   }
 }
 
-string Armor::showXml() const
-{
+string Armor::showXml() const {
   CMarkup xml;
   xml.AddElem("armor");
   xml.IntoElem();
@@ -35,16 +31,13 @@ string Armor::showXml() const
   return xml.GetDoc();
 }
 
-string Armor::equip_title() const
-{
+string Armor::equip_title() const {
   return equip_title(false);
 }
 
-string Armor::equip_title(bool full) const
-{
+string Armor::equip_title(bool full) const {
   string et = (full ? get_name() : get_shortname());
-  if (quality_ <= get_quality_levels() && (bloody_ || damaged_ || quality_ > 1))
-  {
+  if (quality_ <= get_quality_levels() && (bloody_ || damaged_ || quality_ > 1)) {
     et += "[";
     if (quality_ > 9)
       et += "X";
@@ -57,8 +50,7 @@ string Armor::equip_title(bool full) const
   return et;
 }
 
-Armor *Armor::split(int number)
-{
+Armor *Armor::split(int number) {
   if (number > number_) number = number_;
   Armor *newi = clone();
   newi->number_ = number;
@@ -66,13 +58,10 @@ Armor *Armor::split(int number)
   return newi;
 }
 
-bool Armor::merge(Item &i)
-{
-  if (i.is_armor() && is_same_type(i))
-  {
+bool Armor::merge(Item &i) {
+  if (i.is_armor() && is_same_type(i)) {
     Armor &a = static_cast<Armor &>(i); //cast -XML
-    if (bloody_ == a.bloody_ && damaged_ == a.damaged_ && quality_ == a.quality_)
-    {
+    if (bloody_ == a.bloody_ && damaged_ == a.damaged_ && quality_ == a.quality_) {
       increase_number(a.get_number());
       a.set_number(0);
       return true;
@@ -81,25 +70,21 @@ bool Armor::merge(Item &i)
   return false;
 }
 
-bool Armor::decrease_quality(int decrease)
-{
+bool Armor::decrease_quality(int decrease) {
   quality_ += decrease;
   if (quality_ < 1) quality_ = 1;
   return quality_ <= get_quality_levels();
 }
 
-bool Armor::sort_compare_special(Item *other) const
-{
-  if (other)
-  {
+bool Armor::sort_compare_special(Item *other) const {
+  if (other) {
     int thisi = getarmortype(itemtypename());
     int otheri = getarmortype(other->get_itemtypename());
     if (thisi < otheri || otheri == -1)
       return false;
     else if (thisi > otheri && otheri != -1)
       return true;
-    else if (other->is_armor())
-    {
+    else if (other->is_armor()) {
       Armor *a = static_cast<Armor *>(other); //cast... -XML
       if (quality_ < a->quality_)
         return false;
@@ -111,160 +96,130 @@ bool Armor::sort_compare_special(Item *other) const
         return bloody_;
       else
         return false;
-    }
-    else
+    } else
       return false;
-  }
-  else
+  } else
     return false;
 }
 
-void Armor::set_damaged(bool d)
-{
+void Armor::set_damaged(bool d) {
   if (can_get_damaged() || !d) damaged_ = d;
 }
 
-void Armor::set_bloody(bool b)
-{
+void Armor::set_bloody(bool b) {
   if (can_get_bloody() || !b) bloody_ = b;
 }
 
 const string ruinedName = "Tattered Rags";
-const string &Armor::get_name() const
-{
+const string &Armor::get_name() const {
   if (quality_ <= get_quality_levels())
     return armortype[getarmortype(itemtypename())]->get_name();
   else
     return ruinedName;
 }
 
-const string &Armor::get_shortname() const
-{
+const string &Armor::get_shortname() const {
   if (quality_ <= get_quality_levels())
     return armortype[getarmortype(itemtypename())]->get_shortname();
   else
     return ruinedName;
 }
 
-long Armor::get_fencevalue() const
-{
+long Armor::get_fencevalue() const {
   if (quality_ <= get_quality_levels())
     return armortype[getarmortype(itemtypename())]->get_fencevalue() / quality_;
   else
     return 0;
 }
 
-int Armor::get_make_difficulty() const
-{
+int Armor::get_make_difficulty() const {
   return armortype[getarmortype(itemtypename())]->get_make_difficulty();
 }
 
-int Armor::get_make_price() const
-{
+int Armor::get_make_price() const {
   return armortype[getarmortype(itemtypename())]->get_make_price();
 }
 
-bool Armor::deathsquad_legality() const
-{
+bool Armor::deathsquad_legality() const {
   return armortype[getarmortype(itemtypename())]->deathsquad_legality();
 }
 
-bool Armor::can_get_bloody() const
-{
+bool Armor::can_get_bloody() const {
   return armortype[getarmortype(itemtypename())]->can_get_bloody();
 }
 
-bool Armor::can_get_damaged() const
-{
+bool Armor::can_get_damaged() const {
   return armortype[getarmortype(itemtypename())]->can_get_damaged();
 }
 
-int Armor::get_armor(int bodypart) const
-{
+int Armor::get_armor(int bodypart) const {
   return armortype[getarmortype(itemtypename())]->get_armor(bodypart);
 }
 
-bool Armor::has_fireprotection() const
-{
+bool Armor::has_fireprotection() const {
   return armortype[getarmortype(itemtypename())]->has_fireprotection();
 }
 
-bool Armor::covers(int bodypart) const
-{
+bool Armor::covers(int bodypart) const {
   return armortype[getarmortype(itemtypename())]->covers(bodypart);
 }
 
-bool Armor::conceals_face() const
-{
+bool Armor::conceals_face() const {
   return armortype[getarmortype(itemtypename())]->conceals_face();
 }
 
-int Armor::get_interrogation_basepower() const
-{
+int Armor::get_interrogation_basepower() const {
   return armortype[getarmortype(itemtypename())]->get_interrogation_basepower();
 }
 
-int Armor::get_interrogation_assaultbonus() const
-{
+int Armor::get_interrogation_assaultbonus() const {
   return armortype[getarmortype(itemtypename())]->get_interrogation_assaultbonus();
 }
 
-int Armor::get_interrogation_drugbonus() const
-{
+int Armor::get_interrogation_drugbonus() const {
   return armortype[getarmortype(itemtypename())]->get_interrogation_drugbonus();
 }
 
-int Armor::get_professionalism() const
-{
+int Armor::get_professionalism() const {
   return armortype[getarmortype(itemtypename())]->get_professionalism();
 }
 
-int Armor::get_stealth_value() const
-{
+int Armor::get_stealth_value() const {
   return armortype[getarmortype(itemtypename())]->get_stealth_value();
 }
 
-int Armor::get_weaponsize_concealment() const
-{
+int Armor::get_weaponsize_concealment() const {
   return armortype[getarmortype(itemtypename())]->get_weaponsize_concealment();
 }
 
-bool Armor::conceals_weapon(const Weapon &weapon) const
-{
+bool Armor::conceals_weapon(const Weapon &weapon) const {
   return armortype[getarmortype(itemtypename())]->conceals_weaponsize(weapon.get_size());
 }
 
-bool Armor::conceals_weapon(const WeaponType &weapon) const
-{
+bool Armor::conceals_weapon(const WeaponType &weapon) const {
   return armortype[getarmortype(itemtypename())]->conceals_weapon(weapon);
 }
 
-bool Armor::conceals_weaponsize(int weaponsize) const
-{
+bool Armor::conceals_weaponsize(int weaponsize) const {
   return armortype[getarmortype(itemtypename())]->conceals_weaponsize(weaponsize);
 }
 
-bool Armor::is_mask() const
-{
+bool Armor::is_mask() const {
   return armortype[getarmortype(itemtypename())]->is_mask();
 }
 
-bool Armor::is_surprise_mask() const
-{
+bool Armor::is_surprise_mask() const {
   return armortype[getarmortype(itemtypename())]->is_surprise_mask();
 }
 
-const string &Armor::get_description() const
-{
+const string &Armor::get_description() const {
   return armortype[getarmortype(itemtypename())]->get_description();
 }
 
-int Armor::get_durability() const
-{
+int Armor::get_durability() const {
   return armortype[getarmortype(itemtypename())]->get_durability();
 }
 
-int Armor::get_quality_levels() const
-{
+int Armor::get_quality_levels() const {
   return armortype[getarmortype(itemtypename())]->get_quality_levels();
 }

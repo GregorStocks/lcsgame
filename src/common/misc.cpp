@@ -1,12 +1,10 @@
 #include <externs.h>
 
 /* pick a descriptor acronym */
-void sexdesc(char *str)
-{
+void sexdesc(char *str) {
   strcpy(str, "");
 
-  switch (LCSrandom(4))
-  { // Descriptors
+  switch (LCSrandom(4)) { // Descriptors
   case 0:
     strcat(str, "DTE");
     break;
@@ -27,12 +25,10 @@ void sexdesc(char *str)
 }
 
 /* what kind of person? */
-void sexwho(char *str)
-{
+void sexwho(char *str) {
   strcpy(str, "");
 
-  switch (LCSrandom(35))
-  { // Who
+  switch (LCSrandom(35)) { // Who
   case 0:
     strcat(str, "BB");
     break;
@@ -146,12 +142,10 @@ void sexwho(char *str)
 }
 
 /* seeking acronym */
-void sexseek(char *str)
-{
+void sexseek(char *str) {
   strcpy(str, "");
 
-  switch (LCSrandom(2))
-  { // ISO
+  switch (LCSrandom(2)) { // ISO
   case 0:
     strcat(str, "ISO");
     break;
@@ -165,12 +159,10 @@ void sexseek(char *str)
 }
 
 /* what type of sex? */
-void sextype(char *str)
-{
+void sextype(char *str) {
   strcpy(str, "");
 
-  switch (LCSrandom(14))
-  { // TYPE
+  switch (LCSrandom(14)) { // TYPE
   case 0:
     strcat(str, "225");
     break;
@@ -251,42 +243,32 @@ void sextype(char *str)
 */
 
 /* return a letter, number, or one of either. */
-void chooseLetterOrNumber(char *str, int type)
-{
+void chooseLetterOrNumber(char *str, int type) {
   strcpy(str, "");
 
   if (type == 1) // Choose a letter.
   {
     char randChar = 'a' + LCSrandom(26);
     addstr(&randChar);
-  }
-  else if (type == 2) // Choose a number.
+  } else if (type == 2) // Choose a number.
   {
     char randNum = LCSrandom(10);
     addstr(&randNum);
-  }
-  else if (type == 3)
-  { // Choose one of either.
-    if (LCSrandom(36) > 25)
-    {
+  } else if (type == 3) { // Choose one of either.
+    if (LCSrandom(36) > 25) {
       char randNum = LCSrandom(10);
       addstr(&randNum);
-    }
-    else
-    {
+    } else {
       char randChar = 'a' + LCSrandom(26);
       addstr(&randChar);
     }
-  }
-  else
-  {
+  } else {
     addstr("-ERR-");
   }
 }
 
 /* generate a non-vanity plate for the squad. */
-void plate(char *str)
-{
+void plate(char *str) {
   strcpy(str, "");
 
   switch (LCSrandom(8)) // Actual license plate formats.
@@ -375,12 +357,10 @@ void plate(char *str)
 }
 
 /* pick a random state, or give the name of the specified state */
-const char *statename(int i)
-{
+const char *statename(int i) {
   if (i < 0 || i >= 50) i = LCSrandom(50);
 
-  switch (i)
-  {
+  switch (i) {
   case 0:
     return "Alabama";
   case 1:
@@ -488,76 +468,62 @@ const char *statename(int i)
 }
 
 /* endgame - converts an integer into a roman numeral for amendments */
-void romannumeral(int amendnum)
-{
-  while (amendnum >= 1000)
-  {
+void romannumeral(int amendnum) {
+  while (amendnum >= 1000) {
     amendnum -= 1000;
     addchar('M');
   }
-  if (amendnum >= 900)
-  {
+  if (amendnum >= 900) {
     amendnum -= 900;
     addchar('C');
     addchar('M');
   }
-  if (amendnum >= 500)
-  {
+  if (amendnum >= 500) {
     amendnum -= 500;
     addchar('D');
   }
-  if (amendnum >= 400)
-  {
+  if (amendnum >= 400) {
     amendnum -= 400;
     addchar('C');
     addchar('D');
   }
-  while (amendnum >= 100)
-  {
+  while (amendnum >= 100) {
     amendnum -= 100;
     addchar('C');
   }
-  if (amendnum >= 90)
-  {
+  if (amendnum >= 90) {
     amendnum -= 90;
     addchar('X');
     addchar('C');
   }
-  if (amendnum >= 50)
-  {
+  if (amendnum >= 50) {
     amendnum -= 50;
     addchar('L');
   }
-  if (amendnum >= 40)
-  {
+  if (amendnum >= 40) {
     amendnum -= 40;
     addchar('X');
     addchar('L');
   }
-  while (amendnum >= 10)
-  {
+  while (amendnum >= 10) {
     amendnum -= 10;
     addchar('X');
   }
-  if (amendnum >= 9)
-  {
+  if (amendnum >= 9) {
     amendnum -= 9;
     addchar('I');
     addchar('X');
   }
-  if (amendnum >= 5)
-  {
+  if (amendnum >= 5) {
     amendnum -= 5;
     addchar('V');
   }
-  if (amendnum >= 4)
-  {
+  if (amendnum >= 4) {
     amendnum -= 4;
     addchar('I');
     addchar('V');
   }
-  while (amendnum >= 1)
-  {
+  while (amendnum >= 1) {
     amendnum -= 1;
     addchar('I');
   }
@@ -566,8 +532,7 @@ void romannumeral(int amendnum)
 // Sets the interval according to a string that is either a number or two
 // number separated by a dash. Returns false and does not change the
 // interval if the given string is not a valid interval.
-bool Interval::set_interval(const string &interval)
-{
+bool Interval::set_interval(const string &interval) {
   if (!len(interval) ||
       interval.find_first_not_of("1234567890-") != string::npos)
     return false;
@@ -577,9 +542,7 @@ bool Interval::set_interval(const string &interval)
   {
     if (!valid(interval)) return false;
     max = min = atoi(interval);
-  }
-  else
-  {
+  } else {
     string smin = interval.substr(0, dashpos), smax = interval.substr(dashpos + 1);
     if (!valid(smin) || !valid(smax)) return false;
     int tmin = atoi(smin), tmax = atoi(smax);
@@ -591,15 +554,12 @@ bool Interval::set_interval(const string &interval)
 
 #ifndef DONT_INCLUDE_SDL
 /* helper function for initsongs() */
-void MusicClass::loadsong(int i, const char *filename)
-{ // the reason it prints progress on the screen is because it might be a little slow sometimes so this reassures the user progress is being made
+void MusicClass::loadsong(int i, const char *filename) { // the reason it prints progress on the screen is because it might be a little slow sometimes so this reassures the user progress is being made
   erase();
-  if (oggsupport)
-  {
+  if (oggsupport) {
     mvaddstr(12, 0, "Loading Ogg Vorbis music (" + tostring(i + 1) + "/" + tostring(MUSIC_OFF) + "): " + artdir + "ogg/" + filename + ".ogg");
     mvaddstr(13, 0, string("(with ") + artdir + "midi/" + filename + ".mid as MIDI fallback)");
-  }
-  else
+  } else
     mvaddstr(12, 0, "Loading MIDI music (" + tostring(i + 1) + "/" + tostring(MUSIC_OFF) + "): " + artdir + "midi/" + filename + ".mid");
   refresh();
   if (oggsupport) songs[i] = Mix_LoadMUS((string(artdir) + "ogg/" + filename + ".ogg").c_str()); // only attempt loading Ogg if we have Ogg support
@@ -614,8 +574,7 @@ void MusicClass::loadsong(int i, const char *filename)
 #endif // DONT_INCLUDE_SDL
 
 /* initialize SDL, SDL_mixer, and songs */
-void MusicClass::init()
-{
+void MusicClass::init() {
 #ifndef DONT_INCLUDE_SDL
   if (songsinitialized) return;      // only initialize once
   if (SDL_Init(SDL_INIT_AUDIO) != 0) // initialize what we need from SDL for audio
@@ -644,8 +603,7 @@ void MusicClass::init()
     gamelog.log("Ogg Vorbis support failed to load. MIDI music will be used instead if possible.");
     gamelog.nextMessage();
     oggsupport = false;
-  }
-  else
+  } else
     oggsupport = true; // we have Ogg Vorbis support!
   // titlemode.ogg or .mid - Also sprach Zarathustra, introduction by Richard Strauss
   loadsong(MUSIC_TITLEMODE, "titlemode"); // load title mode music
@@ -726,8 +684,7 @@ void MusicClass::init()
 }
 
 /* shut down SDL, SDL_mixer, and songs */
-void MusicClass::quit()
-{
+void MusicClass::quit() {
 #ifndef DONT_INCLUDE_SDL
   if (!songsinitialized) return; // only shut down once
   music.play(MUSIC_OFF);
@@ -742,8 +699,7 @@ void MusicClass::quit()
 }
 
 /* play music specified by a MusicMode */
-void MusicClass::play(int _musicmode)
-{
+void MusicClass::play(int _musicmode) {
 #ifndef DONT_INCLUDE_SDL
   if (!songsinitialized) init(); // if it hasn't been initialized already, do it now
 
@@ -756,8 +712,7 @@ void MusicClass::play(int _musicmode)
 
   Mix_HaltMusic(); // stop any music that we're playing
 
-  if (musicmode < 0 || musicmode >= MUSIC_OFF)
-  {
+  if (musicmode < 0 || musicmode >= MUSIC_OFF) {
     musicmode = MUSIC_OFF; // just in case we had odd input, make sure we keep track that music is off
     return;                // return without playing music
   }

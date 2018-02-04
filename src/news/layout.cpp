@@ -1,31 +1,24 @@
 #include <externs.h>
 
-void preparepage(newsstoryst &ns, bool liberalguardian)
-{
+void preparepage(newsstoryst &ns, bool liberalguardian) {
   set_color(COLOR_WHITE, COLOR_WHITE, 0);
   for (int x = 0; x < 80; x++)
     for (int y = 0; y < 25; y++)
       mvaddchar(y, x, ' ');
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
-  if (ns.page == 1 || (liberalguardian && ns.guardianpage == 1))
-  {
+  if (ns.page == 1 || (liberalguardian && ns.guardianpage == 1)) {
     //TOP
     int pap = LCSrandom(5);
-    for (int x = 0; x < 80; x++)
-    {
-      for (int y = 0; y < 5; y++)
-      {
+    for (int x = 0; x < 80; x++) {
+      for (int y = 0; y < 5; y++) {
         move(y, x);
-        if (liberalguardian)
-        {
+        if (liberalguardian) {
           set_color(translateGraphicsColor(newstops[5][x][y][1]),
                     translateGraphicsColor(newstops[5][x][y][2]),
                     newstops[5][x][y][3]);
           addchar(newstops[5][x][y][0]);
-        }
-        else
-        {
+        } else {
           set_color(translateGraphicsColor(newstops[pap][x][y][1]),
                     translateGraphicsColor(newstops[pap][x][y][2]),
                     newstops[pap][x][y][3]);
@@ -51,9 +44,7 @@ void preparepage(newsstoryst &ns, bool liberalguardian)
       addstr(", ");
       addstr(pyear);
     }
-  }
-  else
-  {
+  } else {
     //PAGE
     set_color(COLOR_BLACK, COLOR_WHITE, 0);
     move(0, 76);

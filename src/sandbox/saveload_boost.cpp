@@ -1,13 +1,11 @@
 
-void saveBoost1(const char *filename)
-{
+void saveBoost1(const char *filename) {
   std::ofstream ofs(filename);
   boost::archive::text_oarchive oa(ofs);
   //oa & Globals;
 };
 
-void loadBoost1(const char *filename)
-{
+void loadBoost1(const char *filename) {
   std::ifstream ifs(filename);
   boost::archive::text_iarchive ia(ifs);
   //ia & Globals;
@@ -15,8 +13,7 @@ void loadBoost1(const char *filename)
 
 /* handles saving */
 template <typename STREAMTYPE, typename ARCHIVETYPE>
-bool saveloadBoost(const char *filename)
-{
+bool saveloadBoost(const char *filename) {
   STREAMTYPE stream(filename);
   if (!stream.is_open()) return false;
   ARCHIVETYPE archive(stream);

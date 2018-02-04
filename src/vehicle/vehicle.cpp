@@ -2,8 +2,7 @@
 
 long Vehicle::curcarid = 0;
 
-string Vehicle::showXml() const
-{
+string Vehicle::showXml() const {
   CMarkup xml;
   xml.AddElem("vehicle");
   xml.IntoElem();
@@ -17,14 +16,12 @@ string Vehicle::showXml() const
   return xml.GetDoc();
 }
 
-Vehicle::Vehicle(const std::string &inputXml)
-{
+Vehicle::Vehicle(const std::string &inputXml) {
   CMarkup xml;
   xml.SetDoc(inputXml);
   xml.FindElem();
   xml.IntoElem();
-  while (xml.FindElem())
-  {
+  while (xml.FindElem()) {
     std::string tag = xml.GetTagName();
     if (tag == "vtypeidname")
       vtypeidname_ = xml.GetData();
@@ -43,8 +40,7 @@ Vehicle::Vehicle(const std::string &inputXml)
   }
 }
 
-void Vehicle::init(const VehicleType &seed, const string &color, int myear)
-{
+void Vehicle::init(const VehicleType &seed, const string &color, int myear) {
   id_ = curcarid++;
   heat_ = 0;
   location_ = -1;
@@ -54,31 +50,26 @@ void Vehicle::init(const VehicleType &seed, const string &color, int myear)
   myear_ = myear;
 }
 
-void Vehicle::stop_riding_me() const
-{
+void Vehicle::stop_riding_me() const {
   for (int p = 0; p < len(pool); p++)
     if (pool[p]->carid == id_)
       pool[p]->carid = -1;
 }
 
-void Vehicle::stop_preferring_me() const
-{
+void Vehicle::stop_preferring_me() const {
   for (int p = 0; p < len(pool); p++)
     if (pool[p]->pref_carid == id_)
       pool[p]->pref_carid = -1;
 }
 
-string Vehicle::fullname(bool halffull) const
-{
+string Vehicle::fullname(bool halffull) const {
   string s;
   int words = 0;
-  if (heat_)
-  {
+  if (heat_) {
     s = "Stolen ";
     words++;
   }
-  if (displayscolor())
-  {
+  if (displayscolor()) {
     s += color_ + " ";
     words++;
   }
@@ -92,11 +83,9 @@ string Vehicle::fullname(bool halffull) const
   return s;
 }
 
-int Vehicle::modifieddriveskill(int skillLevel)
-{
+int Vehicle::modifieddriveskill(int skillLevel) {
   return vehicletype[getvehicletype(vtypeidname_)]->modifieddriveskill(skillLevel); // Todo - add bonus if car is upgraded with nitro
 }
-int Vehicle::modifieddodgeskill(int skillLevel)
-{
+int Vehicle::modifieddodgeskill(int skillLevel) {
   return vehicletype[getvehicletype(vtypeidname_)]->modifieddodgeskill(skillLevel); // Todo - add bonus if car is upgraded
 }

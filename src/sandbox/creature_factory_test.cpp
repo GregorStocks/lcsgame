@@ -1,8 +1,7 @@
 
 #include "creature_test.h"
 
-class creature_factory
-{
+class creature_factory {
 public:
   creature *MakeCreature(enum CreatureType type);
 
@@ -12,8 +11,7 @@ private:
 };
 
 /* rolls up a creature's stats and equipment */
-creature *creature_factory::MakeCreature(enum CreatureType type)
-{
+creature *creature_factory::MakeCreature(enum CreatureType type) {
   creature *cr = new creature(CurrentCreatureID++);
   //int a = 0;
 

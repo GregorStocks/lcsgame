@@ -31,12 +31,10 @@ This file is part of Liberal Crime Squad.                                       
 //TODO: Not sure if anything in here should be logged...Perhaps only a summary of the results? --Addictgamer
 
 /* politics - calculate presidential approval */
-int presidentapproval()
-{
+int presidentapproval() {
   //Calculate Presidential approval rating
   int approval = 0, i;
-  for (i = 0; i < 1000; i++)
-  {
+  for (i = 0; i < 1000; i++) {
     if (i % 2 == 0 && LCSrandom(2))
       approval++; // Partyline supporter (~25%)
     else if (i % 2 == 1 && LCSrandom(2))
@@ -60,8 +58,7 @@ int presidentapproval()
 }
 
 /* politics -- gets the leaning of an issue voter for an election */
-int getswingvoter(bool stalin)
-{
+int getswingvoter(bool stalin) {
   // Take a random voter, calculate how liberal or conservative they are
   // If stalin parameter is true, it calculates how libertarian or Stalinist they are instead
   int bias = publicmood(-1 - stalin) - LCSrandom(100), vote = -2;
@@ -71,8 +68,7 @@ int getswingvoter(bool stalin)
   // spectrum, determined by bias -- high liberal/libertarian bias only rolls on the
   // liberal/libertarian end of the spectrum, high conservative/Stalinist bias only rolls on
   // the conservative/Stalinist end of the spectrum
-  for (int i = 0; i < 4; i++)
-  {
+  for (int i = 0; i < 4; i++) {
     int issue = randomissue(true);
     if (25 + LCSrandom(50) - bias < ((stalin && stalinview(issue, false)) ? 100 - attitude[issue] : attitude[issue])) vote++;
   }
@@ -80,8 +76,7 @@ int getswingvoter(bool stalin)
 }
 
 /* politics -- gets the leaning of a partyline voter for an election */
-int getsimplevoter(int leaning)
-{ // no need for this to deal with Stalinism, this function deliberately only deals with the liberal vs. conservative spectrum
+int getsimplevoter(int leaning) { // no need for this to deal with Stalinism, this function deliberately only deals with the liberal vs. conservative spectrum
   int vote = leaning - 1;
   for (int i = 0; i < 2; i++)
     if (LCSrandom(100) < attitude[randomissue(true)]) vote++;
@@ -89,13 +84,11 @@ int getsimplevoter(int leaning)
 }
 
 /* politics -- promotes the Vice President to President, and replaces VP */
-void promoteVP()
-{
+void promoteVP() {
   exec[EXEC_PRESIDENT] = exec[EXEC_VP]; // VP takes over as President
   strcpy(execname[EXEC_PRESIDENT], execname[EXEC_VP]);
-  switch (exec[EXEC_PRESIDENT])
-  {                            // make sure presparty is set correctly (if old President was moderate they could've been in Liberal OR Conservative Party,
-  case ALIGN_ARCHCONSERVATIVE: // and new President might have a political alignment incompatible with that party)
+  switch (exec[EXEC_PRESIDENT]) { // make sure presparty is set correctly (if old President was moderate they could've been in Liberal OR Conservative Party,
+  case ALIGN_ARCHCONSERVATIVE:    // and new President might have a political alignment incompatible with that party)
   case ALIGN_CONSERVATIVE:
     presparty = CONSERVATIVE_PARTY;
     break; // Conservatives and Arch-Conservatives align with the Conservative Party
@@ -109,22 +102,18 @@ void promoteVP()
     presparty = STALINIST_PARTY;
     break; // Stalinists align with the Stalinist Party
   }
-  fillCabinetPost(EXEC_VP); // the vacant VP slot needs to be filled
-  if (abs(exec[EXEC_PRESIDENT]) > 1)
-  { // new President has extreme views... make sure all cabinet members agree with new President
+  fillCabinetPost(EXEC_VP);            // the vacant VP slot needs to be filled
+  if (abs(exec[EXEC_PRESIDENT]) > 1) { // new President has extreme views... make sure all cabinet members agree with new President
     if (exec[EXEC_PRESIDENT] != exec[EXEC_STATE]) fillCabinetPost(EXEC_STATE);
     if (exec[EXEC_PRESIDENT] != exec[EXEC_ATTORNEY]) fillCabinetPost(EXEC_ATTORNEY);
-  }
-  else
-  { // new President has fairly moderate views, but anyone who differs too much from them must be replaced
+  } else { // new President has fairly moderate views, but anyone who differs too much from them must be replaced
     if (DIFF(exec[EXEC_PRESIDENT], exec[EXEC_STATE]) > 1) fillCabinetPost(EXEC_STATE);
     if (DIFF(exec[EXEC_PRESIDENT], exec[EXEC_ATTORNEY]) > 1) fillCabinetPost(EXEC_ATTORNEY);
   }
 }
 
 /* politics -- appoints a figure to an executive office, based on the President's alignment */
-void fillCabinetPost(int position)
-{
+void fillCabinetPost(int position) {
   // Set alignment
   if (exec[EXEC_PRESIDENT] == ALIGN_ARCHCONSERVATIVE)
     exec[position] = ALIGN_ARCHCONSERVATIVE;
@@ -144,12 +133,10 @@ void fillCabinetPost(int position)
 }
 
 /* politics - causes the people to vote (presidential, congressional, propositions) */
-void elections(char clearformess, char canseethings)
-{
+void elections(char clearformess, char canseethings) {
   int l, p, c;
 
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     if (clearformess)
       erase();
@@ -163,10 +150,8 @@ void elections(char clearformess, char canseethings)
   }
 
   //PRESIDENTIAL
-  if (year % 4 == 0)
-  {
-    if (canseethings)
-    {
+  if (year % 4 == 0) {
+    if (canseethings) {
       erase();
 
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -191,8 +176,7 @@ void elections(char clearformess, char canseethings)
     int libvotes[3] = {0, 0, 0}, consvotes[3] = {0, 0, 0}; // liberal & conservative parties' candidates votes received
 
     // run primaries for 100 voters
-    for (int i = 0; i < 100; i++)
-    {
+    for (int i = 0; i < 100; i++) {
       int voters[2] = {getsimplevoter(1), getsimplevoter(1)}; // liberal & conservative party voter both decide
       if (presparty != STALINIST_PARTY)                       // Stalinist Party doesn't do primaries
       {
@@ -256,18 +240,15 @@ void elections(char clearformess, char canseethings)
              (presparty != LIBERAL_PARTY || exec[EXEC_VP] != ALIGN_CONSERVATIVE) && // We don't want conservative liberals
              (presparty != CONSERVATIVE_PARTY || exec[EXEC_VP] != ALIGN_LIBERAL))   // or liberal conservatives.
     {
-      if (approvepres >= 50)
-      {
+      if (approvepres >= 50) {
         candidate[presparty][0] = exec[EXEC_VP];
         strcpy(candidate[presparty] + 1, execname[EXEC_VP]);
       }
     }
 
     //Print candidates
-    if (canseethings)
-    {
-      for (c = 0; c < 2 + stalinmode; c++)
-      {
+    if (canseethings) {
+      for (c = 0; c < 2 + stalinmode; c++) {
         // Pick color by political orientation
         set_alignment_color(candidate[c][0], true);
 
@@ -295,15 +276,13 @@ void elections(char clearformess, char canseethings)
         addstr(", " + getalign(candidate[c][0], false));
       }
 
-      if (!disbanding)
-      {
+      if (!disbanding) {
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
         move(8 + stalinmode * 2, 0);
         addstr("Press any key to watch the election unfold.");
 
         getkey();
-      }
-      else
+      } else
         pause_ms(200);
     }
 
@@ -312,21 +291,17 @@ void elections(char clearformess, char canseethings)
 
     for (int l = 0; l < 1000; l++) // 1000 Voters!
     {
-      if (l % 2 == 0 && LCSrandom(5))
-      {                                                                            // Partyline Liberals (~40%) - except when stalin mode is enabled they can go Stalinist sometimes
+      if (l % 2 == 0 && LCSrandom(5)) {                                            // Partyline Liberals (~40%) - except when stalin mode is enabled they can go Stalinist sometimes
         if (!stalinmode || getswingvoter(true) != -2 || getswingvoter(false) == 2) // if we aren't in stalin mode or they don't agree with Stalinism or they are an Elite Liberal
           votes[LIBERAL_PARTY]++;                                                  // go with Liberal Party affiliation (Good Loyal Liberal!)
         else
-          votes[STALINIST_PARTY]++; // otherwise, this Liberal's gone Stalinist and betrayed Liberalism (TRAITOR!)
-      }
-      else if (l % 2 == 1 && LCSrandom(5))
-      {                                                                             // Partyline Conservatives (~40%) - except when stalin mode is enabled they can go Stalinist sometimes
+          votes[STALINIST_PARTY]++;                                                 // otherwise, this Liberal's gone Stalinist and betrayed Liberalism (TRAITOR!)
+      } else if (l % 2 == 1 && LCSrandom(5)) {                                      // Partyline Conservatives (~40%) - except when stalin mode is enabled they can go Stalinist sometimes
         if (!stalinmode || getswingvoter(true) != -2 || getswingvoter(false) == -2) // if we aren't in stalin mode or they don't agree with Stalinism or they are an Arch-Conservative
           votes[CONSERVATIVE_PARTY]++;                                              // go with Conservative Party affiliation (Good Loyal Conservative!)
         else
           votes[STALINIST_PARTY]++; // otherwise, this Conservative's gone Stalinist and betrayed Conservatism (TRAITOR!)
-      }
-      else // Swing Issue Voters (~20%)
+      } else                        // Swing Issue Voters (~20%)
       {
         // Get the leanings of an issue voter
         int vote = getswingvoter(false);
@@ -349,8 +324,7 @@ void elections(char clearformess, char canseethings)
           votes[LCSrandom(2 + stalinmode)]++;
       }
 
-      if (l % 5 == 4)
-      {
+      if (l % 5 == 4) {
         int maxvote = 0;
         for (c = 0; c < 2 + stalinmode; c++)
           if (votes[c] > maxvote) maxvote = votes[c];
@@ -360,10 +334,8 @@ void elections(char clearformess, char canseethings)
         recount = len(eligible) > 1;
         winner = pickrandom(eligible);
 
-        if (canseethings)
-        {
-          for (c = 0; c < 2 + stalinmode; c++)
-          {
+        if (canseethings) {
+          for (c = 0; c < 2 + stalinmode; c++) {
             if (c == winner)
               set_color(COLOR_WHITE, COLOR_BLACK, 1);
             else
@@ -384,8 +356,7 @@ void elections(char clearformess, char canseethings)
       }
     }
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(8 + stalinmode * 2, 0);
       addstr("Press any key to continue the elections.   ");
@@ -397,8 +368,7 @@ void elections(char clearformess, char canseethings)
     //CONSTRUCT EXECUTIVE BRANCH
     if (winner == presparty && execterm == 1)
       execterm = 2;
-    else
-    {
+    else {
       presparty = winner, execterm = 1, exec[EXEC_PRESIDENT] = candidate[winner][0];
       strcpy(execname[EXEC_PRESIDENT], candidate[winner] + 1);
       for (int e = EXEC_PRESIDENT + 1; e < EXECNUM; e++)
@@ -406,15 +376,13 @@ void elections(char clearformess, char canseethings)
     }
   }
 
-  if (year % 2 == 0)
-  {
+  if (year % 2 == 0) {
     elections_senate((year % 6) / 2, canseethings); //SENATE
     elections_house(canseethings);                  //HOUSE
   }
 
   //PROPOSITIONS
-  if (canseethings)
-  {
+  if (canseethings) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -435,8 +403,7 @@ void elections(char clearformess, char canseethings)
   memset(lawdir, 0, LAWNUM * sizeof(char));
   //DETERMINE PROPS
   int pmood, pvote;
-  for (l = 0; l < LAWNUM; l++)
-  {
+  for (l = 0; l < LAWNUM; l++) {
     pmood = publicmood(l);
     pvote = -2;
     for (int i = 0; i < 4; i++)
@@ -456,15 +423,11 @@ void elections(char clearformess, char canseethings)
   propdir.resize(pnum);
 
   int propnums[7] = {0, 0, 0, 0, 0, 0, 0}; // 7 is maximum value for pnum
-  if (canseethings)
-  {
-    for (p = 0; p < pnum; p++)
-    {
+  if (canseethings) {
+    for (p = 0; p < pnum; p++) {
       int propnum = 0;
-      do
-      { // this loop prevents duplicate proposition numbers from occurring
-        switch (p)
-        { // 7 entries, as 7 is maximum value for pnum
+      do {           // this loop prevents duplicate proposition numbers from occurring
+        switch (p) { // 7 entries, as 7 is maximum value for pnum
         case 0:
           propnum = 2 * (17 - LCSrandom(2) * 6) * (19 - LCSrandom(2) * 6);
           break;
@@ -493,8 +456,7 @@ void elections(char clearformess, char canseethings)
     sort(propnums, propnums + pnum);
   }
 
-  for (p = 0; p < pnum; p++)
-  {
+  for (p = 0; p < pnum; p++) {
     int maxprior = 0;
     for (l = 0; l < LAWNUM; l++)
       if (lawpriority[l] > maxprior && !lawtaken[l]) maxprior = lawpriority[l];
@@ -508,16 +470,14 @@ void elections(char clearformess, char canseethings)
 
     propdir[p] = lawdir[prop[p]];
 
-    if (canseethings)
-    {
+    if (canseethings) {
       move(p * 3 + 2, 0);
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       addstr("Proposition " + tostring(propnums[p]) + ':');
       move(p * 3 + 2, 18);
       addstr("To ");
       set_alignment_color(propdir[p]);
-      switch (prop[p])
-      {
+      switch (prop[p]) {
       case LAW_ABORTION:
         if (propdir[p] == 1)
           addstr("Strengthen Reproductive Freedom"); // was "Strengthen Abortion Rights"
@@ -645,14 +605,12 @@ void elections(char clearformess, char canseethings)
           addstr("Enhance Interrogations to Fight Terrorism"); // was "Permit Strong Tactics in Interrogations"
         break;
       case LAW_PRISONS:
-        if (propdir[p] == 1)
-        {
+        if (propdir[p] == 1) {
           if (law[LAW_PRISONS] == 1)
             addstr("Establish Prison Rehabilitation"); // was "Mandate Prison Rehabilitation"
           else
             addstr("Improve Prison Conditions"); // was "Expand Prisoners' Rights"
-        }
-        else
+        } else
           addstr("Enhance Prison Security"); // was "Limit Prisoners' Rights"
         break;
       }
@@ -660,8 +618,7 @@ void elections(char clearformess, char canseethings)
     }
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to watch the elections unfold.");
@@ -669,27 +626,23 @@ void elections(char clearformess, char canseethings)
     getkey();
   }
 
-  for (p = 0; p < pnum; p++)
-  {
+  for (p = 0; p < pnum; p++) {
     bool yeswin = false, recount = false;
     int yesvotes = 0, mood = publicmood(prop[p]);
-    for (int l = 0; l < 1000; l++)
-    {
+    for (int l = 0; l < 1000; l++) {
       if (LCSrandom(100) < mood ? propdir[p] == 1 : propdir[p] == -1) yesvotes++;
       /*vote=-2;
          for(int i=0;i<4;i++) if(LCSrandom(100)<mood) vote++;
          if((law[prop[p]]>vote&&propdir[p]==-1)||(law[prop[p]]<vote&&propdir[p]==1)) yesvotes++;*/
 
-      if (l == 999)
-      {
+      if (l == 999) {
         if (yesvotes > 500)
           yeswin = true;
         else if (yesvotes == 500)
           yeswin = (LCSrandom(100) < mood ? propdir[p] == 1 : propdir[p] == -1), recount = true;
       }
 
-      if (canseethings && (l % 10 == 9))
-      {
+      if (canseethings && (l % 10 == 9)) {
         if ((l != 999 && yesvotes > l / 2) || (l == 999 && yeswin))
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (yesvotes < l / 2 || l == 999)
@@ -718,8 +671,7 @@ void elections(char clearformess, char canseethings)
       }
     }
 
-    if (canseethings && recount)
-    {
+    if (canseethings && recount) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(p * 3 + 3, 0);
       addstr("A Recount was Necessary");
@@ -728,8 +680,7 @@ void elections(char clearformess, char canseethings)
     if (yeswin) law[prop[p]] += propdir[p];
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to reflect on what has happened.");
@@ -738,12 +689,10 @@ void elections(char clearformess, char canseethings)
   }
 }
 
-void elections_senate(int senmod, char canseethings)
-{
+void elections_senate(int senmod, char canseethings) {
   int mood = publicmood(LAW_MOOD);
   int stalinmood = publicmood(LAW_STALIN);
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     erase();
 
@@ -756,12 +705,10 @@ void elections_senate(int senmod, char canseethings)
 
   int x = 0, y = 2, s = 0;
 
-  for (s = 0; s < SENATENUM; s++)
-  {
+  for (s = 0; s < SENATENUM; s++) {
     if (senmod != -1 && s % 3 != senmod) continue;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_alignment_color(senate[s], true);
       mvaddstr(y, x, getalign(senate[s], false));
     }
@@ -770,8 +717,7 @@ void elections_senate(int senmod, char canseethings)
     if (x > 70) x = 0, y++;
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to watch the elections unfold.");
@@ -783,8 +729,7 @@ void elections_senate(int senmod, char canseethings)
 
   x = 0, y = 2;
 
-  for (s = 0; s < SENATENUM; s++)
-  {
+  for (s = 0; s < SENATENUM; s++) {
     if (senmod != -1 && s % 3 != senmod) continue;
 
     vote = -2;
@@ -795,19 +740,16 @@ void elections_senate(int senmod, char canseethings)
     change[senate[s] + 2]--;
     if (termlimits)
       senate[s] = vote;
-    else
-    {
+    else {
       int vote2;
       bool first = true;
-      do
-      {
+      do {
         vote2 = -2;
         for (int i = 0; i < 4; i++)
           if (mood > LCSrandom(100)) vote2++;
         if (stalinmode && stalinmood < LCSrandom(100) && stalinmood < LCSrandom(100) && stalinmood < LCSrandom(100) && stalinmood < LCSrandom(100)) vote2 = 3;
 
-        if (first) switch (law[LAW_ELECTIONS])
-          {
+        if (first) switch (law[LAW_ELECTIONS]) {
           case -2:
             if (LCSrandom(3)) vote2 = senate[s];
             break; // 2/3 chance of incumbent winning no matter what (huge   advantage)
@@ -830,8 +772,7 @@ void elections_senate(int senmod, char canseethings)
     }
     change[senate[s] + 2]++;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_alignment_color(senate[s], true);
       mvaddstr(y, x, "                    ");
       mvaddstr(y, x, getalign(senate[s], false));
@@ -840,14 +781,12 @@ void elections_senate(int senmod, char canseethings)
     x += 20;
     if (x > 70) x = 0, y++;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
       move(20, 0);
       addstr("Net change:");
-      if (stalinmode)
-      {
+      if (stalinmode) {
         addstr("   S: ");
         if (change[5] > 0) addstr("+");
         addstr(change[5]);
@@ -873,8 +812,7 @@ void elections_senate(int senmod, char canseethings)
     }
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     move(21, 0);
     signed char winner;
     if (change[5] > 0 && change[5] > change[0] + change[1] && change[5] > change[3] + change[4]) // Stalinist increased and Stalinist gain is more than C or L side gain/loss
@@ -885,34 +823,29 @@ void elections_senate(int senmod, char canseethings)
         winner = ALIGN_ARCHCONSERVATIVE;
       else
         winner = ALIGN_CONSERVATIVE;
-    }
-    else if (change[3] + change[4] > change[0] + change[1]) // L side gain/loss is more than C side gain/loss
+    } else if (change[3] + change[4] > change[0] + change[1]) // L side gain/loss is more than C side gain/loss
     {
       if (change[3] < 0 && mood > 75)
         winner = ALIGN_ELITELIBERAL;
       else
         winner = ALIGN_LIBERAL;
-    }
-    else if (change[0] > 0 && change[4] <= 0 && change[5] <= 0) // C+ increased and L+ and Stalinist both same or decreased
+    } else if (change[0] > 0 && change[4] <= 0 && change[5] <= 0) // C+ increased and L+ and Stalinist both same or decreased
     {
       if (mood < 25)
         winner = ALIGN_ARCHCONSERVATIVE;
       else
         winner = ALIGN_CONSERVATIVE;
-    }
-    else if (change[4] > 0 && change[0] <= 0 && change[5] <= 0) // L+ increased and C+ and Stalinist both same or decreased
+    } else if (change[4] > 0 && change[0] <= 0 && change[5] <= 0) // L+ increased and C+ and Stalinist both same or decreased
     {
       if (mood > 75)
         winner = ALIGN_ELITELIBERAL;
       else
         winner = ALIGN_LIBERAL;
-    }
-    else if (change[5] > 0 && change[0] <= 0 && change[4] <= 0) // Stalinist increased and C+ and L+ both same or decreased
+    } else if (change[5] > 0 && change[0] <= 0 && change[4] <= 0) // Stalinist increased and C+ and L+ both same or decreased
       winner = ALIGN_STALINIST;
     else
       winner = ALIGN_MODERATE; // nobody won
-    switch (winner)
-    {
+    switch (winner) {
     case ALIGN_ARCHCONSERVATIVE:
       addstr("The $$ U.S.A. Flag Eagle $$ Conservative Tea Party claims victory!");
       break;
@@ -940,12 +873,10 @@ void elections_senate(int senmod, char canseethings)
   }
 }
 
-void elections_house(char canseethings)
-{
+void elections_house(char canseethings) {
   int mood = publicmood(LAW_MOOD);
   int stalinmood = publicmood(LAW_STALIN);
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     erase();
 
@@ -958,39 +889,26 @@ void elections_house(char canseethings)
 
   int x = 0, y = 2, h = 0;
 
-  for (h = 0; h < HOUSENUM; h++)
-  {
-    if (canseethings)
-    {
+  for (h = 0; h < HOUSENUM; h++) {
+    if (canseethings) {
       move(y, x);
 
-      if (house[h] == -2)
-      {
+      if (house[h] == -2) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("C+");
-      }
-      else if (house[h] == -1)
-      {
+      } else if (house[h] == -1) {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         addstr("C ");
-      }
-      else if (house[h] == 0)
-      {
+      } else if (house[h] == 0) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         addstr("m ");
-      }
-      else if (house[h] == 1)
-      {
+      } else if (house[h] == 1) {
         set_color(COLOR_CYAN, COLOR_BLACK, 1);
         addstr("L ");
-      }
-      else if (house[h] == 2)
-      {
+      } else if (house[h] == 2) {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr("L+");
-      }
-      else
-      {
+      } else {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("S ");
       }
@@ -1000,8 +918,7 @@ void elections_house(char canseethings)
     if (x > 78) x = 0, y++;
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to watch the elections unfold.");
@@ -1013,8 +930,7 @@ void elections_house(char canseethings)
 
   x = 0, y = 2;
 
-  for (h = 0; h < HOUSENUM; h++)
-  {
+  for (h = 0; h < HOUSENUM; h++) {
     vote = -2;
     for (int i = 0; i < 4; i++)
       if (mood > LCSrandom(100)) vote++;
@@ -1023,19 +939,16 @@ void elections_house(char canseethings)
     change[house[h] + 2]--;
     if (termlimits)
       house[h] = vote;
-    else
-    {
+    else {
       int vote2;
       bool first = true;
-      do
-      {
+      do {
         vote2 = -2;
         for (int i = 0; i < 4; i++)
           if (mood > LCSrandom(100)) vote2++;
         if (stalinmode && stalinmood < LCSrandom(100) && stalinmood < LCSrandom(100) && stalinmood < LCSrandom(100) && stalinmood < LCSrandom(100)) vote2 = 3;
 
-        if (first) switch (law[LAW_ELECTIONS])
-          {
+        if (first) switch (law[LAW_ELECTIONS]) {
           case -2:
             if (LCSrandom(3)) vote2 = house[h];
             break; // 2/3 chance of incumbent winning no matter what (huge   advantage)
@@ -1058,37 +971,25 @@ void elections_house(char canseethings)
     }
     change[house[h] + 2]++;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       move(y, x);
 
-      if (house[h] == -2)
-      {
+      if (house[h] == -2) {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("C+");
-      }
-      else if (house[h] == -1)
-      {
+      } else if (house[h] == -1) {
         set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
         addstr("C ");
-      }
-      else if (house[h] == 0)
-      {
+      } else if (house[h] == 0) {
         set_color(COLOR_YELLOW, COLOR_BLACK, 1);
         addstr("m ");
-      }
-      else if (house[h] == 1)
-      {
+      } else if (house[h] == 1) {
         set_color(COLOR_CYAN, COLOR_BLACK, 1);
         addstr("L ");
-      }
-      else if (house[h] == 2)
-      {
+      } else if (house[h] == 2) {
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
         addstr("L+");
-      }
-      else
-      {
+      } else {
         set_color(COLOR_RED, COLOR_BLACK, 1);
         addstr("S ");
       }
@@ -1097,14 +998,12 @@ void elections_house(char canseethings)
     x += 3;
     if (x > 78) x = 0, y++;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
       move(20, 0);
       addstr("Net change:");
-      if (stalinmode)
-      {
+      if (stalinmode) {
         addstr("   S: ");
         if (change[5] > 0) addstr("+");
         addstr(change[5]);
@@ -1130,8 +1029,7 @@ void elections_house(char canseethings)
     }
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     move(21, 0);
     signed char winner;
     if (change[5] > 0 && change[5] > change[0] + change[1] && change[5] > change[3] + change[4]) // Stalinist increased and Stalinist gain is more than C or L side gain/loss
@@ -1142,34 +1040,29 @@ void elections_house(char canseethings)
         winner = ALIGN_ARCHCONSERVATIVE;
       else
         winner = ALIGN_CONSERVATIVE;
-    }
-    else if (change[3] + change[4] > change[0] + change[1]) // L side gain/loss is more than C side gain/loss
+    } else if (change[3] + change[4] > change[0] + change[1]) // L side gain/loss is more than C side gain/loss
     {
       if (change[3] < 0 && mood > 75)
         winner = ALIGN_ELITELIBERAL;
       else
         winner = ALIGN_LIBERAL;
-    }
-    else if (change[0] > 0 && change[4] <= 0 && change[5] <= 0) // C+ increased and L+ and Stalinist both same or decreased
+    } else if (change[0] > 0 && change[4] <= 0 && change[5] <= 0) // C+ increased and L+ and Stalinist both same or decreased
     {
       if (mood < 25)
         winner = ALIGN_ARCHCONSERVATIVE;
       else
         winner = ALIGN_CONSERVATIVE;
-    }
-    else if (change[4] > 0 && change[0] <= 0 && change[5] <= 0) // L+ increased and C+ and Stalinist both same or decreased
+    } else if (change[4] > 0 && change[0] <= 0 && change[5] <= 0) // L+ increased and C+ and Stalinist both same or decreased
     {
       if (mood > 75)
         winner = ALIGN_ELITELIBERAL;
       else
         winner = ALIGN_LIBERAL;
-    }
-    else if (change[5] > 0 && change[0] <= 0 && change[4] <= 0) // Stalinist increased and C+ and L+ both same or decreased
+    } else if (change[5] > 0 && change[0] <= 0 && change[4] <= 0) // Stalinist increased and C+ and L+ both same or decreased
       winner = ALIGN_STALINIST;
     else
       winner = ALIGN_MODERATE; // nobody won
-    switch (winner)
-    {
+    switch (winner) {
     case ALIGN_ARCHCONSERVATIVE:
       addstr("The $$ U.S.A. Flag Eagle $$ Conservative Tea Party claims victory!");
       break;
@@ -1189,24 +1082,20 @@ void elections_house(char canseethings)
       addstr("The Stalinist Party claims victory!");
       break;
     }
-    if (!disbanding)
-    {
+    if (!disbanding) {
       move(22, 0);
       addstr("Press any key to continue the elections.    ");
 
       getkey();
-    }
-    else
+    } else
       pause_ms(800);
   }
 }
 
 /* politics - causes the supreme court to hand down decisions */
-void supremecourt(char clearformess, char canseethings)
-{
+void supremecourt(char clearformess, char canseethings) {
   int c;
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     if (clearformess)
       erase();
@@ -1220,8 +1109,7 @@ void supremecourt(char clearformess, char canseethings)
   }
 
   //CHANGE THINGS AND REPORT
-  if (canseethings)
-  {
+  if (canseethings) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1240,10 +1128,8 @@ void supremecourt(char clearformess, char canseethings)
 
   scase.resize(cnum);
   scasedir.resize(cnum);
-  for (c = 0; c < cnum; c++)
-  {
-    do
-    {
+  for (c = 0; c < cnum; c++) {
+    do {
       scase[c] = LCSrandom(LAWNUM);
     } while (lawtaken[scase[c]]);
 
@@ -1262,8 +1148,7 @@ void supremecourt(char clearformess, char canseethings)
       scasedir[c] = -1;
     else if (law[scase[c]] == -2)
       scasedir[c] = 1;
-    else
-    {
+    else {
       if (bias)
         scasedir[c] = bias;
       else if (!LCSrandom(2))
@@ -1272,8 +1157,7 @@ void supremecourt(char clearformess, char canseethings)
         scasedir[c] = -1;
     }
 
-    if (canseethings)
-    {
+    if (canseethings) {
       move(c * 3 + 2, 0);
       char name1[80], name2[80];
       if (!LCSrandom(5))
@@ -1284,11 +1168,9 @@ void supremecourt(char clearformess, char canseethings)
       lastname(name2);
       if ((scase[c] == LAW_LABOR || scase[c] == LAW_CORPORATE ||
            scase[c] == LAW_ANIMALRESEARCH || scase[c] == LAW_POLLUTION) &&
-          !LCSrandom(5))
-      {
+          !LCSrandom(5)) {
         lastname(name2, true);
-        switch (LCSrandom(5))
-        {
+        switch (LCSrandom(5)) {
         case 0:
           strcat(name2, ", Inc.");
           break;
@@ -1317,8 +1199,7 @@ void supremecourt(char clearformess, char canseethings)
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
       else
         set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (scase[c])
-      {
+      switch (scase[c]) {
       case LAW_ABORTION:
         if (scasedir[c] == 1)
           addstr("Strengthen Reproductive Freedom"); // was "Strengthen Abortion Rights"
@@ -1446,14 +1327,12 @@ void supremecourt(char clearformess, char canseethings)
           addstr("Enhance Interrogations to Fight Terrorism"); // was "Permit Strong Tactics in Interrogations"
         break;
       case LAW_PRISONS:
-        if (scasedir[c] == 1)
-        {
+        if (scasedir[c] == 1) {
           if (law[LAW_PRISONS] == 1)
             addstr("Establish Prison Rehabilitation"); // was "Mandate Prison Rehabilitation"
           else
             addstr("Improve Prison Conditions"); // was "Expand Prisoners' Rights"
-        }
-        else
+        } else
           addstr("Enhance Prison Security"); // was "Limit Prisoners' Rights"
         break;
       }
@@ -1463,8 +1342,7 @@ void supremecourt(char clearformess, char canseethings)
     }
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to watch the decisions unfold.");
@@ -1472,8 +1350,7 @@ void supremecourt(char clearformess, char canseethings)
     getkey();
   }
 
-  for (c = 0; c < cnum; c++)
-  {
+  for (c = 0; c < cnum; c++) {
     char yeswin = 0;
     int yesvotes = 0, vote;
     //Constitutional bias -- free speech, flag burning issues, supreme court
@@ -1487,11 +1364,9 @@ void supremecourt(char clearformess, char canseethings)
     else
       bias = 0;
 
-    for (int l = 0; l < COURTNUM; l++)
-    {
+    for (int l = 0; l < COURTNUM; l++) {
       vote = court[l];
-      if (vote == ALIGN_STALINIST)
-      {
+      if (vote == ALIGN_STALINIST) {
         if (stalinview(scase[c], true))
           vote = ALIGN_ELITELIBERAL;
         else
@@ -1504,8 +1379,7 @@ void supremecourt(char clearformess, char canseethings)
 
       if (l == COURTNUM - 1 && yesvotes >= COURTMAJORITY) yeswin = 1;
 
-      if (canseethings)
-      {
+      if (canseethings) {
         if (l == COURTNUM - 1 && yeswin)
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (l == COURTNUM - 1)
@@ -1533,8 +1407,7 @@ void supremecourt(char clearformess, char canseethings)
     if (yeswin) law[scase[c]] += scasedir[c];
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to reflect on what has happened.");
@@ -1543,10 +1416,8 @@ void supremecourt(char clearformess, char canseethings)
   }
 
   //CHANGE A JUSTICE 40% OF THE TIME
-  if (LCSrandom(10) >= 6)
-  {
-    if (canseethings)
-    {
+  if (LCSrandom(10) >= 6) {
+    if (canseethings) {
       erase();
 
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1556,8 +1427,7 @@ void supremecourt(char clearformess, char canseethings)
 
     int j = LCSrandom(COURTNUM);
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(2, 0);
       addstr("Justice ");
@@ -1594,16 +1464,14 @@ void supremecourt(char clearformess, char canseethings)
     else
       court[j] = ALIGN_ELITELIBERAL;
 
-    do
-    {
+    do {
       if (court[j] == ALIGN_ARCHCONSERVATIVE)
         generate_name(courtname[j], GENDER_WHITEMALEPATRIARCH);
       else
         generate_name(courtname[j]);
     } while (len(courtname[j]) > 20);
 
-    if (canseethings)
-    {
+    if (canseethings) {
       move(4, 0);
       addstr("After much debate and televised testimony, a new justice,");
       move(5, 0);
@@ -1625,8 +1493,7 @@ void supremecourt(char clearformess, char canseethings)
   }
 }
 
-enum BillStatus
-{
+enum BillStatus {
   BILL_SIGNED = -2,
   BILL_OVERRIDE_VETO = -1,
   BILL_PASSED_CONGRESS = 0,
@@ -1635,32 +1502,24 @@ enum BillStatus
 
 //Some politicians listen to public opinion, but no politician will radically deviate from their alignment.
 //More extreme politicians are less likely to deviate from their views. Moderates always consult public opinion.
-char determine_politician_vote(char alignment, int law)
-{
+char determine_politician_vote(char alignment, int law) {
   char vote = alignment;
   int mood = publicmood(law);
-  if (vote == ALIGN_STALINIST)
-  {
+  if (vote == ALIGN_STALINIST) {
     // Stalinist -- Will not accept public opinion
     if (stalinview(law, true))
       vote = ALIGN_ELITELIBERAL;
     else
       vote = ALIGN_ARCHCONSERVATIVE;
-  }
-  else if (vote == -2 || vote == 2)
-  {
+  } else if (vote == -2 || vote == 2) {
     // Extremist -- Damn public opinion, I'm doing what I think is right
-  }
-  else if (vote == -1 || vote == 1)
-  {
+  } else if (vote == -1 || vote == 1) {
     // Partisan -- Listens to public opinion, but won't accept opposing views
     vote = -2;
     for (int i = 0; i < 4; i++)
       if (LCSrandom(100) < mood) vote++;
     if (abs(vote - alignment) > 1) vote = 0;
-  }
-  else if (vote == 0)
-  {
+  } else if (vote == 0) {
     // Moderate -- Listens to public opinion, but won't accept either extreme
     vote = -2;
     for (int i = 0; i < 4; i++)
@@ -1671,11 +1530,9 @@ char determine_politician_vote(char alignment, int law)
 }
 
 /* politics - causes congress to act on legislation */
-void congress(char clearformess, char canseethings)
-{
+void congress(char clearformess, char canseethings) {
   int l, c;
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     if (clearformess)
       erase();
@@ -1689,8 +1546,7 @@ void congress(char clearformess, char canseethings)
   }
 
   //CHANGE THINGS AND REPORT
-  if (canseethings)
-  {
+  if (canseethings) {
     erase();
 
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -1712,16 +1568,13 @@ void congress(char clearformess, char canseethings)
 
   //DETERMINE BILLS
   int pup, pdown, pprior;
-  for (l = 0; l < LAWNUM; l++)
-  {
+  for (l = 0; l < LAWNUM; l++) {
     pup = 0, pdown = 0, pprior = 0;
 
     // Consult House
-    for (int cl = 0; cl < HOUSENUM; cl++)
-    {
+    for (int cl = 0; cl < HOUSENUM; cl++) {
       short housealign = house[cl];
-      if (housealign == ALIGN_STALINIST)
-      {
+      if (housealign == ALIGN_STALINIST) {
         if (stalinview(l, true))
           housealign = ALIGN_ELITELIBERAL;
         else
@@ -1734,11 +1587,9 @@ void congress(char clearformess, char canseethings)
       pprior += DIFF(housealign, law[l]);
     }
     // Consult Senate
-    for (int sl = 0; sl < SENATENUM; sl++)
-    {
+    for (int sl = 0; sl < SENATENUM; sl++) {
       short senatealign = senate[sl];
-      if (senatealign == ALIGN_STALINIST)
-      {
+      if (senatealign == ALIGN_STALINIST) {
         if (stalinview(l, true))
           senatealign = ALIGN_ELITELIBERAL;
         else
@@ -1777,8 +1628,7 @@ void congress(char clearformess, char canseethings)
   bill.resize(cnum);
   billdir.resize(cnum);
   killbill.resize(cnum);
-  for (c = 0; c < cnum; c++)
-  {
+  for (c = 0; c < cnum; c++) {
     killbill[c] = BILL_PASSED_CONGRESS;
 
     int maxprior = 0;
@@ -1795,8 +1645,7 @@ void congress(char clearformess, char canseethings)
 
     billdir[c] = lawdir[bill[c]];
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       move(c * 3 + 2, 0);
       addstr("Joint Resolution ");
@@ -1810,8 +1659,7 @@ void congress(char clearformess, char canseethings)
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
       else
         set_color(COLOR_RED, COLOR_BLACK, 1);
-      switch (bill[c])
-      {
+      switch (bill[c]) {
       case LAW_ABORTION:
         if (billdir[c] == 1)
           addstr("Strengthen Reproductive Freedom"); // was "Strengthen Abortion Rights"
@@ -1939,14 +1787,12 @@ void congress(char clearformess, char canseethings)
           addstr("Enhance Interrogations to Fight Terrorism"); // was "Permit Strong Tactics in Interrogations"
         break;
       case LAW_PRISONS:
-        if (billdir[c] == 1)
-        {
+        if (billdir[c] == 1) {
           if (law[LAW_PRISONS] == 1)
             addstr("Establish Prison Rehabilitation"); // was "Mandate Prison Rehabilitation"
           else
             addstr("Improve Prison Conditions"); // was "Expand Prisoners' Rights"
-        }
-        else
+        } else
           addstr("Enhance Prison Security"); // was "Limit Prisoners' Rights"
         break;
       }
@@ -1955,8 +1801,7 @@ void congress(char clearformess, char canseethings)
     }
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("Press any key to watch the votes unfold.");
@@ -1970,27 +1815,23 @@ void congress(char clearformess, char canseethings)
     addstr("Senate");
   }
 
-  for (c = 0; c < cnum; c++)
-  {
+  for (c = 0; c < cnum; c++) {
     char yeswin_h = 0, yeswin_s = 0;
     int yesvotes_h = 0, yesvotes_s = 0;
     int vote, s = 0;
 
-    for (int l = 0; l < HOUSENUM; l++)
-    {
+    for (int l = 0; l < HOUSENUM; l++) {
       vote = determine_politician_vote(house[l], bill[c]);
 
       if (law[bill[c]] > vote && billdir[c] == -1) yesvotes_h++;
       if (law[bill[c]] < vote && billdir[c] == 1) yesvotes_h++;
 
-      if (l == HOUSENUM - 1)
-      {
+      if (l == HOUSENUM - 1) {
         if (yesvotes_h >= HOUSEMAJORITY) yeswin_h = 1;
         if (yesvotes_h >= HOUSESUPERMAJORITY) killbill[c] = BILL_OVERRIDE_VETO;
       }
 
-      if (canseethings)
-      {
+      if (canseethings) {
         if (l == HOUSENUM - 1 && yeswin_h)
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (l == HOUSENUM - 1)
@@ -2012,20 +1853,17 @@ void congress(char clearformess, char canseethings)
         addstr(" Nay");
       }
 
-      if (l % 4 == 0 && s < SENATENUM)
-      {
+      if (l % 4 == 0 && s < SENATENUM) {
         vote = determine_politician_vote(senate[s++], bill[c]);
 
         if (law[bill[c]] > vote && billdir[c] == -1) yesvotes_s++;
         if (law[bill[c]] < vote && billdir[c] == 1) yesvotes_s++;
       }
 
-      if (l == HOUSENUM - 1)
-      {
+      if (l == HOUSENUM - 1) {
         if (yesvotes_s >= SENATEMAJORITY) yeswin_s = 1;
         if (yesvotes_s < SENATESUPERMAJORITY && killbill[c] == BILL_OVERRIDE_VETO) killbill[c] = BILL_PASSED_CONGRESS;
-        if (yesvotes_s == SENATEMAJORITY - 1)
-        { //TIE BREAKER
+        if (yesvotes_s == SENATEMAJORITY - 1) { //TIE BREAKER
           int vote;
           if ((exec[EXEC_VP] >= -1 && exec[EXEC_VP] <= 1) ||
               (exec[EXEC_PRESIDENT] >= -1 && exec[EXEC_PRESIDENT] <= 1))
@@ -2034,11 +1872,9 @@ void congress(char clearformess, char canseethings)
                     exec[EXEC_STATE] +
                     exec[EXEC_ATTORNEY] + LCSrandom(9) - 4) /
                    4;
-          else
-          {
+          else {
             vote = exec[EXEC_VP];
-            if (vote == ALIGN_STALINIST)
-            {
+            if (vote == ALIGN_STALINIST) {
               if (stalinview(bill[c], true))
                 vote = ALIGN_ELITELIBERAL;
               else
@@ -2054,8 +1890,7 @@ void congress(char clearformess, char canseethings)
         }
       }
 
-      if (canseethings)
-      {
+      if (canseethings) {
         if (l == HOUSENUM - 1 && yeswin_s)
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (l == HOUSENUM - 1)
@@ -2066,8 +1901,7 @@ void congress(char clearformess, char canseethings)
         addstr(yesvotes_s);
         addstr(" Yea");
 
-        if (l == HOUSENUM - 1 && yesvotes_s == SENATEMAJORITY - 1 && yeswin_s)
-        {
+        if (l == HOUSENUM - 1 && yesvotes_s == SENATEMAJORITY - 1 && yeswin_s) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(c * 3 + 2, 78);
           addstr("VP");
@@ -2083,8 +1917,7 @@ void congress(char clearformess, char canseethings)
         addstr(s - yesvotes_s);
         addstr(" Nay");
 
-        if (l == HOUSENUM - 1 && yesvotes_s == SENATEMAJORITY - 1 && !yeswin_s)
-        {
+        if (l == HOUSENUM - 1 && yesvotes_s == SENATEMAJORITY - 1 && !yeswin_s) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           move(c * 3 + 3, 78);
           addstr("VP");
@@ -2101,10 +1934,8 @@ void congress(char clearformess, char canseethings)
   for (c = 0; c < cnum; c++)
     if (killbill[c] != BILL_FAILED) havebill++;
 
-  if (havebill)
-  {
-    if (canseethings)
-    {
+  if (havebill) {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(23, 0);
       addstr("Press any key to watch the President.                   ");
@@ -2117,10 +1948,8 @@ void congress(char clearformess, char canseethings)
       pause_ms(500);
     }
 
-    for (int c = 0; c < len(bill); c++)
-    {
-      if (killbill[c] != BILL_FAILED)
-      {
+    for (int c = 0; c < len(bill); c++) {
+      if (killbill[c] != BILL_FAILED) {
         int vote;
         if (exec[EXEC_PRESIDENT] >= -1 && exec[EXEC_PRESIDENT] <= 1)
           vote = (exec[EXEC_PRESIDENT] + // only consult Cabinet and random number generator if alignment between -1 and 1
@@ -2128,11 +1957,9 @@ void congress(char clearformess, char canseethings)
                   exec[EXEC_STATE] +
                   exec[EXEC_ATTORNEY] + LCSrandom(9) - 4) /
                  4;
-        else
-        {
+        else {
           vote = exec[EXEC_PRESIDENT];
-          if (vote == ALIGN_STALINIST)
-          {
+          if (vote == ALIGN_STALINIST) {
             if (stalinview(bill[c], true))
               vote = ALIGN_ELITELIBERAL;
             else
@@ -2143,26 +1970,18 @@ void congress(char clearformess, char canseethings)
         if ((law[bill[c]] > vote && billdir[c] == -1) || (law[bill[c]] < vote && billdir[c] == 1)) killbill[c] = BILL_SIGNED;
       }
 
-      if (canseethings)
-      {
+      if (canseethings) {
         move(c * 3 + 2, 35);
-        if (killbill[c] == BILL_SIGNED)
-        {
+        if (killbill[c] == BILL_SIGNED) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           addstr(execname[EXEC_PRESIDENT]);
-        }
-        else if (killbill[c] == BILL_FAILED)
-        {
+        } else if (killbill[c] == BILL_FAILED) {
           set_color(COLOR_BLACK, COLOR_BLACK, 1);
           addstr("Dead in Congress");
-        }
-        else if (killbill[c] == BILL_OVERRIDE_VETO)
-        {
+        } else if (killbill[c] == BILL_OVERRIDE_VETO) {
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
           addstr("FORCED BY CONGRESS");
-        }
-        else
-        {
+        } else {
           set_color(COLOR_RED, COLOR_BLACK, 1);
           addstr("*** VETO ***");
         }
@@ -2173,17 +1992,14 @@ void congress(char clearformess, char canseethings)
       if (killbill[c] == BILL_SIGNED || killbill[c] == BILL_OVERRIDE_VETO) law[bill[c]] += billdir[c];
     }
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(23, 0);
       addstr("Press any key to reflect on what has happened.    ");
 
       getkey();
     }
-  }
-  else if (canseethings)
-  {
+  } else if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 0);
     move(23, 0);
     addstr("None of the items made it to the President's desk.");
@@ -2223,8 +2039,7 @@ void congress(char clearformess, char canseethings)
 }
 
 /* politics - checks if the game is won */
-char wincheck()
-{
+char wincheck() {
   for (int e = 0; e < EXECNUM; e++)
     if (exec[e] < ALIGN_ELITELIBERAL) return 0;
 
@@ -2232,11 +2047,9 @@ char wincheck()
     for (int l = 0; l < LAWNUM; l++)
       if (law[l] < ALIGN_ELITELIBERAL)
         return 0;
-      else
-      {
+      else {
         int liberalLaws = 0, eliteLaws = 0;
-        for (int l = 0; l < LAWNUM; l++)
-        {
+        for (int l = 0; l < LAWNUM; l++) {
           if (law[l] < ALIGN_LIBERAL) return 0;
           if (law[l] == ALIGN_LIBERAL)
             liberalLaws++;
@@ -2260,8 +2073,7 @@ char wincheck()
   if (senatemake[4] < ((wincondition == WINCONDITION_ELITE) ? SENATECOMFYMAJORITY : SENATEMAJORITY)) return 0;                          // Elite Libs themselves >= 1/2 for easy, 3/5 for elite
 
   int elibjudge = 0, libjudge = 0;
-  for (int c = 0; c < COURTNUM; c++)
-  {
+  for (int c = 0; c < COURTNUM; c++) {
     if (court[c] == ALIGN_ELITELIBERAL) elibjudge++;
     if (court[c] == ALIGN_LIBERAL) libjudge++;
   }
@@ -2312,10 +2124,8 @@ FIXME, PART1:
 */
 
 /* politics - checks the prevailing attitude on a specific law, or overall */
-int publicmood(int l)
-{
-  switch (l)
-  { // All laws should be affected by exactly one issue if there is a direct
+int publicmood(int l) {
+  switch (l) { // All laws should be affected by exactly one issue if there is a direct
   // correlation between that law and an issue. For example, police behavior
   // as a law should depend only upon police behavior as an issue. This keeps
   // the game logical to the player and ensures that the public opinion polls
@@ -2392,10 +2202,8 @@ int publicmood(int l)
 
 /* returns true if Stalinists agree with Elite Liberals on a view/law, false if they strongly disagree with libs  *
  * the input bool islaw, if true, returns Stalinist opinion on laws, if false, returns Stalinist opinion on views */
-bool stalinview(short view, bool islaw)
-{
-  if (islaw) switch (view)
-    {
+bool stalinview(short view, bool islaw) {
+  if (islaw) switch (view) {
     case LAW_STALIN:
       return false; // Liberals and Stalinists don't get along
     case LAW_MOOD:
@@ -2450,8 +2258,7 @@ bool stalinview(short view, bool islaw)
       return false; // Liberals and Stalinists don't get along
     }
   else
-    switch (view)
-    {
+    switch (view) {
     case VIEW_STALIN:
       return false; // Liberals and Stalinists don't get along
     case VIEW_MOOD:

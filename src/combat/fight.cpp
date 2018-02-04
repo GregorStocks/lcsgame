@@ -31,16 +31,14 @@ This file is part of Liberal Crime Squad.                                       
 bool goodguyattack = false;
 
 /* attack handling for each side as a whole */
-void youattack()
-{
+void youattack() {
   foughtthisround = 1;
 
   short wasalarm = sitealarm;
 
   goodguyattack = true;
 
-  for (int p = 0; p < 6; p++)
-  {
+  for (int p = 0; p < 6; p++) {
     if (activesquad->squad[p] == NULL) continue;
     if (!activesquad->squad[p]->alive) continue;
 
@@ -49,12 +47,9 @@ void youattack()
     vector<int> enemies;
     vector<int> non_enemies;
 
-    for (int e = 0; e < ENCMAX; e++)
-    {
-      if (encounter[e].alive && encounter[e].exists)
-      {
-        if (encounter[e].enemy())
-        {
+    for (int e = 0; e < ENCMAX; e++) {
+      if (encounter[e].alive && encounter[e].exists) {
+        if (encounter[e].enemy()) {
           if (encounter[e].animalgloss == ANIMALGLOSS_TANK &&
               encounter[e].stunned == 0)
             super_enemies.push_back(e);
@@ -74,8 +69,7 @@ void youattack()
             dangerous_enemies.push_back(e);
           else
             enemies.push_back(e);
-        }
-        else
+        } else
           non_enemies.push_back(e);
       }
     }
@@ -109,8 +103,7 @@ void youattack()
 
     char mistake = 0;
     // 1% chance to accidentally hit bystanders
-    if (len(non_enemies) && !LCSrandom(100))
-    {
+    if (len(non_enemies) && !LCSrandom(100)) {
       target = pickrandom(non_enemies);
       mistake = 1;
     }
@@ -120,23 +113,18 @@ void youattack()
     if (encounter[target].align == 1) mistake = 1;
     attack(*activesquad->squad[p], encounter[target], mistake, actual);
 
-    if (actual)
-    {
-      if (mistake)
-      {
+    if (actual) {
+      if (mistake) {
         alienationcheck(mistake);
         sitestory->crime.push_back(CRIME_ATTACKED_MISTAKE);
         sitecrime += 10;
-      }
-      else
-      {
+      } else {
         sitecrime += 3;
         addjuice(*(activesquad->squad[p]), 1, 200);
       }
       sitestory->crime.push_back(CRIME_ATTACKED);
       // Charge with assault if first strike
-      if (sitealarm && (!wasalarm || (beforeblood > encounter[target].blood && beforeblood == 100)))
-      {
+      if (sitealarm && (!wasalarm || (beforeblood > encounter[target].blood && beforeblood == 100))) {
         if (!activesquad->squad[p]->is_armed())
           criminalize(*activesquad->squad[p], LAWFLAG_ASSAULT);
         else
@@ -144,13 +132,10 @@ void youattack()
       }
     }
 
-    if (!encounter[target].alive)
-    {
+    if (!encounter[target].alive) {
       delenc(target, 1);
-      if (!mistake)
-      {
-        for (int p = 0; p < 6; p++)
-        {
+      if (!mistake) {
+        for (int p = 0; p < 6; p++) {
           if (activesquad->squad[p] == NULL) continue;
           if (!activesquad->squad[p]->alive) continue;
 
@@ -160,20 +145,16 @@ void youattack()
     }
   }
 
-  for (int e = 0; e < ENCMAX; e++)
-  {
-    if (encounter[e].exists && encounter[e].alive && encounter[e].enemy())
-    {
+  for (int e = 0; e < ENCMAX; e++) {
+    if (encounter[e].exists && encounter[e].alive && encounter[e].enemy()) {
       sitealarm = 1;
       break;
     }
   }
 
   //COVER FIRE
-  if (location[cursite]->siege.siege)
-  {
-    for (int p = 0; p < len(pool); p++)
-    {
+  if (location[cursite]->siege.siege) {
+    for (int p = 0; p < len(pool); p++) {
       if (!pool[p]->alive) continue;
       if (pool[p]->align != 1) continue;
       if (pool[p]->squadid != -1) continue;
@@ -185,21 +166,17 @@ void youattack()
       // chance to fire at 90 juice
       //if(LCSrandom(10)-pool[p]->juice/10>0)continue;
 
-      if (pool[p]->get_weapon().get_attack(true, false, false))
-      {
+      if (pool[p]->get_weapon().get_attack(true, false, false)) {
         char conf = 0;
         if (pool[p]->get_weapon().get_ammoamount() > 0) conf = 1;
         if (pool[p]->get_weapon().get_attack(true, false, false)->uses_ammo)
           if (pool[p]->can_reload()) conf = 1;
 
-        if (conf)
-        {
+        if (conf) {
           vector<int> goodtarg, badtarg;
 
-          for (int e = 0; e < ENCMAX; e++)
-          {
-            if (encounter[e].alive && encounter[e].exists)
-            {
+          for (int e = 0; e < ENCMAX; e++) {
+            if (encounter[e].alive && encounter[e].exists) {
               if (encounter[e].enemy())
                 goodtarg.push_back(e);
               else
@@ -213,8 +190,7 @@ void youattack()
 
           char mistake = 0;
 
-          if (len(badtarg) && !LCSrandom(10))
-          {
+          if (len(badtarg) && !LCSrandom(10)) {
             target = pickrandom(badtarg);
             mistake = 1;
           }
@@ -222,10 +198,8 @@ void youattack()
           char actual;
           attack(*pool[p], encounter[target], mistake, actual);
 
-          if (actual)
-          {
-            if (mistake)
-            {
+          if (actual) {
+            if (mistake) {
               alienationcheck(mistake);
               sitestory->crime.push_back(CRIME_ATTACKED_MISTAKE);
               sitecrime += 10;
@@ -244,8 +218,7 @@ void youattack()
   }
 }
 
-void enemyattack()
-{
+void enemyattack() {
   static const char *escape_crawling[] =
       {
           " crawls off moaning...",
@@ -274,8 +247,7 @@ void enemyattack()
   goodguyattack = false;
 
   bool armed = false;
-  for (int i = 0; i < 6; i++)
-  {
+  for (int i = 0; i < 6; i++) {
     if (activesquad->squad[i] == NULL) break;
     if (activesquad->squad[i]->is_armed()) armed = true;
   }
@@ -286,8 +258,7 @@ void enemyattack()
 
   int e2, e;
   char printed;
-  for (e = 0; e < ENCMAX; e++)
-  {
+  for (e = 0; e < ENCMAX; e++) {
     if (!encounter[e].exists) continue;
     if (!encounter[e].alive) continue;
 
@@ -295,8 +266,7 @@ void enemyattack()
       conservatise(encounter[e]);
     if (encounter[e].enemy()) encounter[e].cantbluff = 2;
 
-    if (mode != GAMEMODE_CHASECAR)
-    {
+    if (mode != GAMEMODE_CHASECAR) {
       // Encountered creature will flee if:
       // (a) Non-Conservative, and not recently converted via music or some other mechanism
       // (b) Conservative, no juice, unarmed, non-tank/animal, enemy is armed, and fails a morale check based in part on injury level
@@ -304,8 +274,7 @@ void enemyattack()
       // (d) There's a fire, they are not firefighters, and they fail a random check
       // Encountered creatures will never flee if they are tanks, animals, or so hurt they can't move
       char fire = 0;
-      if (mode == GAMEMODE_SITE)
-      {
+      if (mode == GAMEMODE_SITE) {
         if (levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_START ||
             levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_END)
           fire = 1;
@@ -316,14 +285,10 @@ void enemyattack()
       if (((!encounter[e].enemy() ||
             (encounter[e].juice == 0 && !encounter[e].is_armed() && armed && encounter[e].blood < signed(70 + LCSrandom(61)))) &&
            !(encounter[e].flag & CREATUREFLAG_CONVERTED)) ||
-          (encounter[e].blood < 45 && encounter[e].juice < 200) || ((fire * LCSrandom(5) >= 3) && !(encounter[e].type == CREATURE_FIREFIGHTER)))
-      {
-        if (encounter[e].animalgloss == ANIMALGLOSS_NONE)
-        {
-          if (!incapacitated(encounter[e], 0, printed))
-          {
-            if (printed)
-            {
+          (encounter[e].blood < 45 && encounter[e].juice < 200) || ((fire * LCSrandom(5) >= 3) && !(encounter[e].type == CREATURE_FIREFIGHTER))) {
+        if (encounter[e].animalgloss == ANIMALGLOSS_NONE) {
+          if (!incapacitated(encounter[e], 0, printed)) {
+            if (printed) {
               printparty();
               if (mode == GAMEMODE_CHASECAR ||
                   mode == GAMEMODE_CHASEFOOT)
@@ -369,16 +334,12 @@ void enemyattack()
 
     vector<int> goodtarg, badtarg;
 
-    if (encounter[e].enemy())
-    {
+    if (encounter[e].enemy()) {
       for (int p = 0; p < 6; p++)
         if (activesquad->squad[p] != NULL)
           if (activesquad->squad[p]->alive) goodtarg.push_back(p);
-    }
-    else
-    {
-      for (e2 = 0; e2 < ENCMAX; e2++)
-      {
+    } else {
+      for (e2 = 0; e2 < ENCMAX; e2++) {
         if (!encounter[e2].exists) continue;
         if (!encounter[e2].alive) continue;
         if (encounter[e2].align != -1) continue;
@@ -387,8 +348,7 @@ void enemyattack()
       }
     }
 
-    for (e2 = 0; e2 < ENCMAX; e2++)
-    {
+    for (e2 = 0; e2 < ENCMAX; e2++) {
       if (!encounter[e2].exists) continue;
       if (!encounter[e2].alive) continue;
       if (encounter[e2].enemy()) continue;
@@ -417,17 +377,12 @@ void enemyattack()
         encnum < ENCMAX) canmistake = 0;
 
     char actual;
-    if (canmistake)
-    {
-      if (encounter[e].enemy())
-      {
-        if (activesquad->squad[target]->prisoner != NULL && !LCSrandom(2))
-        {
+    if (canmistake) {
+      if (encounter[e].enemy()) {
+        if (activesquad->squad[target]->prisoner != NULL && !LCSrandom(2)) {
           attack(encounter[e], *activesquad->squad[target]->prisoner, 1, actual);
-          if (!activesquad->squad[target]->prisoner->alive)
-          {
-            if (activesquad->squad[target]->prisoner->squadid == -1)
-            {
+          if (!activesquad->squad[target]->prisoner->alive) {
+            if (activesquad->squad[target]->prisoner->squadid == -1) {
               clearmessagearea();
               set_color(COLOR_WHITE, COLOR_BLACK, 1);
               move(16, 1);
@@ -458,8 +413,7 @@ void enemyattack()
         }
       }
 
-      if (!LCSrandom(10) && len(badtarg))
-      {
+      if (!LCSrandom(10) && len(badtarg)) {
         target = pickrandom(badtarg);
         if (encounter[target].flag & CREATUREFLAG_CONVERTED)
           attack(encounter[e], encounter[target], 0, actual);
@@ -478,8 +432,7 @@ void enemyattack()
 }
 
 /* attack handling for an individual creature and its target */
-void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_melee)
-{
+void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_melee) {
   actual = 0;
 
   char str[200];
@@ -493,10 +446,8 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
   //INCAPACITATED
   char incaprint;
   a.forceinc = 0;
-  if (incapacitated(a, 0, incaprint))
-  {
-    if (incaprint)
-    {
+  if (incapacitated(a, 0, incaprint)) {
+    if (incaprint) {
       printparty();
       if (mode == GAMEMODE_CHASECAR ||
           mode == GAMEMODE_CHASEFOOT)
@@ -528,26 +479,20 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         a.type == CREATURE_NEWSANCHOR ||
         a.type == CREATURE_MILITARYOFFICER ||
         a.get_weapon().has_musical_attack()) &&
-       (a.get_weapon().has_musical_attack() || !a.is_armed() || a.align != 1)))
-  {
-    if (a.align == 1 || encnum < ENCMAX)
-    {
+       (a.get_weapon().has_musical_attack() || !a.is_armed() || a.align != 1))) {
+    if (a.align == 1 || encnum < ENCMAX) {
       specialattack(a, t, actual);
       return;
     }
   }
 
   //RELOAD
-  if ((a.will_reload(mode == GAMEMODE_CHASECAR, force_melee) || (a.has_thrown_weapon && len(a.extra_throwing_weapons))) && !force_melee)
-  {
-    if (a.will_reload(mode == GAMEMODE_CHASECAR, force_melee))
-    {
+  if ((a.will_reload(mode == GAMEMODE_CHASECAR, force_melee) || (a.has_thrown_weapon && len(a.extra_throwing_weapons))) && !force_melee) {
+    if (a.will_reload(mode == GAMEMODE_CHASECAR, force_melee)) {
       a.reload(false);
       strcpy(str, a.name);
       strcat(str, " reloads.");
-    }
-    else if (a.has_thrown_weapon && len(a.extra_throwing_weapons))
-    {
+    } else if (a.has_thrown_weapon && len(a.extra_throwing_weapons)) {
       a.ready_another_throwing_weapon();
       strcpy(str, a.name);
       strcat(str, " readies another ");
@@ -567,8 +512,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     getkey();
 
     return;
-  }
-  else if (a.has_thrown_weapon)
+  } else if (a.has_thrown_weapon)
     a.has_thrown_weapon = false;
 
   const attackst *attack_used = NULL;
@@ -586,8 +530,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
   strcpy(str, a.name);
   strcat(str, " ");
   if (mistake) strcat(str, "MISTAKENLY ");
-  if (!a.is_armed())
-  {
+  if (!a.is_armed()) {
     if (!a.animalgloss) //Move into WEAPON_NONE -XML
     {
       if (!LCSrandom(a.get_skill(SKILL_HANDTOHAND) + 1))
@@ -604,28 +547,20 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         strcat(str, "jump kicks");
       else
         strcat(str, "gracefully strikes at");
-    }
-    else
-    {
-      if (a.specialattack == ATTACK_CANNON)
-      {
+    } else {
+      if (a.specialattack == ATTACK_CANNON) {
         strcat(str, "fires a 120mm shell at");
         melee = false;
-      }
-      else if (a.specialattack == ATTACK_FLAME)
+      } else if (a.specialattack == ATTACK_FLAME)
         strcat(str, "breathes fire at");
       else if (a.specialattack == ATTACK_SUCK)
         strcat(str, "stabs");
       else
         strcat(str, "bites");
     }
-  }
-  else
-  {
-    if (attack_used->can_backstab && a.align == ALIGN_LIBERAL && !mistake)
-    {
-      if (t.cantbluff < 1 && sitealarm < 1)
-      {
+  } else {
+    if (attack_used->can_backstab && a.align == ALIGN_LIBERAL && !mistake) {
+      if (t.cantbluff < 1 && sitealarm < 1) {
         sneak_attack = true;
         strcat(str, "sneaks up on");
         if (sitealarmtimer > 10 || sitealarmtimer < 0) sitealarmtimer = 10;
@@ -633,8 +568,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       }
     }
 
-    if (!sneak_attack)
-    {
+    if (!sneak_attack) {
       strcat(str, attack_used->attack_description);
       sitealarm = 1;
     }
@@ -647,8 +581,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
   strcpy(str, "");
 
-  if (a.is_armed() && !attack_used->thrown)
-  {
+  if (a.is_armed() && !attack_used->thrown) {
     strcat(str, " with a ");
     strcat(str, a.get_weapon().get_name(1));
   }
@@ -678,34 +611,25 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
   int aroll = a.skill_roll(wsk);
   // In a car chase, the driver provides the defence roll instead of the victim.
   int droll = 0;
-  if (mode != GAMEMODE_CHASECAR)
-  {
+  if (mode != GAMEMODE_CHASECAR) {
     droll = t.skill_roll(SKILL_DODGE) / 2;
-  }
-  else
-  {
-    if (driver != NULL && vehicle != NULL)
-    { // without a vehicle or driver, you get a zero roll.
+  } else {
+    if (driver != NULL && vehicle != NULL) { // without a vehicle or driver, you get a zero roll.
       droll = driver->skill_roll(PSEUDOSKILL_DODGEDRIVE);
     }
-    if (adriver != NULL && avehicle != NULL)
-    {
+    if (adriver != NULL && avehicle != NULL) {
       bonus += avehicle->attackbonus(adriver->id == a.id); // Attack bonus depends on attacker's car and whether attacker is distracted by driving.
-    }
-    else // shouldn't happen
+    } else                                                 // shouldn't happen
     {
       bonus -= 10; // You're on the wrong side of a drive-by shooting?!
     }
   }
 
-  if (sneak_attack)
-  {
+  if (sneak_attack) {
     droll = t.attribute_roll(ATTRIBUTE_WISDOM) / 2;
     aroll += a.skill_roll(SKILL_STEALTH);
     a.train(wsk, 10);
-  }
-  else
-  {
+  } else {
     if (driver != NULL)
       driver->train(SKILL_DRIVING, aroll / 2);
     else
@@ -718,24 +642,18 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
   if (a.prisoner != NULL) aroll -= LCSrandom(10);
 
   //Injured people suck at attacking, are like fish in a barrel to attackers
-  if (mode == GAMEMODE_CHASEFOOT)
-  {
+  if (mode == GAMEMODE_CHASEFOOT) {
     // If in a foot chase, double the debilitating effect of injuries
     healthmodroll(aroll, a);
     healthmodroll(droll, t);
     healthmodroll(droll, t);
-  }
-  else if (mode == GAMEMODE_CHASECAR)
-  {
+  } else if (mode == GAMEMODE_CHASECAR) {
     // In a car chase, the driver is applying dodge rolls even for crippled people.
     healthmodroll(aroll, a);
-    if (driver != NULL)
-    { // if there is no driver, we already rolled a zero, so don't worry about further penalties.
+    if (driver != NULL) { // if there is no driver, we already rolled a zero, so don't worry about further penalties.
       healthmodroll(droll, *driver);
     }
-  }
-  else
-  {
+  } else {
     // Any other case (site fight) normal penalties.
     healthmodroll(aroll, a);
     healthmodroll(droll, t);
@@ -759,22 +677,17 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     bursthits = 1 + LCSrandom(a.get_skill(SKILL_HANDTOHAND) / 3 + 1);
     if (bursthits > 5) bursthits = 5;
     if (a.animalgloss) bursthits = 1; // Whoops, must be human to use martial arts fanciness
-  }
-  else
-  {
-    if (mode == GAMEMODE_SITE && LCSrandom(100) < attack_used->fire.chance_causes_debris)
-    { // TODO - In a car chase, debris should make driving harder for one round, or require a drive skill check to avoid damage
+  } else {
+    if (mode == GAMEMODE_SITE && LCSrandom(100) < attack_used->fire.chance_causes_debris) { // TODO - In a car chase, debris should make driving harder for one round, or require a drive skill check to avoid damage
       sitechangest change(locx, locy, locz, SITEBLOCK_DEBRIS);
       location[cursite]->changes.push_back(change);
     }
-    if (mode == GAMEMODE_SITE && LCSrandom(100) < attack_used->fire.chance)
-    { // TODO - In a car chase, apply vehicle damage, with drive skill check to partially mitigate
+    if (mode == GAMEMODE_SITE && LCSrandom(100) < attack_used->fire.chance) { // TODO - In a car chase, apply vehicle damage, with drive skill check to partially mitigate
       // Fire!
       if (!(levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_END) ||
           !(levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_PEAK) ||
           !(levelmap[locx][locy][locz].flag & SITEBLOCK_FIRE_START) ||
-          !(levelmap[locx][locy][locz].flag & SITEBLOCK_DEBRIS))
-      {
+          !(levelmap[locx][locy][locz].flag & SITEBLOCK_DEBRIS)) {
         levelmap[locx][locy][locz].flag |= SITEBLOCK_FIRE_START;
         sitecrime += 3;
         addjuice(a, 5, 500);
@@ -783,25 +696,20 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       }
     }
 
-    for (int i = 0; i < attack_used->number_attacks; i++)
-    {
-      if (attack_used->uses_ammo)
-      {
+    for (int i = 0; i < attack_used->number_attacks; i++) {
+      if (attack_used->uses_ammo) {
         if (a.get_weapon().get_ammoamount() > 0)
           a.get_weapon().decrease_ammo(1);
         else
           break;
-      }
-      else if (attack_used->thrown)
-      {
+      } else if (attack_used->thrown) {
         if (a.count_weapons() - thrownweapons > 0)
           thrownweapons++;
         else
           break;
       }
 
-      if (sneak_attack)
-      {
+      if (sneak_attack) {
         bursthits = 1; // Backstab only hits once
         break;
       }
@@ -812,8 +720,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
   }
 
   //HIT!
-  if (aroll + bonus > droll)
-  {
+  if (aroll + bonus > droll) {
     if (sneak_attack)
       strcat(str, " stabs ");
     else
@@ -823,17 +730,14 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     int w;
     bool canhit = false;
 
-    for (w = 0; w < BODYPARTNUM; w++)
-    {
-      if (!(t.wound[w] & WOUND_CLEANOFF) && !(t.wound[w] & WOUND_NASTYOFF))
-      {
+    for (w = 0; w < BODYPARTNUM; w++) {
+      if (!(t.wound[w] & WOUND_CLEANOFF) && !(t.wound[w] & WOUND_NASTYOFF)) {
         canhit = true;
         break;
       }
     }
 
-    do
-    {
+    do {
       int offset = 0;
       if (aroll > droll + 5)
         offset = 4; // NICE SHOT; MORE LIKELY TO HIT BODY/HEAD
@@ -851,8 +755,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       //50% chance to hit head
       w = offset + LCSrandom(13 - offset);
 
-      switch (w)
-      {
+      switch (w) {
       case 12:
         w = BODYPART_HEAD;
         break;
@@ -882,8 +785,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     } while (((t.wound[w] & WOUND_CLEANOFF) || (t.wound[w] & WOUND_NASTYOFF)) && canhit == true);
 
     if (t.animalgloss == ANIMALGLOSS_TANK)
-      switch (w)
-      {
+      switch (w) {
       case BODYPART_HEAD:
         strcat(str, "turret");
         break;
@@ -904,8 +806,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         break;
       }
     else if (t.animalgloss == ANIMALGLOSS_ANIMAL) // FIXME: What about Six-legged Pigs?
-      switch (w)
-      {
+      switch (w) {
       case BODYPART_HEAD:
         strcat(str, "head");
         break;
@@ -926,8 +827,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         break;
       }
     else
-      switch (w)
-      {
+      switch (w) {
       case BODYPART_HEAD:
         strcat(str, "head");
         break;
@@ -957,8 +857,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       else
         strcat(str, attack_used->hit_description);
 
-      switch (bursthits)
-      {
+      switch (bursthits) {
       case 1:
         break;
       case 2:
@@ -977,9 +876,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         strcat(str, " " + tostring(bursthits) + " times");
         break;
       }
-    }
-    else if (attack_used->always_describe_hit)
-    {
+    } else if (attack_used->always_describe_hit) {
       strcat(str, ", ");
       strcat(str, attack_used->hit_description);
     }
@@ -994,8 +891,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     char armorpiercing = 0;
     int extraarmor = 0;
 
-    if (!a.is_armed())
-    {
+    if (!a.is_armed()) {
       strengthmin = 5;
       strengthmax = 10;
       while (bursthits) //Put into WEAPON_NONE -XML
@@ -1005,10 +901,8 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       }
       if (!a.animalgloss)
         damtype |= WOUND_BRUISED;
-      else
-      {
-        if (a.specialattack == ATTACK_CANNON)
-        {
+      else {
+        if (a.specialattack == ATTACK_CANNON) {
           damamount = LCSrandom(5000) + 5000;
           armorpiercing = 20;
           damtype |= WOUND_BURNED;
@@ -1017,8 +911,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           damtype |= WOUND_BLEEDING;
           strengthmin = 0;
           strengthmax = 0;
-        }
-        else if (a.specialattack == ATTACK_FLAME)
+        } else if (a.specialattack == ATTACK_FLAME)
           damtype |= WOUND_BURNED;
         else if (a.specialattack == ATTACK_SUCK)
           damtype |= WOUND_CUT;
@@ -1026,9 +919,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           damtype |= WOUND_TORN;
         severtype = WOUND_NASTYOFF;
       }
-    }
-    else
-    {
+    } else {
       if (attack_used->bruises) damtype |= WOUND_BRUISED;
       if (attack_used->cuts) damtype |= WOUND_CUT;
       if (attack_used->burns) damtype |= WOUND_BURNED;
@@ -1042,8 +933,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       int random = attack_used->random_damage;
       int fixed = attack_used->fixed_damage;
       if (sneak_attack) fixed += 100;
-      if (bursthits >= attack_used->critical.hits_required && LCSrandom(100) < attack_used->critical.chance)
-      {
+      if (bursthits >= attack_used->critical.hits_required && LCSrandom(100) < attack_used->critical.chance) {
         if (attack_used->critical.random_damage_defined)
           random = attack_used->critical.random_damage;
         if (attack_used->critical.fixed_damage_defined)
@@ -1051,8 +941,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         if (attack_used->critical.severtype_defined)
           severtype = attack_used->critical.severtype;
       }
-      while (bursthits > 0)
-      {
+      while (bursthits > 0) {
         damamount += LCSrandom(random) + fixed;
         bursthits--;
       }
@@ -1068,8 +957,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
     int mod = 0;
 
-    if (strengthmax > strengthmin)
-    {
+    if (strengthmax > strengthmin) {
       // Melee attacks: Maximum strength bonus, minimum
       // strength to deliver full damage
       int strength = a.attribute_roll(ATTRIBUTE_STRENGTH);
@@ -1089,8 +977,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
     // In a car chase, the vehicle itself provides bonus armor
     int vehicleHitLocation = 0;
-    if (mode == GAMEMODE_CHASECAR && vehicle != NULL)
-    {
+    if (mode == GAMEMODE_CHASECAR && vehicle != NULL) {
       vehicleHitLocation = vehicle->gethitlocation(w);
       extraarmor = vehicle->armorbonus(vehicleHitLocation);
       // TODO damage vehicle itself
@@ -1100,12 +987,10 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     damagemod(t, damtype, damamount, w, armorpiercing, mod, extraarmor);
 
     // Report vehicle protection effect
-    if (mode == GAMEMODE_CHASECAR && vehicle != NULL && extraarmor > 0)
-    {
+    if (mode == GAMEMODE_CHASECAR && vehicle != NULL && extraarmor > 0) {
       strcat(str, " through ");
       // Could the vehicle have bounced that round on its own?
-      if (damamount == 0)
-      {
+      if (damamount == 0) {
         Creature testDummy; // Spawn nude test dummy to see if body armor was needed to prevent damage
         damagemod(testDummy, damtype, cardmg, w, armorpiercing, mod, extraarmor);
 
@@ -1131,13 +1016,11 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     }
 #endif
     // Bullets caught by armor should bruise instead of poke holes.
-    if (damamount < 4 && damtype & WOUND_SHOT)
-    {
+    if (damamount < 4 && damtype & WOUND_SHOT) {
       damtype &= ~(WOUND_SHOT | WOUND_BLEEDING);
       damtype |= WOUND_BRUISED;
     }
-    if (damamount > 0)
-    {
+    if (damamount > 0) {
       Creature *target = 0;
 
       if (t.squadid != -1 && t.hireid == -1 &&        //if the founder is hit...
@@ -1145,13 +1028,11 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           (w == BODYPART_HEAD || w == BODYPART_BODY)) //to a critical bodypart...
       {
         //Oh Noes!!!! Find a liberal to jump in front of the bullet!!!
-        for (int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
           if (activesquad->squad[i] == NULL) break;
           if (activesquad->squad[i] == &t) break;
           if (activesquad->squad[i]->get_attribute(ATTRIBUTE_HEART, true) > 8 &&
-              activesquad->squad[i]->get_attribute(ATTRIBUTE_AGILITY, true) > 4)
-          {
+              activesquad->squad[i]->get_attribute(ATTRIBUTE_AGILITY, true) > 4) {
             target = activesquad->squad[i];
 
             clearmessagearea();
@@ -1183,8 +1064,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
       int severamount = 100;
 
-      switch (w)
-      {
+      switch (w) {
       case BODYPART_HEAD:
         severamount = 100;
         break;
@@ -1209,10 +1089,8 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
         target->wound[w] |= (char)severtype;
 
       if (w != BODYPART_HEAD && w != BODYPART_BODY && target->blood - damamount <= 0 &&
-          target->blood > 0)
-      {
-        do
-        {
+          target->blood > 0) {
+        do {
           if (LCSrandom(100) < attack_used->no_damage_reduction_for_limbs_chance)
             break;
           else
@@ -1230,16 +1108,14 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           (target->wound[BODYPART_BODY] & WOUND_CLEANOFF) ||
           (target->wound[BODYPART_HEAD] & WOUND_NASTYOFF) ||
           (target->wound[BODYPART_BODY] & WOUND_NASTYOFF) ||
-          target->blood <= 0)
-      {
+          target->blood <= 0) {
         if ((w == BODYPART_HEAD && target->wound[BODYPART_HEAD] & WOUND_NASTYOFF) ||
             (w == BODYPART_BODY && target->wound[BODYPART_BODY] & WOUND_NASTYOFF))
           bloodblast(&target->get_armor());
 
         char alreadydead = !target->alive;
 
-        if (!alreadydead)
-        {
+        if (!alreadydead) {
           target->die();
 
           if (t.align == -a.align)
@@ -1247,25 +1123,20 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           else
             addjuice(a, -(5 + t.juice / 20), -50);
 
-          if (target->squadid != -1)
-          {
+          if (target->squadid != -1) {
             if (target->align == 1) stat_dead++;
-          }
-          else if (target->enemy() && (t.animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2))
-          {
+          } else if (target->enemy() && (t.animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2)) {
             stat_kills++;
             if (location[cursite]->siege.siege) location[cursite]->siege.kills++;
             if (location[cursite]->siege.siege && t.animalgloss == ANIMALGLOSS_TANK) location[cursite]->siege.tanks--;
-            if (location[cursite]->renting == RENTING_CCS)
-            {
+            if (location[cursite]->renting == RENTING_CCS) {
               if (target->type == CREATURE_CCS_ARCHCONSERVATIVE) ccs_boss_kills++;
               ccs_siege_kills++;
             }
           }
           if (target->squadid == -1 &&
               (target->animalgloss != ANIMALGLOSS_ANIMAL || law[LAW_ANIMALRESEARCH] == 2) &&
-              !sneak_attack)
-          {
+              !sneak_attack) {
             sitecrime += 10;
             sitestory->crime.push_back(CRIME_KILLEDSOMEBODY);
             if (a.squadid != -1) criminalizeparty(LAWFLAG_MURDER);
@@ -1293,8 +1164,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
         getkey();
 
-        if (!alreadydead)
-        {
+        if (!alreadydead) {
           severloot(t, groundloot);
           clearmessagearea();
           adddeathmessage(*target);
@@ -1303,9 +1173,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
           if (target->prisoner != NULL) freehostage(t, 1);
         }
-      }
-      else
-      {
+      } else {
         if (target->wound[w] & WOUND_CLEANOFF)
           strcat(str, " CUTTING IT OFF!");
         else if (target->wound[w] & WOUND_NASTYOFF)
@@ -1335,8 +1203,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
         //SPECIAL WOUNDS
         if (!(target->wound[w] & (WOUND_CLEANOFF | WOUND_NASTYOFF)) &&
-            !target->animalgloss)
-        {
+            !target->animalgloss) {
           char heavydam = 0, breakdam = 0, pokedam = 0;
           if (damamount >= 12) //JDS -- 2x damage needed
           {
@@ -1358,22 +1225,19 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           if ((damtype & WOUND_TORN) && damamount >= 50) breakdam = 1;
           if ((damtype & WOUND_CUT) && damamount >= 50) breakdam = 1;
 
-          if (w == BODYPART_HEAD)
-          {
+          if (w == BODYPART_HEAD) {
             clearmessagearea();
             if (goodguyattack)
               set_color(COLOR_GREEN, COLOR_BLACK, 1);
             else
               set_color(COLOR_RED, COLOR_BLACK, 1);
 
-            switch (LCSrandom(7))
-            {
+            switch (LCSrandom(7)) {
             case 0:
               if ((target->special[SPECIALWOUND_RIGHTEYE] ||
                    target->special[SPECIALWOUND_LEFTEYE] ||
                    target->special[SPECIALWOUND_NOSE]) &&
-                  heavydam)
-              {
+                  heavydam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1397,30 +1261,24 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 1:
-              if (target->special[SPECIALWOUND_TEETH] > 0)
-              {
+              if (target->special[SPECIALWOUND_TEETH] > 0) {
                 int teethminus = LCSrandom(TOOTHNUM) + 1;
                 if (teethminus > target->special[SPECIALWOUND_TEETH])
                   teethminus = target->special[SPECIALWOUND_TEETH];
 
                 move(16, 1);
-                if (teethminus > 1)
-                {
+                if (teethminus > 1) {
                   if (teethminus == target->special[SPECIALWOUND_TEETH])
                     addstr("All ", gamelog);
                   addstr(teethminus, gamelog);
                   addstr(" of ", gamelog);
                   addstr(target->name, gamelog);
                   addstr("'s teeth are ", gamelog);
-                }
-                else if (target->special[SPECIALWOUND_TEETH] > 1)
-                {
+                } else if (target->special[SPECIALWOUND_TEETH] > 1) {
                   addstr("One of ", gamelog);
                   addstr(target->name, gamelog);
                   addstr("'s teeth is ", gamelog);
-                }
-                else
-                {
+                } else {
                   addstr(target->name, gamelog);
                   addstr("'s last tooth is ", gamelog);
                 }
@@ -1443,8 +1301,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 2:
-              if (target->special[SPECIALWOUND_RIGHTEYE] && heavydam)
-              {
+              if (target->special[SPECIALWOUND_RIGHTEYE] && heavydam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1466,8 +1323,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 3:
-              if (target->special[SPECIALWOUND_LEFTEYE] && heavydam)
-              {
+              if (target->special[SPECIALWOUND_LEFTEYE] && heavydam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1489,8 +1345,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 4:
-              if (target->special[SPECIALWOUND_TONGUE] && heavydam)
-              {
+              if (target->special[SPECIALWOUND_TONGUE] && heavydam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1512,8 +1367,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 5:
-              if (target->special[SPECIALWOUND_NOSE] && heavydam)
-              {
+              if (target->special[SPECIALWOUND_NOSE] && heavydam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1535,8 +1389,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 6:
-              if (target->special[SPECIALWOUND_NECK] && breakdam)
-              {
+              if (target->special[SPECIALWOUND_NECK] && breakdam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1553,8 +1406,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               break;
             }
           }
-          if (w == BODYPART_BODY)
-          {
+          if (w == BODYPART_BODY) {
             clearmessagearea();
             //set_color(COLOR_MAGENTA,COLOR_BLACK,1);
             if (goodguyattack)
@@ -1562,11 +1414,9 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
             else
               set_color(COLOR_RED, COLOR_BLACK, 1);
 
-            switch (LCSrandom(11))
-            {
+            switch (LCSrandom(11)) {
             case 0:
-              if (target->special[SPECIALWOUND_UPPERSPINE] && breakdam)
-              {
+              if (target->special[SPECIALWOUND_UPPERSPINE] && breakdam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1582,8 +1432,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 1:
-              if (target->special[SPECIALWOUND_LOWERSPINE] && breakdam)
-              {
+              if (target->special[SPECIALWOUND_LOWERSPINE] && breakdam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1599,8 +1448,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 2:
-              if (target->special[SPECIALWOUND_RIGHTLUNG] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_RIGHTLUNG] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1618,8 +1466,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 3:
-              if (target->special[SPECIALWOUND_LEFTLUNG] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_LEFTLUNG] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1637,8 +1484,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 4:
-              if (target->special[SPECIALWOUND_HEART] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_HEART] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1656,8 +1502,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 5:
-              if (target->special[SPECIALWOUND_LIVER] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_LIVER] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1675,8 +1520,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 6:
-              if (target->special[SPECIALWOUND_STOMACH] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_STOMACH] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1694,8 +1538,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 7:
-              if (target->special[SPECIALWOUND_RIGHTKIDNEY] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_RIGHTKIDNEY] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1713,8 +1556,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 8:
-              if (target->special[SPECIALWOUND_LEFTKIDNEY] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_LEFTKIDNEY] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1732,8 +1574,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 9:
-              if (target->special[SPECIALWOUND_SPLEEN] && pokedam)
-              {
+              if (target->special[SPECIALWOUND_SPLEEN] && pokedam) {
                 move(16, 1);
                 addstr(target->name, gamelog);
                 if (damtype & WOUND_SHOT)
@@ -1751,29 +1592,23 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
               }
               break;
             case 10:
-              if (target->special[SPECIALWOUND_RIBS] > 0 && breakdam)
-              {
+              if (target->special[SPECIALWOUND_RIBS] > 0 && breakdam) {
                 int ribminus = LCSrandom(RIBNUM) + 1;
                 if (ribminus > target->special[SPECIALWOUND_RIBS]) ribminus = target->special[SPECIALWOUND_RIBS];
 
                 move(16, 1);
-                if (ribminus > 1)
-                {
+                if (ribminus > 1) {
                   if (ribminus == target->special[SPECIALWOUND_RIBS])
                     addstr("All ", gamelog);
                   addstr(ribminus, gamelog);
                   addstr(" of ", gamelog);
                   addstr(target->name, gamelog);
                   addstr("'s ribs are ", gamelog);
-                }
-                else if (target->special[SPECIALWOUND_RIBS] > 1)
-                {
+                } else if (target->special[SPECIALWOUND_RIBS] > 1) {
                   addstr("One of ", gamelog);
                   addstr(target->name, gamelog);
                   addstr("'s rib is ", gamelog);
-                }
-                else
-                {
+                } else {
                   addstr(target->name, gamelog);
                   addstr("'s last unbroken rib is ", gamelog);
                 }
@@ -1797,9 +1632,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
         //set_color(COLOR_WHITE,COLOR_BLACK,1);
       }
-    }
-    else
-    {
+    } else {
       set_color(COLOR_YELLOW, COLOR_BLACK, 1);
       strcat(str, " to no effect.");
       move(17, 1);
@@ -1815,13 +1648,10 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 
       getkey();
     }
-  }
-  else
-  {
+  } else {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
-    if (melee && aroll < droll - 10 && t.blood > 70 && t.animalgloss == ANIMALGLOSS_NONE && t.is_armed() && t.get_weapon().get_attack(false, true, true) != NULL)
-    {
+    if (melee && aroll < droll - 10 && t.blood > 70 && t.animalgloss == ANIMALGLOSS_NONE && t.is_armed() && t.get_weapon().get_attack(false, true, true) != NULL) {
 
       strcpy(str, t.name);
       strcat(str, " knocks the blow aside and counters!");
@@ -1836,13 +1666,10 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
       attack(t, a, 0, actual_dummy, true);
       goodguyattack = !goodguyattack;
     } //TODO if missed person, but vehicle is large, it might damage the car.
-    else
-    {
-      if (sneak_attack)
-      {
+    else {
+      if (sneak_attack) {
         strcpy(str, t.name);
-        switch (LCSrandom(4))
-        {
+        switch (LCSrandom(4)) {
         case 0:
           strcat(str, " notices at the last moment!");
           break;
@@ -1857,11 +1684,8 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
           break;
         }
         sitealarm = 1;
-      }
-      else
-      {
-        if (mode == GAMEMODE_CHASECAR)
-        {
+      } else {
+        if (mode == GAMEMODE_CHASECAR) {
           if (driver != NULL)
             strcpy(str, driver->name);
           switch (droll) // If no driver then droll is 0.
@@ -1927,12 +1751,9 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
             strcat(str, " misses completely!");
             break; // You failed to hit someone who probably rolled a zero.  You should feel bad.
           }
-        }
-        else
-        {
+        } else {
           strcpy(str, t.name);
-          switch (droll)
-          {
+          switch (droll) {
           case 1:
             strcpy(str, a.name);
             strcat(str, " missed!");
@@ -2010,8 +1831,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
     }
   }
 
-  for (; thrownweapons > 0; thrownweapons--)
-  {
+  for (; thrownweapons > 0; thrownweapons--) {
     if (a.has_thrown_weapon)
       a.ready_another_throwing_weapon();
     a.drop_weapon(NULL);
@@ -2022,8 +1842,7 @@ void attack(Creature &a, Creature &t, char mistake, char &actual, bool force_mel
 }
 
 /* modifies a combat roll based on the creature's critical injuries */
-void healthmodroll(int &aroll, Creature &a)
-{
+void healthmodroll(int &aroll, Creature &a) {
   if (a.special[SPECIALWOUND_RIGHTEYE] != 1) aroll -= LCSrandom(2);
   if (a.special[SPECIALWOUND_LEFTEYE] != 1) aroll -= LCSrandom(2);
   if (a.special[SPECIALWOUND_RIGHTEYE] != 1 &&
@@ -2046,12 +1865,10 @@ void healthmodroll(int &aroll, Creature &a)
 
 /* adjusts attack damage based on armor, other factors */
 void damagemod(Creature &t, char &damtype, int &damamount,
-               char hitlocation, char armorpenetration, int mod, int extraarmor)
-{
+               char hitlocation, char armorpenetration, int mod, int extraarmor) {
   int armor = t.get_armor().get_armor(hitlocation);
 
-  if (t.animalgloss == ANIMALGLOSS_TANK)
-  {
+  if (t.animalgloss == ANIMALGLOSS_TANK) {
     if (damtype != WOUND_BURNED)
       armor = 15;
     else
@@ -2091,8 +1908,7 @@ void damagemod(Creature &t, char &damtype, int &damamount,
     damamount = (int)((float)damamount * (1.0f + 0.2f * mod));
 
   // Firefighter's bunker gear reduces fire damage by 3/4
-  if ((damtype & WOUND_BURNED) && t.get_armor().has_fireprotection())
-  {
+  if ((damtype & WOUND_BURNED) && t.get_armor().has_fireprotection()) {
     // Damaged gear isn't as effective as undamaged gear
     if (t.get_armor().is_damaged())
       damamount >>= 1; // Only half as much damage reduction
@@ -2103,8 +1919,7 @@ void damagemod(Creature &t, char &damtype, int &damamount,
   if (damamount < 0) damamount = 0;
 }
 
-void specialattack(Creature &a, Creature &t, char &actual)
-{
+void specialattack(Creature &a, Creature &t, char &actual) {
   std::string s = "";
   static const char *judge_debate[] =
       {
@@ -2205,8 +2020,7 @@ void specialattack(Creature &a, Creature &t, char &actual)
   else if (a.align == 1)
     attack = a.attribute_roll(ATTRIBUTE_HEART) + t.get_attribute(ATTRIBUTE_HEART, false);
 
-  switch (a.type)
-  {
+  switch (a.type) {
   case CREATURE_JUDGE_CONSERVATIVE:
   case CREATURE_JUDGE_LIBERAL:
     strcat(str, pickrandom(judge_debate));
@@ -2222,8 +2036,7 @@ void specialattack(Creature &a, Creature &t, char &actual)
     attack += a.skill_roll(SKILL_LAW);
     break;
   case CREATURE_SCIENTIST_EMINENT:
-    switch (LCSrandom(3))
-    {
+    switch (LCSrandom(3)) {
     case 0:
       strcat(str, "debates scientific ethics with");
       break;
@@ -2304,8 +2117,7 @@ void specialattack(Creature &a, Creature &t, char &actual)
     attack += a.attribute_roll(ATTRIBUTE_CHARISMA);
     break;
   case CREATURE_COP:
-    if (a.enemy())
-    {
+    if (a.enemy()) {
       strcat(str, pickrandom(police_debate));
       strcat(str, t.name);
       strcat(str, "!");
@@ -2317,10 +2129,8 @@ void specialattack(Creature &a, Creature &t, char &actual)
     }
   //No break. If the cop is a liberal it will do a musical attack instead.
   default:
-    if (a.get_weapon().has_musical_attack() || a.type == CREATURE_COP)
-    {
-      switch (LCSrandom(5))
-      {
+    if (a.get_weapon().has_musical_attack() || a.type == CREATURE_COP) {
+      switch (LCSrandom(5)) {
       case 0:
         strcat(str, "plays a song for");
         break;
@@ -2328,12 +2138,10 @@ void specialattack(Creature &a, Creature &t, char &actual)
         strcat(str, "sings to");
         break;
       case 2:
-        if (a.get_weapon().has_musical_attack())
-        {
+        if (a.get_weapon().has_musical_attack()) {
           strcat(str, "strums the ");
           strcat(str, a.get_weapon().get_name());
-        }
-        else // let's use a small enough instrument for anyone to carry in their pocket
+        } else // let's use a small enough instrument for anyone to carry in their pocket
           strcat(str, "blows a harmonica");
         strcat(str, " at");
         break;
@@ -2369,51 +2177,35 @@ void specialattack(Creature &a, Creature &t, char &actual)
   addstr(str, gamelog);
   gamelog.newline();
 
-  if ((t.animalgloss == ANIMALGLOSS_TANK || (t.animalgloss == ANIMALGLOSS_ANIMAL && law[LAW_ANIMALRESEARCH] != 2)) || (a.enemy() && t.flag & CREATUREFLAG_BRAINWASHED))
-  {
+  if ((t.animalgloss == ANIMALGLOSS_TANK || (t.animalgloss == ANIMALGLOSS_ANIMAL && law[LAW_ANIMALRESEARCH] != 2)) || (a.enemy() && t.flag & CREATUREFLAG_BRAINWASHED)) {
     move(17, 1);
     addstr(s + t.name + " is immune to the attack!", gamelog);
-  }
-  else if (a.align == t.align)
-  {
+  } else if (a.align == t.align) {
     move(17, 1);
     addstr(s + t.name + " already agrees with " + a.name + ".");
-  }
-  else if (attack > resist)
-  {
+  } else if (attack > resist) {
     t.stunned += (attack - resist) / 4;
-    if (a.enemy())
-    {
-      if (t.juice > 100)
-      {
+    if (a.enemy()) {
+      if (t.juice > 100) {
         move(17, 1);
         addstr(s + t.name + " loses juice!", gamelog);
         addjuice(t, -50, 100);
-      }
-      else if (LCSrandom(15) > t.get_attribute(ATTRIBUTE_WISDOM, true) || t.get_attribute(ATTRIBUTE_WISDOM, true) < t.get_attribute(ATTRIBUTE_HEART, true))
-      {
+      } else if (LCSrandom(15) > t.get_attribute(ATTRIBUTE_WISDOM, true) || t.get_attribute(ATTRIBUTE_WISDOM, true) < t.get_attribute(ATTRIBUTE_HEART, true)) {
         move(17, 1);
         addstr(s + t.name + " is tainted with Wisdom!", gamelog);
         t.adjust_attribute(ATTRIBUTE_WISDOM, +1);
-      }
-      else if (t.align == ALIGN_LIBERAL && t.flag & CREATUREFLAG_LOVESLAVE)
-      {
+      } else if (t.align == ALIGN_LIBERAL && t.flag & CREATUREFLAG_LOVESLAVE) {
         move(17, 1);
         addstr(s + t.name + " can't bear to leave!", gamelog);
-      }
-      else
-      {
-        if (a.align == -1)
-        {
+      } else {
+        if (a.align == -1) {
           move(17, 1);
           addstr(s + t.name + " is turned Conservative", gamelog);
           t.stunned = 0;
           if (t.prisoner != NULL)
             freehostage(t, 0);
           addstr("!", gamelog);
-        }
-        else
-        {
+        } else {
           move(17, 1);
           addstr(s + t.name + " doesn't want to fight anymore", gamelog);
           t.stunned = 0;
@@ -2422,10 +2214,8 @@ void specialattack(Creature &a, Creature &t, char &actual)
           addstr("!", gamelog);
         }
 
-        for (int e = 0; e < ENCMAX; e++)
-        {
-          if (encounter[e].exists == 0)
-          {
+        for (int e = 0; e < ENCMAX; e++) {
+          if (encounter[e].exists == 0) {
             encounter[e] = t;
             encounter[e].exists = 1;
             if (a.align == -1) conservatise(encounter[e]);
@@ -2436,10 +2226,8 @@ void specialattack(Creature &a, Creature &t, char &actual)
         }
 
         bool flipstart = 0;
-        for (int p = 0; p < 6; p++)
-        {
-          if (activesquad->squad[p] == &t)
-          {
+        for (int p = 0; p < 6; p++) {
+          if (activesquad->squad[p] == &t) {
             activesquad->squad[p]->die();
             activesquad->squad[p]->location = -1;
             activesquad->squad[p] = NULL;
@@ -2449,24 +2237,17 @@ void specialattack(Creature &a, Creature &t, char &actual)
         }
         if (flipstart) activesquad->squad[5] = NULL;
       }
-    }
-    else
-    {
-      if (t.juice >= 100)
-      {
+    } else {
+      if (t.juice >= 100) {
         move(17, 1);
         addstr(s + t.name + " seems less badass!", gamelog);
         addjuice(t, -50, 99);
-      }
-      else if (!t.attribute_check(ATTRIBUTE_HEART, DIFFICULTY_AVERAGE) ||
-               t.get_attribute(ATTRIBUTE_HEART, true) < t.get_attribute(ATTRIBUTE_WISDOM, true))
-      {
+      } else if (!t.attribute_check(ATTRIBUTE_HEART, DIFFICULTY_AVERAGE) ||
+                 t.get_attribute(ATTRIBUTE_HEART, true) < t.get_attribute(ATTRIBUTE_WISDOM, true)) {
         move(17, 1);
         addstr(s + t.name + "'s Heart swells!", gamelog);
         t.adjust_attribute(ATTRIBUTE_HEART, +1);
-      }
-      else
-      {
+      } else {
         move(17, 1);
         addstr(s + t.name + " has turned Liberal!", gamelog);
         t.stunned = 0;
@@ -2477,9 +2258,7 @@ void specialattack(Creature &a, Creature &t, char &actual)
         t.cantbluff = 0;
       }
     }
-  }
-  else
-  {
+  } else {
     move(17, 1);
     addstr(s + t.name + " remains strong.", gamelog);
   }
@@ -2499,8 +2278,7 @@ void specialattack(Creature &a, Creature &t, char &actual)
 }
 
 /* destroys armor, masks, drops weapons based on severe damage */
-void severloot(Creature &cr, vector<Item *> &loot)
-{
+void severloot(Creature &cr, vector<Item *> &loot) {
   int armok = 2;
   if ((cr.wound[BODYPART_ARM_RIGHT] & WOUND_NASTYOFF) ||
       (cr.wound[BODYPART_ARM_RIGHT] & WOUND_CLEANOFF)) armok--;
@@ -2509,8 +2287,7 @@ void severloot(Creature &cr, vector<Item *> &loot)
   if (cr.special[SPECIALWOUND_NECK] != 1) armok = 0;
   if (cr.special[SPECIALWOUND_UPPERSPINE] != 1) armok = 0;
 
-  if (cr.is_armed() && armok == 0)
-  {
+  if (cr.is_armed() && armok == 0) {
     clearmessagearea();
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     move(16, 1);
@@ -2534,8 +2311,7 @@ void severloot(Creature &cr, vector<Item *> &loot)
         (cr.wound[BODYPART_BODY] & WOUND_NASTYOFF)) &&
        cr.get_armor().covers(BODYPART_BODY)) ||
       ((cr.wound[BODYPART_HEAD] & WOUND_NASTYOFF) &&
-       cr.get_armor().is_mask()))
-  {
+       cr.get_armor().is_mask())) {
     clearmessagearea();
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     move(16, 1);
@@ -2552,24 +2328,18 @@ void severloot(Creature &cr, vector<Item *> &loot)
 }
 
 /* damages the selected armor if it covers the body part specified */
-void armordamage(Armor &armor, int bp, int damamount)
-{
-  if (armor.covers(bp) && LCSrandom(armor.get_durability()) < damamount)
-  {
-    if (armor.is_damaged())
-    {
+void armordamage(Armor &armor, int bp, int damamount) {
+  if (armor.covers(bp) && LCSrandom(armor.get_durability()) < damamount) {
+    if (armor.is_damaged()) {
       armor.decrease_quality(LCSrandom(armor.get_durability()) < LCSrandom(damamount) / armor.get_quality() ? 1 : 0);
-    }
-    else
-    {
+    } else {
       armor.set_damaged(true);
     }
   }
 }
 
 /* blood explosions */
-void bloodblast(Armor *armor)
-{
+void bloodblast(Armor *armor) {
   //GENERAL
   if (armor != NULL)
     armor->set_bloody(true);
@@ -2580,15 +2350,13 @@ void bloodblast(Armor *armor)
   levelmap[locx][locy][locz].flag |= SITEBLOCK_BLOODY2;
 
   //HIT EVERYTHING
-  for (int p = 0; p < 6; p++)
-  {
+  for (int p = 0; p < 6; p++) {
     if (activesquad->squad[p] == NULL) continue;
     if (!LCSrandom(2))
       activesquad->squad[p]->get_armor().set_bloody(true);
   }
 
-  for (int e = 0; e < ENCMAX; e++)
-  {
+  for (int e = 0; e < ENCMAX; e++) {
     if (!encounter[e].exists) continue;
     if (!LCSrandom(2))
       encounter[e].get_armor().set_bloody(true);
@@ -2600,15 +2368,13 @@ void bloodblast(Armor *armor)
 }
 
 /* kills the specified creature from the encounter, dropping loot */
-void delenc(short e, char loot)
-{
+void delenc(short e, char loot) {
   //MAKE GROUND LOOT
   if (mode != GAMEMODE_SITE) loot = 0;
   if (loot) makeloot(encounter[e], groundloot);
 
   //BURY IT
-  for (int en = e; en < ENCMAX; en++)
-  {
+  for (int en = e; en < ENCMAX; en++) {
     if (!encounter[en].exists) break;
     if (en < ENCMAX - 1) encounter[en] = encounter[en + 1];
   }
@@ -2616,21 +2382,18 @@ void delenc(short e, char loot)
 }
 
 /* generates the loot dropped by a creature when it dies */
-void makeloot(Creature &cr, vector<Item *> &loot)
-{
+void makeloot(Creature &cr, vector<Item *> &loot) {
   cr.drop_weapons_and_clips(&loot);
   cr.strip(&loot);
 
-  if (cr.money > 0 && mode == GAMEMODE_SITE)
-  {
+  if (cr.money > 0 && mode == GAMEMODE_SITE) {
     loot.push_back(new Money(cr.money));
     cr.money = 0;
   }
 }
 
 /* abandoned liberal is captured by conservatives */
-void capturecreature(Creature &t)
-{
+void capturecreature(Creature &t) {
   t.activity.type = ACTIVITY_NONE;
   t.drop_weapons_and_clips(NULL);
   //t.strip(NULL);
@@ -2638,47 +2401,38 @@ void capturecreature(Creature &t)
   t.give_armor(clothes, NULL);
 
   freehostage(t, 2); // situation 2 = no message; this may want to be changed to 0 or 1
-  if (t.prisoner)
-  {
+  if (t.prisoner) {
     if (t.prisoner->squadid == -1)
       delete t.prisoner;
     t.prisoner = NULL; // Stop hauling people
   }
-  if (t.flag & CREATUREFLAG_JUSTESCAPED)
-  {
+  if (t.flag & CREATUREFLAG_JUSTESCAPED) {
     t.location = cursite;
     if (sitetype == SITE_GOVERNMENT_PRISON ||
-        sitetype == SITE_GOVERNMENT_COURTHOUSE)
-    {
+        sitetype == SITE_GOVERNMENT_COURTHOUSE) {
       Armor prisoner = Armor(*armortype[getarmortype("ARMOR_PRISONER")]);
       t.give_armor(prisoner, NULL);
     }
-    if (sitetype == SITE_GOVERNMENT_PRISON)
-    {
+    if (sitetype == SITE_GOVERNMENT_PRISON) {
       // Clear criminal record?
       t.heat = 0;
       for (int i = 0; i < LAWFLAGNUM; i++)
         t.crimes_suspected[i] = 0;
     }
-  }
-  else
+  } else
     t.location = find_police_station(cursite);
 
   t.squadid = -1;
 }
 
 /* checks if the creature can fight and prints flavor text if they can't */
-char incapacitated(Creature &a, char noncombat, char &printed)
-{
+char incapacitated(Creature &a, char noncombat, char &printed) {
   printed = 0;
 
-  if (a.animalgloss == ANIMALGLOSS_TANK)
-  {
-    if (a.blood <= 20 || (a.blood <= 50 && (LCSrandom(2) || a.forceinc)))
-    {
+  if (a.animalgloss == ANIMALGLOSS_TANK) {
+    if (a.blood <= 20 || (a.blood <= 50 && (LCSrandom(2) || a.forceinc))) {
       a.forceinc = 0;
-      if (noncombat)
-      {
+      if (noncombat) {
         clearmessagearea();
 
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -2686,8 +2440,7 @@ char incapacitated(Creature &a, char noncombat, char &printed)
         move(16, 1);
         addstr("The ", gamelog);
         addstr(a.name, gamelog);
-        switch (LCSrandom(3))
-        {
+        switch (LCSrandom(3)) {
         case 0:
           addstr(" smokes...", gamelog);
           break;
@@ -2709,21 +2462,17 @@ char incapacitated(Creature &a, char noncombat, char &printed)
     return 0;
   }
 
-  if (a.animalgloss == ANIMALGLOSS_ANIMAL)
-  {
-    if (a.blood <= 20 || (a.blood <= 50 && (LCSrandom(2) || a.forceinc)))
-    {
+  if (a.animalgloss == ANIMALGLOSS_ANIMAL) {
+    if (a.blood <= 20 || (a.blood <= 50 && (LCSrandom(2) || a.forceinc))) {
       a.forceinc = 0;
-      if (noncombat)
-      {
+      if (noncombat) {
         clearmessagearea();
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
         move(16, 1);
         addstr("The ", gamelog);
         addstr(a.name);
-        switch (LCSrandom(3))
-        {
+        switch (LCSrandom(3)) {
         case 0:
           addstr(" yelps in pain...", gamelog);
           break;
@@ -2748,18 +2497,15 @@ char incapacitated(Creature &a, char noncombat, char &printed)
     return 0;
   }
 
-  if (a.blood <= 20 || (a.blood <= 50 && (LCSrandom(2) || a.forceinc)))
-  {
+  if (a.blood <= 20 || (a.blood <= 50 && (LCSrandom(2) || a.forceinc))) {
     a.forceinc = 0;
-    if (noncombat)
-    {
+    if (noncombat) {
       clearmessagearea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
       move(16, 1);
       addstr(a.name);
-      switch (LCSrandom(54))
-      {
+      switch (LCSrandom(54)) {
       case 0:
         addstr(" desperately cries out to Jesus.");
         break;
@@ -2888,8 +2634,7 @@ char incapacitated(Creature &a, char noncombat, char &printed)
         if (a.age < 20 && !a.animalgloss)
           addstr(" cries \"Mommy!\"");
         else
-          switch (a.type)
-          {
+          switch (a.type) {
           case CREATURE_GENETIC:
             addstr(" murmurs \"What about my offspring?\"");
             break;
@@ -2967,19 +2712,15 @@ char incapacitated(Creature &a, char noncombat, char &printed)
     }
 
     return 1;
-  }
-  else if (a.stunned)
-  {
-    if (noncombat)
-    {
+  } else if (a.stunned) {
+    if (noncombat) {
       a.stunned--;
       clearmessagearea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
       move(16, 1);
       addstr(a.name, gamelog);
-      switch (LCSrandom(11))
-      {
+      switch (LCSrandom(11)) {
       case 0:
         addstr(" seems hesitant.", gamelog);
         break;
@@ -3023,17 +2764,14 @@ char incapacitated(Creature &a, char noncombat, char &printed)
   }
 
   if (a.special[SPECIALWOUND_NECK] == 2 ||
-      a.special[SPECIALWOUND_UPPERSPINE] == 2)
-  {
-    if (!noncombat)
-    {
+      a.special[SPECIALWOUND_UPPERSPINE] == 2) {
+    if (!noncombat) {
       clearmessagearea();
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
       move(16, 1);
       addstr(a.name, gamelog);
-      switch (LCSrandom(5))
-      {
+      switch (LCSrandom(5)) {
       case 0:
         addstr(" looks on with authority.", gamelog);
         break;
@@ -3063,19 +2801,16 @@ char incapacitated(Creature &a, char noncombat, char &printed)
 }
 
 /* describes a character's death */
-void adddeathmessage(Creature &cr)
-{
+void adddeathmessage(Creature &cr) {
   set_color(COLOR_YELLOW, COLOR_BLACK, 1);
 
   move(16, 1);
   char str[200];
 
   if ((cr.wound[BODYPART_HEAD] & WOUND_CLEANOFF) ||
-      (cr.wound[BODYPART_HEAD] & WOUND_NASTYOFF))
-  {
+      (cr.wound[BODYPART_HEAD] & WOUND_NASTYOFF)) {
     strcpy(str, cr.name);
-    switch (LCSrandom(4))
-    {
+    switch (LCSrandom(4)) {
     case 0:
       strcat(str, " reaches once where there ");
       addstr(str, gamelog);
@@ -3115,13 +2850,10 @@ void adddeathmessage(Creature &cr)
       addstr("the neck hole, then is quiet.", gamelog);
       break;
     }
-  }
-  else if ((cr.wound[BODYPART_BODY] & WOUND_CLEANOFF) ||
-           (cr.wound[BODYPART_BODY] & WOUND_NASTYOFF))
-  {
+  } else if ((cr.wound[BODYPART_BODY] & WOUND_CLEANOFF) ||
+             (cr.wound[BODYPART_BODY] & WOUND_NASTYOFF)) {
     strcpy(str, cr.name);
-    switch (LCSrandom(2))
-    {
+    switch (LCSrandom(2)) {
     case 0:
       strcat(str, " breaks into pieces.");
       break;
@@ -3130,12 +2862,9 @@ void adddeathmessage(Creature &cr)
       break;
     }
     addstr(str, gamelog);
-  }
-  else
-  {
+  } else {
     strcpy(str, cr.name);
-    switch (LCSrandom(11))
-    {
+    switch (LCSrandom(11)) {
     case 0:
       strcat(str, " cries out one last time ");
       addstr(str, gamelog);
@@ -3206,8 +2935,7 @@ void adddeathmessage(Creature &cr)
       strcat(str, " speaks these final words: ");
       addstr(str, gamelog);
       move(17, 1);
-      switch (cr.align)
-      {
+      switch (cr.align) {
       case ALIGN_LIBERAL:
       case ALIGN_ELITELIBERAL:
         addstr(slogan, gamelog);
@@ -3226,16 +2954,14 @@ void adddeathmessage(Creature &cr)
 }
 
 /* pushes people into the current squad (used in a siege) */
-void autopromote(int loc)
-{
+void autopromote(int loc) {
   if (!activesquad) return;
 
   int partysize = squadsize(activesquad), partyalive = squadalive(activesquad), libnum = 0;
 
   if (partyalive == 6) return;
 
-  for (int pl = 0; pl < len(pool); pl++)
-  {
+  for (int pl = 0; pl < len(pool); pl++) {
     if (pool[pl]->location != loc) continue;
     if (pool[pl]->alive && pool[pl]->align == 1) libnum++;
   }
@@ -3243,22 +2969,18 @@ void autopromote(int loc)
   if (partysize == libnum) return;
 
   char conf;
-  for (int p = 0; p < 6; p++)
-  {
+  for (int p = 0; p < 6; p++) {
     conf = 0;
     if (activesquad->squad[p] == NULL)
       conf = 1;
     else if (!activesquad->squad[p]->alive)
       conf = 1;
 
-    if (conf)
-    {
-      for (int pl = 0; pl < len(pool); pl++)
-      {
+    if (conf) {
+      for (int pl = 0; pl < len(pool); pl++) {
         if (pool[pl]->location != loc) continue;
         if (pool[pl]->alive && pool[pl]->squadid == -1 &&
-            pool[pl]->align == 1)
-        {
+            pool[pl]->align == 1) {
           if (activesquad->squad[p] != NULL) activesquad->squad[p]->squadid = -1;
           activesquad->squad[p] = pool[pl];
           activesquad->squad[p]->squadid = activesquad->id;

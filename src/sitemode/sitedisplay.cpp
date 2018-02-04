@@ -65,8 +65,7 @@ This file is part of Liberal Crime Squad.                                       
 // Imperfect but quick and dirty line of sight check
 // Only works if the target point is at most two spaces
 // away in any direction
-bool LineOfSight(int x, int y, int z)
-{
+bool LineOfSight(int x, int y, int z) {
   if (levelmap[x][y][z].flag & SITEBLOCK_KNOWN) return true; // already explored
 
   if (DIFF(x, locx) > 2 || DIFF(y, locy) > 2) return false; // too far away
@@ -94,8 +93,7 @@ bool LineOfSight(int x, int y, int z)
 }
 
 // Prints the map graphics in the bottom right of the screen
-void printsitemap(int x, int y, int z)
-{
+void printsitemap(int x, int y, int z) {
   mapshowing = true;
   int xscreen, xsite, yscreen, ysite;
 
@@ -119,8 +117,7 @@ void printsitemap(int x, int y, int z)
 
   //PRINT SPECIAL
   char str[200];
-  switch (levelmap[locx][locy][locz].special)
-  {
+  switch (levelmap[locx][locy][locz].special) {
   case SPECIAL_LAB_COSMETICS_CAGEDANIMALS:
     strcpy(str, "Caged Animals");
     break;
@@ -218,8 +215,7 @@ void printsitemap(int x, int y, int z)
     strcpy(str, "");
     break;
   }
-  if (levelmap[locx][locy][locz].special != -1)
-  {
+  if (levelmap[locx][locy][locz].special != -1) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     mvaddstr(24, 67 - (len(str) >> 1), str);
   }
@@ -239,8 +235,7 @@ void printsitemap(int x, int y, int z)
   for (int e = 0; e < ENCMAX; e++)
     if (encounter[e].exists) encsize++;
   //PRINT ANY OPPOSING FORCE INFO
-  if (encsize)
-  {
+  if (encsize) {
     set_color(COLOR_YELLOW, COLOR_BLACK, 1);
     if (levelmap[locx][locx][locz].siegeflag & SIEGEFLAG_HEAVYUNIT)
       mvaddstr(17, 64, "ARMOR");
@@ -254,8 +249,7 @@ void printsitemap(int x, int y, int z)
     printencounter();
   }
 
-  if (len(groundloot))
-  {
+  if (len(groundloot)) {
     set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
     mvaddstr(15, 64, "LOOT!");
 
@@ -272,8 +266,7 @@ void printsitemap(int x, int y, int z)
 #define CORNER_DL 6
 #define CORNER_DR 7
 
-void printwall(int x, int y, int z, int px, int py)
-{
+void printwall(int x, int y, int z, int px, int py) {
   bool visible[8] = {false, false, false, false, false, false, false, false};
   bool bloody[8] = {false, false, false, false, false, false, false, false};
   char graffiti[4][4] = {"   ", "   ", "   ", "   "};
@@ -338,8 +331,7 @@ void printwall(int x, int y, int z, int px, int py)
   if (levelmap[x + 1][y + 1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)) visible[CORNER_DR] = false;
 
   // Below not used for doors
-  if (levelmap[x][y][z].flag & SITEBLOCK_BLOCK)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_BLOCK) {
     // Check for bloody walls
     if (levelmap[x - 1][y][z].flag & SITEBLOCK_BLOODY2) bloody[WALL_LEFT] = true;
     if (levelmap[x + 1][y][z].flag & SITEBLOCK_BLOODY2) bloody[WALL_RIGHT] = true;
@@ -352,79 +344,65 @@ void printwall(int x, int y, int z, int px, int py)
     if (levelmap[x + 1][y + 1][z].flag & SITEBLOCK_BLOODY2) bloody[CORNER_DR] = true;
 
     // Check for other graffiti
-    if (levelmap[x - 1][y][z].flag & SITEBLOCK_GRAFFITI_OTHER)
-    {
+    if (levelmap[x - 1][y][z].flag & SITEBLOCK_GRAFFITI_OTHER) {
       strcpy(graffiti[WALL_LEFT], "GNG");
       graffiticolor[WALL_LEFT] = COLOR_BLACK;
     }
-    if (levelmap[x + 1][y][z].flag & SITEBLOCK_GRAFFITI_OTHER)
-    {
+    if (levelmap[x + 1][y][z].flag & SITEBLOCK_GRAFFITI_OTHER) {
       strcpy(graffiti[WALL_RIGHT], "GNG");
       graffiticolor[WALL_RIGHT] = COLOR_BLACK;
     }
-    if (levelmap[x][y - 1][z].flag & SITEBLOCK_GRAFFITI_OTHER)
-    {
+    if (levelmap[x][y - 1][z].flag & SITEBLOCK_GRAFFITI_OTHER) {
       strcpy(graffiti[WALL_UP], "GNG");
       graffiticolor[WALL_UP] = COLOR_BLACK;
     }
-    if (levelmap[x][y + 1][z].flag & SITEBLOCK_GRAFFITI_OTHER)
-    {
+    if (levelmap[x][y + 1][z].flag & SITEBLOCK_GRAFFITI_OTHER) {
       strcpy(graffiti[WALL_DOWN], "GNG");
       graffiticolor[WALL_DOWN] = COLOR_BLACK;
     }
 
     // Check for CCS graffiti
-    if (levelmap[x - 1][y][z].flag & SITEBLOCK_GRAFFITI_CCS)
-    {
+    if (levelmap[x - 1][y][z].flag & SITEBLOCK_GRAFFITI_CCS) {
       strcpy(graffiti[WALL_LEFT], "CCS");
       graffiticolor[WALL_LEFT] = COLOR_RED;
     }
-    if (levelmap[x + 1][y][z].flag & SITEBLOCK_GRAFFITI_CCS)
-    {
+    if (levelmap[x + 1][y][z].flag & SITEBLOCK_GRAFFITI_CCS) {
       strcpy(graffiti[WALL_RIGHT], "CCS");
       graffiticolor[WALL_RIGHT] = COLOR_RED;
     }
-    if (levelmap[x][y - 1][z].flag & SITEBLOCK_GRAFFITI_CCS)
-    {
+    if (levelmap[x][y - 1][z].flag & SITEBLOCK_GRAFFITI_CCS) {
       strcpy(graffiti[WALL_UP], "CCS");
       graffiticolor[WALL_UP] = COLOR_RED;
     }
-    if (levelmap[x][y + 1][z].flag & SITEBLOCK_GRAFFITI_CCS)
-    {
+    if (levelmap[x][y + 1][z].flag & SITEBLOCK_GRAFFITI_CCS) {
       strcpy(graffiti[WALL_DOWN], "CCS");
       graffiticolor[WALL_DOWN] = COLOR_RED;
     }
 
     // Check for LCS graffiti
-    if (levelmap[x - 1][y][z].flag & SITEBLOCK_GRAFFITI)
-    {
+    if (levelmap[x - 1][y][z].flag & SITEBLOCK_GRAFFITI) {
       strcpy(graffiti[WALL_LEFT], "LCS");
       graffiticolor[WALL_LEFT] = COLOR_GREEN;
     }
-    if (levelmap[x + 1][y][z].flag & SITEBLOCK_GRAFFITI)
-    {
+    if (levelmap[x + 1][y][z].flag & SITEBLOCK_GRAFFITI) {
       strcpy(graffiti[WALL_RIGHT], "LCS");
       graffiticolor[WALL_RIGHT] = COLOR_GREEN;
     }
-    if (levelmap[x][y - 1][z].flag & SITEBLOCK_GRAFFITI)
-    {
+    if (levelmap[x][y - 1][z].flag & SITEBLOCK_GRAFFITI) {
       strcpy(graffiti[WALL_UP], "LCS");
       graffiticolor[WALL_UP] = COLOR_GREEN;
     }
-    if (levelmap[x][y + 1][z].flag & SITEBLOCK_GRAFFITI)
-    {
+    if (levelmap[x][y + 1][z].flag & SITEBLOCK_GRAFFITI) {
       strcpy(graffiti[WALL_DOWN], "LCS");
       graffiticolor[WALL_DOWN] = COLOR_GREEN;
     }
   }
 
-  for (int dir = 4; dir < 8; dir++)
-  {
+  for (int dir = 4; dir < 8; dir++) {
     x = px, y = py;
 
     // Draw the corner
-    if (visible[dir] && (type & SITEBLOCK_BLOCK))
-    {
+    if (visible[dir] && (type & SITEBLOCK_BLOCK)) {
       bool blink = type & SITEBLOCK_METAL;
 
       // Position cursor in the correct corner
@@ -444,15 +422,12 @@ void printwall(int x, int y, int z, int px, int py)
     }
   }
 
-  for (int dir = 0; dir < 4; dir++)
-  {
+  for (int dir = 0; dir < 4; dir++) {
     x = px, y = py;
 
     // Draw the wall/door
-    if (visible[dir])
-    {
-      if (type & SITEBLOCK_BLOCK)
-      {
+    if (visible[dir]) {
+      if (type & SITEBLOCK_BLOCK) {
         bool blink = type & SITEBLOCK_METAL;
 
         // Position cursor at the start of where the graffiti tag would go
@@ -470,8 +445,7 @@ void printwall(int x, int y, int z, int px, int py)
           set_color(COLOR_WHITE, COLOR_WHITE, 0, blink);
 
         // Draw the chunk of wall where the graffiti would/will go
-        for (int gchar = 0; gchar < 3; gchar++)
-        {
+        for (int gchar = 0; gchar < 3; gchar++) {
           mvaddchar(y, x, graffiti[dir][gchar]);
 
           if (dir == WALL_RIGHT || dir == WALL_LEFT)
@@ -484,8 +458,7 @@ void printwall(int x, int y, int z, int px, int py)
         // additional space to either side of the 'tag' (or lack of tag)
         // that needs to be filled in with wall or blood color
 
-        if (dir == WALL_UP || dir == WALL_DOWN)
-        {
+        if (dir == WALL_UP || dir == WALL_DOWN) {
           if (bloody[dir])
             set_color(COLOR_RED, COLOR_RED, 0);
           else
@@ -493,9 +466,7 @@ void printwall(int x, int y, int z, int px, int py)
           if (!visible[WALL_LEFT]) mvaddchar(y, px, ' ');
           if (!visible[WALL_RIGHT]) mvaddchar(y, px + 4, ' ');
         }
-      }
-      else if (type & SITEBLOCK_DOOR)
-      {
+      } else if (type & SITEBLOCK_DOOR) {
         // Doors are, thankfully, much simpler, as they do not
         // support blood or graffiti
 
@@ -531,10 +502,8 @@ void printwall(int x, int y, int z, int px, int py)
   }
 }
 
-void printblock(int x, int y, int z, int px, int py)
-{
-  if (!LineOfSight(x, y, z))
-  {
+void printblock(int x, int y, int z, int px, int py) {
+  if (!LineOfSight(x, y, z)) {
     set_color(COLOR_BLACK, COLOR_BLACK, 0);
     for (x = px; x < px + 5; x++)
       for (y = py; y < py + 3; y++)
@@ -542,30 +511,22 @@ void printblock(int x, int y, int z, int px, int py)
     return;
   }
   levelmap[x][y][z].flag |= SITEBLOCK_KNOWN;
-  if (levelmap[x][y][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR))
-  {
+  if (levelmap[x][y][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)) {
     printwall(x, y, z, px, py);
     return;
   }
   int backcolor = COLOR_BLACK;
   char blink = 0, ch = ' ';
-  if (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED) {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     ch = '+';
-  }
-  else if (levelmap[x][y][z].flag & SITEBLOCK_GRASSY)
-  {
+  } else if (levelmap[x][y][z].flag & SITEBLOCK_GRASSY) {
     set_color(COLOR_GREEN, COLOR_BLACK, 0);
     ch = '.';
-  }
-  else if (levelmap[x][y][z].flag & SITEBLOCK_OUTDOOR)
-  {
+  } else if (levelmap[x][y][z].flag & SITEBLOCK_OUTDOOR) {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     ch = ' ';
-  }
-  else
-  {
+  } else {
     set_color(COLOR_BLACK, COLOR_BLACK, 1);
     ch = ' ';
   }
@@ -574,8 +535,7 @@ void printblock(int x, int y, int z, int px, int py)
     for (int py2 = py; py2 < py + 3; py2++)
       mvaddchar(py2, px2, ch);
 
-  if (levelmap[x][y][z].flag & SITEBLOCK_DEBRIS)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_DEBRIS) {
     set_color(COLOR_WHITE, backcolor, 1, blink);
     mvaddchar(py + 0, px + 1, '.');
     mvaddchar(py + 0, px + 4, '^');
@@ -586,8 +546,7 @@ void printblock(int x, int y, int z, int px, int py)
     mvaddchar(py + 2, px + 4, '\\');
   }
 
-  if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_START)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_START) {
     set_color(COLOR_RED, backcolor, 1, blink);
     mvaddchar(py + 0, px + 1, '.');
     set_color(COLOR_YELLOW, backcolor, 1, blink);
@@ -595,8 +554,7 @@ void printblock(int x, int y, int z, int px, int py)
     mvaddchar(py + 2, px + 1, '.');
   }
 
-  if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_PEAK)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_PEAK) {
     set_color(COLOR_RED, backcolor, 1, blink);
     mvaddchar(py + 0, px + 1, ':');
     mvaddchar(py + 1, px + 0, '*');
@@ -608,8 +566,7 @@ void printblock(int x, int y, int z, int px, int py)
     mvaddchar(py + 2, px + 4, '*');
   }
 
-  if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_END)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_FIRE_END) {
     set_color(COLOR_RED, backcolor, 1, blink);
     mvaddchar(py + 1, px + 0, '*');
     set_color(COLOR_YELLOW, backcolor, 1, blink);
@@ -622,47 +579,35 @@ void printblock(int x, int y, int z, int px, int py)
     mvaddchar(py + 2, px + 1, '.');
   }
 
-  if (levelmap[x][y][z].flag & SITEBLOCK_BLOODY2)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_BLOODY2) {
     set_color(COLOR_RED, backcolor, 0, blink);
     mvaddchar(py + 1, px + 1, '%');
     mvaddchar(py + 2, px + 1, '.');
     mvaddchar(py + 1, px + 2, '.');
-  }
-  else if (levelmap[x][y][z].flag & SITEBLOCK_BLOODY)
-  {
+  } else if (levelmap[x][y][z].flag & SITEBLOCK_BLOODY) {
     set_color(COLOR_RED, backcolor, 0, blink);
     mvaddchar(py + 2, px + 1, '.');
     mvaddchar(py + 1, px + 2, '.');
   }
 
-  if (levelmap[x][y][z].flag & SITEBLOCK_EXIT)
-  {
+  if (levelmap[x][y][z].flag & SITEBLOCK_EXIT) {
     set_color(COLOR_WHITE, backcolor, 0, blink);
     mvaddstr(py + 1, px + 1, "EXT");
-  }
-  else if (levelmap[x][y][z].flag & SITEBLOCK_LOOT)
-  {
+  } else if (levelmap[x][y][z].flag & SITEBLOCK_LOOT) {
     set_color(COLOR_MAGENTA, backcolor, 1, blink);
     mvaddstr(py, px + 1, "~$~");
   }
 
-  if (levelmap[x][y][z].siegeflag & SIEGEFLAG_TRAP)
-  {
+  if (levelmap[x][y][z].siegeflag & SIEGEFLAG_TRAP) {
     set_color(COLOR_YELLOW, backcolor, 1, blink);
     mvaddstr(py + 1, px, "TRAP!");
-  }
-  else if (levelmap[x][y][z].siegeflag & SIEGEFLAG_UNIT_DAMAGED)
-  {
+  } else if (levelmap[x][y][z].siegeflag & SIEGEFLAG_UNIT_DAMAGED) {
     set_color(COLOR_RED, backcolor, 0, blink);
     mvaddstr(py + 2, px, "enemy");
-  }
-  else if (levelmap[x][y][z].special != -1)
-  {
+  } else if (levelmap[x][y][z].special != -1) {
     set_color(COLOR_YELLOW, backcolor, 1, blink);
 
-    switch (levelmap[x][y][z].special)
-    {
+    switch (levelmap[x][y][z].special) {
     case SPECIAL_NUCLEAR_ONOFF:
       mvaddstr(py, px, "POWER");
       break;
@@ -764,30 +709,24 @@ void printblock(int x, int y, int z, int px, int py)
       break;
     }
   }
-  if (levelmap[x][y][z].siegeflag & SIEGEFLAG_HEAVYUNIT)
-  {
+  if (levelmap[x][y][z].siegeflag & SIEGEFLAG_HEAVYUNIT) {
     set_color(COLOR_RED, backcolor, 1, blink);
     mvaddstr(py + 2, px, "ARMOR");
-  }
-  else if (levelmap[x][y][z].siegeflag & SIEGEFLAG_UNIT)
-  {
+  } else if (levelmap[x][y][z].siegeflag & SIEGEFLAG_UNIT) {
     set_color(COLOR_RED, backcolor, 1, blink);
     mvaddstr(py + 2, px, "ENEMY");
   }
 }
 
 /* prints the names of creatures you see */
-void printencounter()
-{
+void printencounter() {
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
   for (int i = 19; i <= 24; i++)
     mvaddstr(i, 0, "                                                     "); // 53 spaces
 
   int px = 1, py = 19;
-  for (int e = 0; e < ENCMAX; e++)
-  {
-    if (encounter[e].exists)
-    {
+  for (int e = 0; e < ENCMAX; e++) {
+    if (encounter[e].exists) {
       if (!encounter[e].alive)
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
       else if (encounter[e].align == 0)
@@ -805,17 +744,14 @@ void printencounter()
 }
 
 /* prints the names of creatures you see in car chases */
-void printchaseencounter()
-{
+void printchaseencounter() {
   for (int i = 19; i <= 24; i++)
     mvaddstr(i, 0, "                                                                                "); // 80 spaces
 
-  if (len(chaseseq.enemycar))
-  {
+  if (len(chaseseq.enemycar)) {
     int carsy[4] = {20, 20, 20, 20};
 
-    for (int v = 0; v < len(chaseseq.enemycar); v++)
-    {
+    for (int v = 0; v < len(chaseseq.enemycar); v++) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
       mvaddstr(19, v * 20 + 1, chaseseq.enemycar[v]->fullname(true));
     }
@@ -823,59 +759,49 @@ void printchaseencounter()
     for (int e = 0; e < ENCMAX; e++)
       if (encounter[e].exists)
         for (int v = 0; v < len(chaseseq.enemycar); v++)
-          if (chaseseq.enemycar[v]->id() == encounter[e].carid)
-          {
+          if (chaseseq.enemycar[v]->id() == encounter[e].carid) {
             set_color(COLOR_RED, COLOR_BLACK, 1);
             mvaddstr(carsy[v], v * 20 + 1, encounter[e].name);
             if (encounter[e].is_driver) addstr("-D");
             carsy[v]++;
           }
-  }
-  else
+  } else
     printencounter();
 }
 
 /* blanks a part of the screen */
-void clearcommandarea()
-{
+void clearcommandarea() {
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
   for (int y = 9; y < 16; y++)
     mvaddstr(y, 0, "                                                     "); // 53 spaces
   if (mode != GAMEMODE_SITE) clearmaparea(false, true);
 }
 
-void refreshmaparea()
-{
+void refreshmaparea() {
   if (mode == GAMEMODE_SITE)
     printsitemap(locx, locy, locz);
   else
     clearmaparea(true, false);
 }
 
-void clearmessagearea(bool redrawmaparea)
-{
+void clearmessagearea(bool redrawmaparea) {
   set_color(COLOR_WHITE, COLOR_BLACK, 1);
-  if (redrawmaparea)
-  {
+  if (redrawmaparea) {
     mvaddstr(16, 0, "                                                                                "); // 80 spaces
     mvaddstr(17, 0, "                                                                                "); // 80 spaces
     refreshmaparea();
     // Must reprint chasers when no map to the right
     if (mode == GAMEMODE_CHASECAR || mode == GAMEMODE_CHASEFOOT) printchaseencounter();
-  }
-  else
-  {
+  } else {
     mvaddstr(16, 0, "                                                     "); // 53 spaces
     mvaddstr(17, 0, "                                                     "); // 53 spaces
   }
 }
 
-void clearmaparea(bool lower, bool upper)
-{
+void clearmaparea(bool lower, bool upper) {
   if (upper) mapshowing = false;
   set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  for (int y = 8; y < 25; y++)
-  {
+  for (int y = 8; y < 25; y++) {
     if (!upper && y < 15) continue;
     if (!lower && y >= 15) continue;
     if (y == 8)

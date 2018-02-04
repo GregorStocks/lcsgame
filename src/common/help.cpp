@@ -30,23 +30,20 @@ ACTIVITY_SLEEPER_JOINLCS, TODO
 
 // NOTE: This will probably need updating if there are any fundamental code
 // changes that will change gameplay.
-void help(const char *string)
-{
+void help(const char *string) {
   erase();
 }
 
 // Generates help page on activities.
 // Just supply Activity type.
-void HelpActivities(int activityType)
-{
+void HelpActivities(int activityType) {
   // I have actually created a screen editor to help me create the code
   // for the help. It can probably be used all over the place for formatting
   // large pieces of text.
   //
   // Could you possibly put this in ../../dev/ ? -- LK
 
-  if (activityType == ACTIVITY_NONE)
-  {
+  if (activityType == ACTIVITY_NONE) {
     return;
   }
 
@@ -55,8 +52,7 @@ void HelpActivities(int activityType)
   move(0, 0);
   addstr("Liberal help on:");
 
-  switch (activityType)
-  {
+  switch (activityType) {
   // }}}
   // {{{ Liberal activism
   // {{{ ACTIVITY_COMMUNITYSERVICE

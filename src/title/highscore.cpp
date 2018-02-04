@@ -29,15 +29,13 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* displays the high score board */
-void viewhighscores(int musicoverride)
-{
+void viewhighscores(int musicoverride) {
   if (musicoverride != MUSIC_OFF) music.play(musicoverride);
   int s;
   loadhighscores();
 
   short validsum = 0;
-  for (s = 0; s < SCORENUM; s++)
-  {
+  for (s = 0; s < SCORENUM; s++) {
     if (score[s].valid) validsum++;
   }
 
@@ -50,10 +48,8 @@ void viewhighscores(int musicoverride)
   addstr("The Liberal ELITE");
 
   int y = 2;
-  for (s = 0; s < SCORENUM; s++)
-  {
-    if (score[s].valid)
-    {
+  for (s = 0; s < SCORENUM; s++) {
+    if (score[s].valid) {
       if (yourscore == s && score[s].endtype == END_WON)
         set_color(COLOR_GREEN, COLOR_BLACK, 1);
       else if (yourscore == s)
@@ -69,8 +65,7 @@ void viewhighscores(int musicoverride)
       else
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
       move(y + 1, 0);
-      switch (score[s].endtype)
-      {
+      switch (score[s].endtype) {
       case END_WON:
         addstr("The Liberal Crime Squad liberalized the country in ");
         if (yourscore == s && musicoverride == MUSIC_OFF) music.play(MUSIC_VICTORY);
@@ -219,8 +214,7 @@ void viewhighscores(int musicoverride)
 }
 
 /* loads the high scores file */
-void loadhighscores()
-{
+void loadhighscores() {
   for (int s = 0; s < SCORENUM; s++)
     score[s].valid = 0;
 
@@ -228,12 +222,10 @@ void loadhighscores()
   int loadversion;
 
   FILE *h = LCSOpenFile("score.dat", "rb", LCSIO_PRE_HOME);
-  if (h != NULL)
-  {
+  if (h != NULL) {
     fread(&loadversion, sizeof(int), 1, h);
 
-    if (loadversion < lowestloadscoreversion)
-    {
+    if (loadversion < lowestloadscoreversion) {
       LCSCloseFile(h);
       return;
     }
@@ -253,8 +245,7 @@ void loadhighscores()
 }
 
 /* saves a new high score */
-void savehighscore(char endtype)
-{
+void savehighscore(char endtype) {
   loadhighscores();
 
   //MERGE THE STATS
@@ -270,8 +261,7 @@ void savehighscore(char endtype)
   //PLACE THIS HIGH SCORE BY DATE IF NECESSARY
   yourscore = -1;
 
-  for (int s = 0; s < SCORENUM; s++)
-  {
+  for (int s = 0; s < SCORENUM; s++) {
     if ((endtype == END_WON && score[s].endtype == END_WON &&
          year == score[s].year && month == score[s].month &&
          ledger.total_expense + ledger.total_expense > score[s].stat_spent + score[s].stat_funds) ||
@@ -284,10 +274,8 @@ void savehighscore(char endtype)
         (endtype != END_WON && score[s].endtype != END_WON &&
          ledger.total_expense + ledger.total_income > score[s].stat_spent + score[s].stat_funds) ||
 
-        score[s].valid == 0)
-    {
-      for (int s2 = SCORENUM - 1; s2 >= s + 1; s2--)
-      {
+        score[s].valid == 0) {
+      for (int s2 = SCORENUM - 1; s2 >= s + 1; s2--) {
         score[s2] = score[s2 - 1];
       }
 
@@ -311,8 +299,7 @@ void savehighscore(char endtype)
   }
 
   FILE *h = LCSOpenFile("score.dat", "wb", LCSIO_PRE_HOME);
-  if (h != NULL)
-  {
+  if (h != NULL) {
     int lversion = version;
     fwrite(&lversion, sizeof(int), 1, h);
 

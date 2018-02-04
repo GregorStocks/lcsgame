@@ -33,11 +33,9 @@ This file is part of Liberal Crime Squad.                                       
 */
 
 /* endgame - attempts to pass a constitutional amendment to help win the game */
-void tossjustices(char canseethings)
-{
+void tossjustices(char canseethings) {
   int j;
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     erase();
 
@@ -50,8 +48,7 @@ void tossjustices(char canseethings)
   }
 
   //STATE THE AMENDMENT
-  if (canseethings)
-  {
+  if (canseethings) {
     int tossnum = 0;
     for (j = 0; j < COURTNUM; j++)
       if (court[j] != ALIGN_ELITELIBERAL) tossnum++;
@@ -69,8 +66,7 @@ void tossjustices(char canseethings)
     int y = 4;
 
     for (j = 0; j < COURTNUM; j++)
-      if (court[j] != ALIGN_ELITELIBERAL)
-      {
+      if (court[j] != ALIGN_ELITELIBERAL) {
         move(y++, 0);
         addstr(courtname[j]);
       }
@@ -109,12 +105,10 @@ void tossjustices(char canseethings)
       ;
   }
 
-  if (ratify(2, -1, -1, 1, canseethings))
-  {
+  if (ratify(2, -1, -1, 1, canseethings)) {
     //BLAST JUSTICES
     for (int j = 0; j < COURTNUM; j++)
-      if (court[j] != ALIGN_ELITELIBERAL)
-      {
+      if (court[j] != ALIGN_ELITELIBERAL) {
         do
           generate_name(courtname[j]);
         while (len(courtname[j]) > 20);
@@ -124,8 +118,7 @@ void tossjustices(char canseethings)
     amendnum++;
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     move(24, 0);
     addstr("Press any key to reflect on what has happened.");
 
@@ -134,11 +127,9 @@ void tossjustices(char canseethings)
 }
 
 /* endgame - attempts to pass a constitutional amendment to help win the game */
-void amendment_termlimits(char canseethings)
-{
+void amendment_termlimits(char canseethings) {
   if (termlimits) return; // Durr~! Don't pass this amendment if it's already passed!
-  if (canseethings)
-  {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     erase();
 
@@ -151,8 +142,7 @@ void amendment_termlimits(char canseethings)
   }
 
   //STATE THE AMENDMENT
-  if (canseethings)
-  {
+  if (canseethings) {
     amendmentheading();
 
     move(2, 5);
@@ -175,11 +165,9 @@ void amendment_termlimits(char canseethings)
       ;
   }
 
-  if (ratify(2, -1, -1, 0, canseethings))
-  {
+  if (ratify(2, -1, -1, 0, canseethings)) {
     termlimits = true;
-    if (canseethings)
-    {
+    if (canseethings) {
       move(24, 0);
       addstr("Press any key to hold new elections!                           ");
 
@@ -191,9 +179,7 @@ void amendment_termlimits(char canseethings)
     elections_house(canseethings);
 
     amendnum++;
-  }
-  else if (canseethings)
-  {
+  } else if (canseethings) {
     move(24, 0);
     addstr("Press any key to reflect on what has happened.");
 
@@ -202,10 +188,8 @@ void amendment_termlimits(char canseethings)
 }
 
 /* endgame - attempts to pass a constitutional amendment to lose the game */
-void reaganify(char canseethings)
-{
-  if (canseethings)
-  {
+void reaganify(char canseethings) {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
@@ -258,11 +242,9 @@ void reaganify(char canseethings)
       ;
   }
 
-  if (ratify(-2, -1, -1, 1, canseethings))
-  {
+  if (ratify(-2, -1, -1, 1, canseethings)) {
     music.play(MUSIC_REAGANIFIED);
-    if (canseethings)
-    {
+    if (canseethings) {
       move(24, 0);
       addstr("Press any key to reflect on what has happened ONE LAST TIME.");
 
@@ -272,8 +254,7 @@ void reaganify(char canseethings)
     amendnum = 1; // Constitution repealed...
 
     //REAGANIFY
-    if (canseethings)
-    {
+    if (canseethings) {
       strcpy(execname[EXEC_PRESIDENT], "Ronald Reagan");
       strcpy(execname[EXEC_VP], "Strom Thurmond");
       strcpy(execname[EXEC_STATE], "Jesse Helms");
@@ -284,11 +265,8 @@ void reaganify(char canseethings)
         law[l] = ALIGN_ARCHCONSERVATIVE;
       liberalagenda(-1);
       savehighscore(END_REAGAN);
-    }
-    else
-    {
-      switch (cantseereason)
-      {
+    } else {
+      switch (cantseereason) {
       case 1:
         //DATING AND REAGANIFIED
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -398,11 +376,8 @@ void reaganify(char canseethings)
     reset();
     viewhighscores(MUSIC_REAGANIFIED);
     end_game();
-  }
-  else
-  {
-    if (canseethings)
-    {
+  } else {
+    if (canseethings) {
       move(24, 0);
       addstr("Press any key to breathe a sigh of relief.                   ");
 
@@ -412,10 +387,8 @@ void reaganify(char canseethings)
 }
 
 /* endgame - attempts to pass a constitutional amendment to lose the game */
-void stalinize(char canseethings)
-{
-  if (canseethings)
-  {
+void stalinize(char canseethings) {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
@@ -468,11 +441,9 @@ void stalinize(char canseethings)
       ;
   }
 
-  if (ratify(3, -2, -2, 1, canseethings))
-  {
+  if (ratify(3, -2, -2, 1, canseethings)) {
     music.play(MUSIC_STALINIZED);
-    if (canseethings)
-    {
+    if (canseethings) {
       move(24, 0);
       addstr("Press any key to reflect on what has happened ONE LAST TIME.");
 
@@ -482,8 +453,7 @@ void stalinize(char canseethings)
     amendnum = 1; // Constitution repealed...
 
     //STALINIZE
-    if (canseethings)
-    {
+    if (canseethings) {
       strcpy(execname[EXEC_PRESIDENT], "Josef Stalin");
       strcpy(execname[EXEC_VP], "Josef Stalin");
       strcpy(execname[EXEC_STATE], "Vyacheslav Molotov");
@@ -494,11 +464,8 @@ void stalinize(char canseethings)
         law[l] = stalinview(l, true) ? ALIGN_ELITELIBERAL : ALIGN_ARCHCONSERVATIVE;
       liberalagenda(-2);
       savehighscore(END_STALIN);
-    }
-    else
-    {
-      switch (cantseereason)
-      {
+    } else {
+      switch (cantseereason) {
       case 1:
         //DATING AND STALINIZED
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
@@ -608,11 +575,8 @@ void stalinize(char canseethings)
     reset();
     viewhighscores(MUSIC_STALINIZED);
     end_game();
-  }
-  else
-  {
-    if (canseethings)
-    {
+  } else {
+    if (canseethings) {
       move(24, 0);
       addstr("Press any key to breathe a sigh of relief.                   ");
 
@@ -622,10 +586,8 @@ void stalinize(char canseethings)
 }
 
 /* endgame - checks if a constitutional amendment is ratified */
-char ratify(int level, int lawview, int view, char congress, char canseethings)
-{
-  if (canseethings)
-  {
+char ratify(int level, int lawview, int view, char congress, char canseethings) {
+  if (canseethings) {
     music.play(MUSIC_ELECTIONS);
     erase();
 
@@ -645,12 +607,10 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
 
   int y = 0;
 
-  if (congress)
-  {
+  if (congress) {
     ratified = true;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       move(0, 62);
       addstr("House");
 
@@ -666,8 +626,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
     bool yeswin_h = false, yeswin_s = false;
     int yesvotes_h = 0, yesvotes_s = 0, vote, s = 0;
 
-    for (int l = 0; l < HOUSENUM; l++)
-    {
+    for (int l = 0; l < HOUSENUM; l++) {
       vote = house[l];
       if (vote >= -1 && vote <= 1) vote += LCSrandom(3) - 1;
 
@@ -676,8 +635,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
       if (l == HOUSENUM - 1)
         if (yesvotes_h >= HOUSESUPERMAJORITY) yeswin_h = true;
 
-      if (canseethings)
-      {
+      if (canseethings) {
         if (l == HOUSENUM - 1 && yeswin_h)
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (l == HOUSENUM - 1)
@@ -699,8 +657,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
         addstr(" Nay");
       }
 
-      if (l % 4 == 0 && s < SENATENUM)
-      {
+      if (l % 4 == 0 && s < SENATENUM) {
         vote = senate[s++];
         if (vote >= -1 && vote <= 1) vote += LCSrandom(3) - 1;
 
@@ -709,8 +666,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
 
       if (l == HOUSENUM - 1 && yesvotes_s >= SENATESUPERMAJORITY) yeswin_s = true;
 
-      if (canseethings)
-      {
+      if (canseethings) {
         if (l == HOUSENUM - 1 && yeswin_s)
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (l == HOUSENUM - 1)
@@ -738,25 +694,21 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
     if (!yeswin_h || !yeswin_s) ratified = false;
 
     y += 4;
-  }
-  else
+  } else
     ratified = true;
 
   if (level == 3) level = -2; // special case for Stalinists: do this after Congress but before the states
 
   //STATES
-  if (ratified)
-  {
+  if (ratified) {
     ratified = false;
 
     int yesstate = 0;
 
-    if (canseethings)
-    {
+    if (canseethings) {
       set_color(COLOR_WHITE, COLOR_BLACK, 1);
 
-      for (int s = 0; s < 50; s++)
-      {
+      for (int s = 0; s < 50; s++) {
         if (s < 17)
           move(5 + s, 0);
         else if (s < 34)
@@ -773,14 +725,12 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
     }
 
     int vote, smood;
-    for (int s = 0; s < STATENUM; s++)
-    {
+    for (int s = 0; s < STATENUM; s++) {
       smood = mood;
 
       // State biases.
       int multiplier = 5 + LCSrandom(3);
-      switch (s)
-      {
+      switch (s) {
       case 0:
         smood -= 3 * multiplier;
         break; // Alabama
@@ -936,8 +886,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
       if (vote == 1 && !LCSrandom(2)) vote = 2;
       if (vote == -1 && !LCSrandom(2)) vote = -2;
 
-      if (canseethings)
-      {
+      if (canseethings) {
         set_color(COLOR_WHITE, COLOR_BLACK, 1);
         if (s < 17)
           move(5 + s, 22);
@@ -946,16 +895,13 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
         else
           move(5 + s - 34, 76);
       }
-      if (vote == level)
-      {
+      if (vote == level) {
         yesstate++;
         if (canseethings) addstr("Yea");
-      }
-      else if (canseethings)
+      } else if (canseethings)
         addstr("Nay");
 
-      if (canseethings)
-      {
+      if (canseethings) {
         if (s == STATENUM - 1 && yesstate >= STATESUPERMAJORITY)
           set_color(COLOR_WHITE, COLOR_BLACK, 1);
         else if (s == STATENUM - 1)
@@ -983,8 +929,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
     if (yesstate >= STATESUPERMAJORITY) ratified = true;
   }
 
-  if (canseethings)
-  {
+  if (canseethings) {
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(23, 0);
     if (ratified)
@@ -997,8 +942,7 @@ char ratify(int level, int lawview, int view, char congress, char canseethings)
 }
 
 /* endgame - header for announcing constitutional amendments */
-void amendmentheading()
-{
+void amendmentheading() {
   erase();
 
   set_color(COLOR_WHITE, COLOR_BLACK, 1);

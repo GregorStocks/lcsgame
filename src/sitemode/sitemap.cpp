@@ -29,8 +29,7 @@ This file is part of Liberal Crime Squad.                                       
 #include <externs.h>
 
 /* re-create site from seed before squad arrives */
-void initsite(Location &loc)
-{ //PREP
+void initsite(Location &loc) { //PREP
   if (activesquad == NULL) return;
   for (int e = 0; e < ENCMAX; e++)
     encounter[e].exists = 0;
@@ -88,8 +87,7 @@ void initsite(Location &loc)
   //   Fox
   // Try to load from a map file
   bool loaded = false;
-  switch (loc.type)
-  {
+  switch (loc.type) {
   case SITE_RESIDENTIAL_TENEMENT:
     loaded = readMap("ApartmentIndustrial");
     break;
@@ -190,26 +188,21 @@ void initsite(Location &loc)
     break;
   }
   int x, y, z;
-  if (!loaded)
-  {
+  if (!loaded) {
     for (x = 0; x < MAPX; x++)
       for (y = 0; y < MAPY; y++)
-        for (z = 0; z < MAPZ; z++)
-        {
+        for (z = 0; z < MAPZ; z++) {
           levelmap[x][y][z].flag = SITEBLOCK_BLOCK;
           levelmap[x][y][z].special = -1;
           levelmap[x][y][z].siegeflag = 0;
         }
   }
-  if (loaded)
-  {
+  if (loaded) {
     if (loc.renting == RENTING_PERMANENT && loc.type != SITE_RESIDENTIAL_APARTMENT &&
-        loc.type != SITE_RESIDENTIAL_APARTMENT_UPSCALE && loc.type != SITE_RESIDENTIAL_TENEMENT)
-    {
+        loc.type != SITE_RESIDENTIAL_APARTMENT_UPSCALE && loc.type != SITE_RESIDENTIAL_TENEMENT) {
       for (x = 0; x < MAPX; x++)
         for (y = 0; y < MAPY; y++)
-          for (z = 0; z < MAPZ; z++)
-          { // Clear high security, locked doors, alarms, and site specials
+          for (z = 0; z < MAPZ; z++) { // Clear high security, locked doors, alarms, and site specials
             // from LCS non-apartment safehouses
             levelmap[x][y][z].flag &= ~SITEBLOCK_LOCKED;
             levelmap[x][y][z].flag &= ~SITEBLOCK_RESTRICTED;
@@ -217,11 +210,9 @@ void initsite(Location &loc)
             levelmap[x][y][z].special = -1;
           }
     }
-  }
-  else if (!oldMapMode) // Try to load from the sitemaps
+  } else if (!oldMapMode) // Try to load from the sitemaps
   {
-    switch (loc.type)
-    {
+    switch (loc.type) {
     case SITE_RESIDENTIAL_TENEMENT:
     case SITE_RESIDENTIAL_APARTMENT:
     case SITE_RESIDENTIAL_APARTMENT_UPSCALE:
@@ -303,9 +294,7 @@ void initsite(Location &loc)
       build_site("OUTDOOR_PUBLICPARK");
       break;
     }
-  }
-  else
-  {
+  } else {
     // Last resort -- generate random map
     levelmap[MAPX >> 1][0][0].flag = SITEBLOCK_EXIT;
     levelmap[(MAPX >> 1) + 1][0][0].flag = SITEBLOCK_EXIT;
@@ -316,26 +305,21 @@ void initsite(Location &loc)
     levelmap[MAPX >> 1][2][0].flag = SITEBLOCK_DOOR;
     if (loc.type == SITE_RESIDENTIAL_APARTMENT_UPSCALE ||
         loc.type == SITE_RESIDENTIAL_APARTMENT ||
-        loc.type == SITE_RESIDENTIAL_TENEMENT)
-    {
+        loc.type == SITE_RESIDENTIAL_TENEMENT) {
       levelmap[MAPX >> 1][1][0].special = SPECIAL_SIGN_ONE;
       short height;
       int floors = LCSrandom(6) + 1, swap;
-      for (int z = 0; z < floors; z++)
-      {
-        for (int y = 3; y < MAPY - 3; y++)
-        {
+      for (int z = 0; z < floors; z++) {
+        for (int y = 3; y < MAPY - 3; y++) {
           levelmap[MAPX >> 1][y][z].flag = 0;
-          if (y % 4 == 0)
-          {
+          if (y % 4 == 0) {
             height = y + LCSrandom(3) - 1;
             levelmap[(MAPX >> 1) - 1][height][z].flag = SITEBLOCK_DOOR;
             generateroom((MAPX >> 1) - 8, y - 1, 7, 3, z);
             height = y + LCSrandom(3) - 1;
             levelmap[(MAPX >> 1) + 1][height][z].flag = SITEBLOCK_DOOR;
             generateroom((MAPX >> 1) + 2, y - 1, 7, 3, z);
-            if (y == 4 && z == 0)
-            {
+            if (y == 4 && z == 0) {
               levelmap[(MAPX >> 1) + 2][height][z].flag = 0;
               levelmap[(MAPX >> 1) + 2][height][z].special = SPECIAL_APARTMENT_LANDLORD;
             }
@@ -345,11 +329,8 @@ void initsite(Location &loc)
         if (z > 0) levelmap[(MAPX >> 1) + 1 * swap][MAPY - 4][z].flag = 0, levelmap[(MAPX >> 1) + 1 * swap][MAPY - 4][z].special = SPECIAL_STAIRS_DOWN;
         if (z < floors - 1) levelmap[(MAPX >> 1) - 1 * swap][MAPY - 4][z].flag = 0, levelmap[(MAPX >> 1) - 1 * swap][MAPY - 4][z].special = SPECIAL_STAIRS_UP;
       }
-    }
-    else
-    {
-      switch (loc.type)
-      {
+    } else {
+      switch (loc.type) {
       case SITE_BUSINESS_LATTESTAND:
         for (int x = (MAPX >> 1) - 4; x <= (MAPX >> 1) + 4; x++)
           for (int y = 0; y < 7; y++)
@@ -363,14 +344,12 @@ void initsite(Location &loc)
           for (int y = 3; y < 10; y++)
             levelmap[x][y][0].flag = 0, levelmap[x][y][0].special = -1, levelmap[x][y][0].siegeflag = 0;
         break;
-      case SITE_BUSINESS_CRACKHOUSE:
-      {
+      case SITE_BUSINESS_CRACKHOUSE: {
         int dx = LCSrandom(5) * 2 + 19, dy = LCSrandom(3) * 2 + 7, rx = (MAPX >> 1) - (dx >> 1), ry = 3;
         generateroom(rx, ry, dx, dy, 0);
         break;
       }
-      default:
-      {
+      default: {
         int dx = LCSrandom(5) * 2 + 35, dy = LCSrandom(3) * 2 + 15, rx = (MAPX >> 1) - (dx >> 1), ry = 3;
         generateroom(rx, ry, dx, dy, 0);
         break;
@@ -384,107 +363,82 @@ void initsite(Location &loc)
   for (x = 0; x < MAPX; x++)
     for (int y = 0; y < MAPY; y++)
       for (int z = 0; z < MAPZ; z++)
-        if (levelmap[x][y][z].flag & SITEBLOCK_DOOR)
-        { // Check what sides are blocked around the door
+        if (levelmap[x][y][z].flag & SITEBLOCK_DOOR) { // Check what sides are blocked around the door
           block = BIT1 | BIT2 | BIT3 | BIT4;
           opennum = 0;
           if (x > 0)
-            if (!(levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK))
-            {
+            if (!(levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK)) {
               block &= ~BIT2;
               opennum++;
             }
           if (x < MAPX - 1)
-            if (!(levelmap[x + 1][y][z].flag & SITEBLOCK_BLOCK))
-            {
+            if (!(levelmap[x + 1][y][z].flag & SITEBLOCK_BLOCK)) {
               block &= ~BIT3;
               opennum++;
             }
           if (y > 0)
-            if (!(levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK))
-            {
+            if (!(levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK)) {
               block &= ~BIT1;
               opennum++;
             }
           if (y < MAPY - 1)
-            if (!(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK))
-            {
+            if (!(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK)) {
               block &= ~BIT4;
               opennum++;
             }
           //if(opennum>=2)continue;
           // Blast open everything around a totally blocked door
           // (door will later be deleted)
-          if (block == (BIT1 | BIT2 | BIT3 | BIT4))
-          {
+          if (block == (BIT1 | BIT2 | BIT3 | BIT4)) {
             if (x > 0) levelmap[x - 1][y][z].flag &= ~SITEBLOCK_BLOCK;
             if (x < MAPX - 1) levelmap[x + 1][y][z].flag &= ~SITEBLOCK_BLOCK;
             if (y > 0) levelmap[x][y - 1][z].flag &= ~SITEBLOCK_BLOCK;
             if (y < MAPY - 1) levelmap[x][y + 1][z].flag &= ~SITEBLOCK_BLOCK;
           }
           // Open up past doors that lead to walls
-          if (!(block & BIT1))
-          {
-            if (y < MAPY - 1)
-            {
+          if (!(block & BIT1)) {
+            if (y < MAPY - 1) {
               int y1 = y + 1;
-              do
-              {
+              do {
                 levelmap[x][y1][z].flag &= ~SITEBLOCK_BLOCK;
                 levelmap[x][y1][z].flag &= ~SITEBLOCK_DOOR;
                 y1++;
               } while (!(levelmap[x + 1][y1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)) &&
                        !(levelmap[x - 1][y1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)));
-            }
-            else
+            } else
               levelmap[x][y][z].flag |= SITEBLOCK_BLOCK;
-          }
-          else if (!(block & BIT4))
-          {
-            if (y > 0)
-            {
+          } else if (!(block & BIT4)) {
+            if (y > 0) {
               int y1 = y - 1;
-              do
-              {
+              do {
                 levelmap[x][y1][z].flag &= ~SITEBLOCK_BLOCK;
                 levelmap[x][y1][z].flag &= ~SITEBLOCK_DOOR;
                 y1--;
               } while (!(levelmap[x + 1][y1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)) &&
                        !(levelmap[x - 1][y1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)));
-            }
-            else
+            } else
               levelmap[x][y][z].flag |= SITEBLOCK_BLOCK;
-          }
-          else if (!(block & BIT2))
-          {
-            if (x < MAPX - 1)
-            {
+          } else if (!(block & BIT2)) {
+            if (x < MAPX - 1) {
               int x1 = x + 1;
-              do
-              {
+              do {
                 levelmap[x1][y][z].flag &= ~SITEBLOCK_BLOCK;
                 levelmap[x1][y][z].flag &= ~SITEBLOCK_DOOR;
                 x1++;
               } while (!(levelmap[x1][y + 1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)) &&
                        !(levelmap[x1][y - 1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)));
-            }
-            else
+            } else
               levelmap[x][y][z].flag |= SITEBLOCK_BLOCK;
-          }
-          else if (!(block & BIT3))
-          {
-            if (x > 0)
-            {
+          } else if (!(block & BIT3)) {
+            if (x > 0) {
               int x1 = x - 1;
-              do
-              {
+              do {
                 levelmap[x1][y][z].flag &= ~SITEBLOCK_BLOCK;
                 levelmap[x1][y][z].flag &= ~SITEBLOCK_DOOR;
                 x1--;
               } while (!(levelmap[x1][y + 1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)) &&
                        !(levelmap[x1][y - 1][z].flag & (SITEBLOCK_BLOCK | SITEBLOCK_DOOR)));
-            }
-            else
+            } else
               levelmap[x][y][z].flag |= SITEBLOCK_BLOCK;
           }
         }
@@ -492,8 +446,7 @@ void initsite(Location &loc)
   for (x = 0; x < MAPX; x++)
     for (int y = 0; y < MAPY; y++)
       for (int z = 0; z < MAPZ; z++)
-        if (levelmap[x][y][z].flag & SITEBLOCK_DOOR)
-        {
+        if (levelmap[x][y][z].flag & SITEBLOCK_DOOR) {
           block = BIT1 | BIT2 | BIT3 | BIT4;
           if (x > 0)
             if (!(levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK)) block &= ~BIT2;
@@ -508,11 +461,9 @@ void initsite(Location &loc)
           levelmap[x][y][z].flag &= ~SITEBLOCK_DOOR;
           levelmap[x][y][z].flag &= ~SITEBLOCK_LOCKED;
         }
-  if (oldMapMode)
-  { //ADD RESTRICTIONS
+  if (oldMapMode) { //ADD RESTRICTIONS
     //bool restricted=0;
-    switch (loc.type)
-    {
+    switch (loc.type) {
     case SITE_LABORATORY_COSMETICS:
     case SITE_LABORATORY_GENETIC:
     case SITE_GOVERNMENT_POLICESTATION:
@@ -534,14 +485,11 @@ void initsite(Location &loc)
     copyRNG(seed, oldseed);
     for (x = 2; x < MAPX - 2; x++)
       for (int y = 2; y < MAPY - 2; y++)
-        for (int z = 0; z < MAPZ; z++)
-        {
+        for (int z = 0; z < MAPZ; z++) {
           if (!(levelmap[x][y][0].flag & SITEBLOCK_DOOR) &&
               !(levelmap[x][y][0].flag & SITEBLOCK_BLOCK) &&
-              !LCSrandom(10))
-          {
-            switch (loc.type)
-            {
+              !LCSrandom(10)) {
+            switch (loc.type) {
             case SITE_BUSINESS_BANK: // the valuables are in the vault
             case SITE_RESIDENTIAL_SHELTER:
             case SITE_BUSINESS_CRACKHOUSE:
@@ -595,8 +543,7 @@ void initsite(Location &loc)
     int freex, freey, freez = 0;
     //ADD FIRST SPECIAL
     int count = 100000;
-    do
-    {
+    do {
       freex = LCSrandom(MAPX - 4) + 2, freey = LCSrandom(MAPY - 4) + 2;
       if (freex >= (MAPX >> 1) - 2 && freex <= (MAPX >> 1) + 2) freey = LCSrandom(MAPY - 6) + 4;
       count--;
@@ -605,8 +552,7 @@ void initsite(Location &loc)
               levelmap[freex][freey][freez].flag & SITEBLOCK_LOOT ||
               levelmap[freex][freey][freez].special != -1) &&
              count > 0);
-    switch (loc.type)
-    {
+    switch (loc.type) {
     case SITE_INDUSTRY_NUCLEAR:
       levelmap[freex][freey][freez].special = SPECIAL_NUCLEAR_ONOFF;
       break;
@@ -640,8 +586,7 @@ void initsite(Location &loc)
     }
     count = 100000;
     //ADD SECOND SPECIAL
-    do
-    {
+    do {
       freex = LCSrandom(MAPX - 4) + 2, freey = LCSrandom(MAPY - 4) + 2;
       if (freex >= (MAPX >> 1) - 2 && freex <= (MAPX >> 1) + 2) freey = LCSrandom(MAPY - 6) + 4;
       count--;
@@ -650,8 +595,7 @@ void initsite(Location &loc)
               levelmap[freex][freey][freez].flag & SITEBLOCK_LOOT ||
               levelmap[freex][freey][freez].special != -1) &&
              count > 0);
-    switch (loc.type)
-    {
+    switch (loc.type) {
     case SITE_GOVERNMENT_COURTHOUSE:
       levelmap[freex][freey][freez].special = SPECIAL_COURTHOUSE_JURYROOM;
       break;
@@ -660,18 +604,15 @@ void initsite(Location &loc)
   // SAV - End more old map stuff.
   //Clear out restrictions
   char acted;
-  do
-  {
+  do {
     acted = 0;
     for (int x = 2; x < MAPX - 2; x++)
       for (int y = 2; y < MAPY - 2; y++)
-        for (int z = 0; z < MAPZ; z++)
-        { //Un-restrict blocks if they have neighboring
+        for (int z = 0; z < MAPZ; z++) { //Un-restrict blocks if they have neighboring
           //unrestricted blocks
           if (!(levelmap[x][y][z].flag & SITEBLOCK_DOOR) &&
               !(levelmap[x][y][z].flag & SITEBLOCK_BLOCK) &&
-              (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED))
-          {
+              (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED)) {
             if ((!(levelmap[x - 1][y][z].flag & SITEBLOCK_RESTRICTED) &&
                  !(levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK)) ||
                 (!(levelmap[x + 1][y][z].flag & SITEBLOCK_RESTRICTED) &&
@@ -679,8 +620,7 @@ void initsite(Location &loc)
                 (!(levelmap[x][y - 1][z].flag & SITEBLOCK_RESTRICTED) &&
                  !(levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK)) ||
                 (!(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED) &&
-                 !(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK)))
-            {
+                 !(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK))) {
               levelmap[x][y][z].flag &= ~SITEBLOCK_RESTRICTED;
               acted = 1;
               continue;
@@ -692,13 +632,11 @@ void initsite(Location &loc)
           //them instead.
           else if ((levelmap[x][y][z].flag & SITEBLOCK_DOOR) &&
                    !(levelmap[x][y][z].flag & SITEBLOCK_BLOCK) &&
-                   (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED))
-          { //Unrestricted on two opposite sides?
+                   (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED)) { //Unrestricted on two opposite sides?
             if (((!(levelmap[x - 1][y][z].flag & SITEBLOCK_RESTRICTED) && !(levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK)) &&
                  (!(levelmap[x + 1][y][z].flag & SITEBLOCK_RESTRICTED) && !(levelmap[x + 1][y][z].flag & SITEBLOCK_BLOCK))) ||
                 ((!(levelmap[x][y - 1][z].flag & SITEBLOCK_RESTRICTED) && !(levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK)) &&
-                 (!(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED) && !(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK))))
-            { //Unlock and unrestrict
+                 (!(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED) && !(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK)))) { //Unlock and unrestrict
               levelmap[x][y][z].flag &= ~SITEBLOCK_LOCKED;
               levelmap[x][y][z].flag &= ~SITEBLOCK_RESTRICTED;
               acted = 1;
@@ -709,8 +647,7 @@ void initsite(Location &loc)
                       !(levelmap[x + 1][y][z].flag & SITEBLOCK_RESTRICTED) ||
                       !(levelmap[x][y - 1][z].flag & SITEBLOCK_RESTRICTED) ||
                       !(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED)) &&
-                     !(levelmap[x][y][z].flag & SITEBLOCK_LOCKED))
-            { //Lock doors leading to restricted areas
+                     !(levelmap[x][y][z].flag & SITEBLOCK_LOCKED)) { //Lock doors leading to restricted areas
               levelmap[x][y][z].flag |= SITEBLOCK_LOCKED;
               acted = 1;
               continue;
@@ -727,8 +664,7 @@ void initsite(Location &loc)
             !(levelmap[x][y][0].flag & SITEBLOCK_BLOCK) &&
             (levelmap[x][y][0].flag & SITEBLOCK_RESTRICTED) &&
             !LCSrandom(10))
-          switch (loc.type)
-          {
+          switch (loc.type) {
           case SITE_BUSINESS_BANK:
           case SITE_RESIDENTIAL_SHELTER:
           case SITE_BUSINESS_CRACKHOUSE:
@@ -754,11 +690,9 @@ void initsite(Location &loc)
   if (loc.type == SITE_OUTDOOR_PUBLICPARK) graffitiquota = 5;
   if (loc.type == SITE_BUSINESS_CRACKHOUSE) graffitiquota = 30;
   if (loc.type == SITE_RESIDENTIAL_TENEMENT) graffitiquota = 10;
-  for (int i = 0; i < len(loc.changes); i++)
-  {
+  for (int i = 0; i < len(loc.changes); i++) {
     int x = loc.changes[i].x, y = loc.changes[i].y, z = loc.changes[i].z;
-    switch (loc.changes[i].flag)
-    {
+    switch (loc.changes[i].flag) {
     case SITEBLOCK_GRAFFITI_OTHER: // Other tags
     case SITEBLOCK_GRAFFITI_CCS:   // CCS tags
     case SITEBLOCK_GRAFFITI:       // LCS tags
@@ -772,8 +706,7 @@ void initsite(Location &loc)
     levelmap[x][y][z].flag |= loc.changes[i].flag;
   }
   // If there isn't enough graffiti for this site type, add some
-  while (graffitiquota > 0)
-  {
+  while (graffitiquota > 0) {
     int x = LCSrandom(MAPX - 2) + 1, y = LCSrandom(MAPY - 2) + 1, z = 0;
     if (loc.type == SITE_RESIDENTIAL_TENEMENT) z = LCSrandom(6);
     if (!(levelmap[x][y][z].flag & SITEBLOCK_BLOCK) &&
@@ -785,8 +718,7 @@ void initsite(Location &loc)
       if (levelmap[x + 1][y][z].flag & SITEBLOCK_BLOCK ||
           levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK ||
           levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK ||
-          levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK)
-      {
+          levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK) {
         sitechangest change(x, y, z, SITEBLOCK_GRAFFITI_OTHER);
         loc.changes.push_back(change);
         levelmap[x][y][z].flag |= SITEBLOCK_GRAFFITI_OTHER;
@@ -796,16 +728,14 @@ void initsite(Location &loc)
 }
 
 /* recursive dungeon-generating algorithm */
-void generateroom(int rx, int ry, int dx, int dy, int z)
-{
+void generateroom(int rx, int ry, int dx, int dy, int z) {
   for (int x = rx; x < rx + dx; x++)
     for (int y = ry; y < ry + dy; y++)
       levelmap[x][y][z].flag &= ~SITEBLOCK_BLOCK;
   if ((dx <= 3 || dy <= 3) && !LCSrandom(2)) return;
   if (dx <= 2 && dy <= 2) return;
   //LAY DOWN WALL AND ITERATE
-  if ((!LCSrandom(2) || dy <= 2) && dx > 2)
-  {
+  if ((!LCSrandom(2) || dy <= 2) && dx > 2) {
     int wx = rx + LCSrandom(dx - 2) + 1;
     for (int wy = 0; wy < dy; wy++)
       levelmap[wx][ry + wy][z].flag |= SITEBLOCK_BLOCK;
@@ -815,9 +745,7 @@ void generateroom(int rx, int ry, int dx, int dy, int z)
     if (!LCSrandom(3)) levelmap[wx][ry + rny][z].flag |= SITEBLOCK_LOCKED;
     generateroom(rx, ry, wx - rx, dy, z);
     generateroom(wx + 1, ry, rx + dx - wx - 1, dy, z);
-  }
-  else
-  {
+  } else {
     int wy = ry + LCSrandom(dy - 2) + 1;
     for (int wx = 0; wx < dx; wx++)
       levelmap[rx + wx][wy][z].flag |= SITEBLOCK_BLOCK;
@@ -831,8 +759,7 @@ void generateroom(int rx, int ry, int dx, int dy, int z)
 }
 
 /* marks the area around the specified tile as explored */
-void knowmap(int locx, int locy, int locz)
-{
+void knowmap(int locx, int locy, int locz) {
   levelmap[locx][locy][locz].flag |= SITEBLOCK_KNOWN;
   if (locx > 0) levelmap[locx - 1][locy][locz].flag |= SITEBLOCK_KNOWN;
   if (locx < MAPX - 1) levelmap[locx + 1][locy][locz].flag |= SITEBLOCK_KNOWN;
@@ -865,11 +792,9 @@ void knowmap(int locx, int locy, int locz)
 #include "sitemap.h"
 
 // Builds a site based on the name provided
-void build_site(std::string name)
-{
+void build_site(std::string name) {
   for (int i = 0; i < len(sitemaps); i++)
-    if (*sitemaps[i] == name)
-    {
+    if (*sitemaps[i] == name) {
       sitemaps[i]->build();
       return;
     }
@@ -877,56 +802,42 @@ void build_site(std::string name)
   build_site("GENERIC_UNSECURE");
 }
 
-configSiteMap::~configSiteMap()
-{
+configSiteMap::~configSiteMap() {
   delete_and_clear(commands);
 }
 
-void configSiteMap::configure(const std::string &command, const std::string &value)
-{
+void configSiteMap::configure(const std::string &command, const std::string &value) {
   if (command == "NAME")
     name = value;
   else if (command == "USE")
     parent = value;
-  else if (command == "TILE")
-  {
+  else if (command == "TILE") {
     current_command = new configSiteTile(value);
     commands.push_back(current_command);
-  }
-  else if (command == "SCRIPT")
-  {
+  } else if (command == "SCRIPT") {
     current_command = new configSiteScript(value);
     commands.push_back(current_command);
-  }
-  else if (command == "SPECIAL")
-  {
+  } else if (command == "SPECIAL") {
     current_command = new configSiteSpecial(value);
     commands.push_back(current_command);
-  }
-  else if (command == "UNIQUE")
-  {
+  } else if (command == "UNIQUE") {
     current_command = new configSiteUnique(value);
     commands.push_back(current_command);
-  }
-  else if (command == "LOOT")
-  {
+  } else if (command == "LOOT") {
     current_command = new configSiteLoot(value);
     commands.push_back(current_command);
-  }
-  else
+  } else
     current_command->configure(command, value);
 }
 
-void configSiteMap::build()
-{
+void configSiteMap::build() {
   if (len(parent)) build_site(parent);
   for (int step = 0; step < len(commands); step++)
     commands[step]->build();
 }
 
 configSiteTile::configSiteTile(const std::string &value)
-    : xstart(0), xend(0), ystart(0), yend(0), zstart(0), zend(0), addtype(0)
-{
+    : xstart(0), xend(0), ystart(0), yend(0), zstart(0), zend(0), addtype(0) {
   if (value == "EXIT")
     tile = SITEBLOCK_EXIT;
   else if (value == "BLOCK")
@@ -971,8 +882,7 @@ configSiteTile::configSiteTile(const std::string &value)
     tile = 0;
 }
 
-void configSiteTile::configure(const std::string &command, const std::string &value)
-{
+void configSiteTile::configure(const std::string &command, const std::string &value) {
   if (command == "XSTART")
     xstart = atoi(value) + (MAPX >> 1);
   else if (command == "XEND")
@@ -991,8 +901,7 @@ void configSiteTile::configure(const std::string &command, const std::string &va
     zend = atoi(value);
   else if (command == "Z")
     zstart = zend = atoi(value);
-  else if (command == "NOTE")
-  {
+  else if (command == "NOTE") {
     if (value == "ADD")
       addtype = SITEMAP_ADDTYPE_OR;
     else if (value == "SUBTRACT")
@@ -1000,8 +909,7 @@ void configSiteTile::configure(const std::string &command, const std::string &va
   }
 }
 
-void configSiteTile::build()
-{
+void configSiteTile::build() {
   for (int x = xstart; x <= xend; x++)
     for (int y = ystart; y <= yend; y++)
       for (int z = zstart; z <= zend; z++)
@@ -1014,8 +922,7 @@ void configSiteTile::build()
 }
 
 configSiteScript::configSiteScript(const std::string &value)
-    : xstart(0), xend(0), ystart(0), yend(0), zstart(0), zend(0)
-{
+    : xstart(0), xend(0), ystart(0), yend(0), zstart(0), zend(0) {
   if (value == "ROOM")
     script = SITEMAPSCRIPT_ROOM;
   else if (value == "HALLWAY_YAXIS")
@@ -1026,8 +933,7 @@ configSiteScript::configSiteScript(const std::string &value)
     script = SITEMAPSCRIPT_STAIRS_RANDOM;
 }
 
-void configSiteScript::configure(const std::string &command, const std::string &value)
-{
+void configSiteScript::configure(const std::string &command, const std::string &value) {
   if (command == "XSTART")
     xstart = atoi(value) + (MAPX >> 1);
   else if (command == "XEND")
@@ -1042,8 +948,7 @@ void configSiteScript::configure(const std::string &command, const std::string &
     zend = atoi(value);
 }
 
-void configSiteScript::build()
-{
+void configSiteScript::build() {
   if (script == SITEMAPSCRIPT_ROOM)
     for (int z = zstart; z <= zend; z++)
       generateroom(xstart, ystart, xend - xstart, yend - ystart, z);
@@ -1059,8 +964,7 @@ void configSiteScript::build()
 #define ROOMDIMENSION 3
 
 /* recursive dungeon-generating algorithm */
-void configSiteScript::generateroom(int rx, int ry, int dx, int dy, int z)
-{
+void configSiteScript::generateroom(int rx, int ry, int dx, int dy, int z) {
   for (int x = rx; x < rx + dx; x++)
     for (int y = ry; y < ry + dy; y++)
       levelmap[x][y][z].flag &= ~SITEBLOCK_BLOCK;
@@ -1072,8 +976,7 @@ void configSiteScript::generateroom(int rx, int ry, int dx, int dy, int z)
   // Guaranteed to stop iterating for hallways
   if (dx <= 1 || dy <= 1) return;
   //LAY DOWN WALL AND ITERATE
-  if ((!LCSrandom(2) || dy <= ROOMDIMENSION) && dx > ROOMDIMENSION)
-  {
+  if ((!LCSrandom(2) || dy <= ROOMDIMENSION) && dx > ROOMDIMENSION) {
     int wx = rx + LCSrandom(dx - ROOMDIMENSION) + 1;
     for (int wy = 0; wy < dy; wy++)
       levelmap[wx][ry + wy][z].flag |= SITEBLOCK_BLOCK;
@@ -1083,9 +986,7 @@ void configSiteScript::generateroom(int rx, int ry, int dx, int dy, int z)
     if (!LCSrandom(3)) levelmap[wx][ry + rny][z].flag |= SITEBLOCK_LOCKED;
     generateroom(rx, ry, wx - rx, dy, z);
     generateroom(wx + 1, ry, rx + dx - wx - 1, dy, z);
-  }
-  else
-  {
+  } else {
     int wy = ry + LCSrandom(dy - ROOMDIMENSION) + 1;
     for (int wx = 0; wx < dx; wx++)
       levelmap[rx + wx][wy][z].flag |= SITEBLOCK_BLOCK;
@@ -1099,14 +1000,11 @@ void configSiteScript::generateroom(int rx, int ry, int dx, int dy, int z)
 }
 
 /* generates a hallway with rooms on either side */
-void configSiteScript::generatehallway_y(int rx, int ry, int dx, int dy, int z)
-{
-  for (int y = ry; y < ry + dy; y++)
-  { // Clear hallway
+void configSiteScript::generatehallway_y(int rx, int ry, int dx, int dy, int z) {
+  for (int y = ry; y < ry + dy; y++) { // Clear hallway
     levelmap[rx][y][z].flag = 0;
     // Every four tiles
-    if (y % 4 == 0)
-    {
+    if (y % 4 == 0) {
       // Pick a door location for the left
       char door_y = y + LCSrandom(3) - 1;
       // Create the left door
@@ -1126,32 +1024,25 @@ void configSiteScript::generatehallway_y(int rx, int ry, int dx, int dy, int z)
 }
 
 /* generates a stairwell, must have (dx or dy) and dz at least 1 */
-void configSiteScript::generatestairs(int rx, int ry, int rz, int dx, int dy, int dz)
-{
-  for (int z = rz; z <= rz + dz; z++)
-  {
+void configSiteScript::generatestairs(int rx, int ry, int rz, int dx, int dy, int dz) {
+  for (int z = rz; z <= rz + dz; z++) {
     if (z > rz) // If not bottom floor, add down stairs
     {
       if (z % 2) // Causes stairwell to swap sides every other floor
       {          // Purge all tiles other than restriction, add stairs
         levelmap[rx + dx][ry + dy][z].flag &= SITEBLOCK_RESTRICTED;
         levelmap[rx + dx][ry + dy][z].special = SPECIAL_STAIRS_DOWN;
-      }
-      else
-      {
+      } else {
         levelmap[rx][ry][z].flag &= SITEBLOCK_RESTRICTED;
         levelmap[rx][ry][z].special = SPECIAL_STAIRS_DOWN;
       }
     }
     if (z < rz + dz) // If not top floor, add up stairs
     {
-      if (!(z % 2))
-      { // Purge all tiles other than restriction, add stairs
+      if (!(z % 2)) { // Purge all tiles other than restriction, add stairs
         levelmap[rx + dx][ry + dy][z].flag &= SITEBLOCK_RESTRICTED;
         levelmap[rx + dx][ry + dy][z].special = SPECIAL_STAIRS_UP;
-      }
-      else
-      {
+      } else {
         levelmap[rx][ry][z].flag &= SITEBLOCK_RESTRICTED;
         levelmap[rx][ry][z].special = SPECIAL_STAIRS_UP;
       }
@@ -1159,29 +1050,25 @@ void configSiteScript::generatestairs(int rx, int ry, int rz, int dx, int dy, in
   }
 }
 
-void configSiteScript::generatestairsrandom(int rx, int ry, int rz, int dx, int dy, int dz)
-{
+void configSiteScript::generatestairsrandom(int rx, int ry, int rz, int dx, int dy, int dz) {
   int x, y, z;
   vector<std::pair<int, int> > secure, secure_above, unsecure, unsecure_above;
   // Look through bottom level for secure and unsecure tiles.
   for (int xi = xstart; xi <= xend; xi++)
     for (int yi = ystart; yi <= yend; yi++)
       if (!(levelmap[xi][yi][0].flag & (SITEBLOCK_DOOR | SITEBLOCK_BLOCK | SITEBLOCK_EXIT | SITEBLOCK_OUTDOOR)) &&
-          levelmap[xi][yi][0].special == SPECIAL_NONE)
-      {
+          levelmap[xi][yi][0].special == SPECIAL_NONE) {
         if (levelmap[xi][yi][0].flag & SITEBLOCK_RESTRICTED)
           secure.push_back(std::make_pair(xi, yi));
         else
           unsecure.push_back(std::make_pair(xi, yi));
       }
-  for (int zi = zstart + 1; zi <= zend; zi++)
-  {
+  for (int zi = zstart + 1; zi <= zend; zi++) {
     // Look through level above for secure and unsecure tiles.
     for (int xi = xstart; xi <= xend; xi++)
       for (int yi = ystart; yi <= yend; yi++)
         if (!(levelmap[xi][yi][zi].flag & (SITEBLOCK_DOOR | SITEBLOCK_BLOCK | SITEBLOCK_EXIT | SITEBLOCK_OUTDOOR)) &&
-            levelmap[xi][yi][zi].special == SPECIAL_NONE)
-        {
+            levelmap[xi][yi][zi].special == SPECIAL_NONE) {
           if (levelmap[xi][yi][zi].flag & SITEBLOCK_RESTRICTED)
             secure_above.push_back(std::make_pair(xi, yi));
           else
@@ -1190,14 +1077,11 @@ void configSiteScript::generatestairsrandom(int rx, int ry, int rz, int dx, int 
     // Stairs in secure areas should only lead into secure areas.
     // Removing secure tiles without secure tiles above them.
     int i, j;
-    for (i = len(unsecure) - 1; i >= 0; i--)
-    {
-      for (j = 0; j < len(secure_above); j++)
-      {
+    for (i = len(unsecure) - 1; i >= 0; i--) {
+      for (j = 0; j < len(secure_above); j++) {
         if (secure_above[j] == secure[i])
           break;
-        else if ((secure_above[j].first == secure[i].first && secure_above[j].second > secure[i].second) || (secure_above[j].first > secure[i].first))
-        {
+        else if ((secure_above[j].first == secure[i].first && secure_above[j].second > secure[i].second) || (secure_above[j].first > secure[i].first)) {
           secure.erase(secure.begin() + i);
           break;
         }
@@ -1206,14 +1090,11 @@ void configSiteScript::generatestairsrandom(int rx, int ry, int rz, int dx, int 
     }
     // Stairs in unsecure areas should only lead into unsecure areas.
     // Removing unsecure tiles without unsecure tiles above them.
-    for (i = len(unsecure) - 1; i >= 0; i--)
-    {
-      for (j = 0; j < len(unsecure_above); j++)
-      {
+    for (i = len(unsecure) - 1; i >= 0; i--) {
+      for (j = 0; j < len(unsecure_above); j++) {
         if (unsecure_above[j] == unsecure[i])
           break;
-        else if ((unsecure_above[j].first == unsecure[i].first && unsecure_above[j].second > unsecure[i].second) || (unsecure_above[j].first > unsecure[i].first))
-        {
+        else if ((unsecure_above[j].first == unsecure[i].first && unsecure_above[j].second > unsecure[i].second) || (unsecure_above[j].first > unsecure[i].first)) {
           unsecure.erase(unsecure.begin() + i);
           break;
         }
@@ -1221,33 +1102,27 @@ void configSiteScript::generatestairsrandom(int rx, int ry, int rz, int dx, int 
       if (j == len(unsecure_above)) unsecure.erase(unsecure.begin() + i);
     }
     // Place stairs in secure area if possible, otherwise unsecure area.
-    if (len(secure))
-    {
+    if (len(secure)) {
       std::pair<int, int> &choice = pickrandom(secure);
       x = choice.first, y = choice.second, z = zi - 1;
       // The tile receiving the stairs down will not eligible for stairs
       // up later.
       for (j = 0; j < len(secure_above); j++)
-        if (secure_above[j].first == x && secure_above[j].second == y)
-        {
+        if (secure_above[j].first == x && secure_above[j].second == y) {
           secure_above.erase(secure_above.begin() + j);
           break;
         }
-    }
-    else if (len(unsecure))
-    {
+    } else if (len(unsecure)) {
       std::pair<int, int> &choice = pickrandom(unsecure);
       x = choice.first, y = choice.second, z = zi - 1;
       // The tile receiving the stairs down will not eligible for stairs
       // up later.
       for (j = 0; j < len(unsecure_above); j++)
-        if (unsecure_above[j].first == x && unsecure_above[j].second == y)
-        {
+        if (unsecure_above[j].first == x && unsecure_above[j].second == y) {
           unsecure_above.erase(unsecure_above.begin() + j);
           break;
         }
-    }
-    else
+    } else
       continue; //Nowhere to place stairs.
     levelmap[x][y][z].special = SPECIAL_STAIRS_UP, levelmap[x][y][z + 1].special = SPECIAL_STAIRS_DOWN;
     // Move up on level for next iteration.
@@ -1259,8 +1134,7 @@ void configSiteScript::generatestairsrandom(int rx, int ry, int rz, int dx, int 
 }
 
 configSiteSpecial::configSiteSpecial(const std::string &value)
-    : xstart(0), xend(0), ystart(0), yend(0), zstart(0), zend(0), freq(1)
-{
+    : xstart(0), xend(0), ystart(0), yend(0), zstart(0), zend(0), freq(1) {
   if (value == "LAB_COSMETICS_CAGEDANIMALS")
     special = SPECIAL_LAB_COSMETICS_CAGEDANIMALS;
   else if (value == "LAB_GENETIC_CAGEDANIMALS")
@@ -1319,8 +1193,7 @@ configSiteSpecial::configSiteSpecial(const std::string &value)
     special = SPECIAL_CLUB_BOUNCER_SECONDVISIT;
 }
 
-void configSiteSpecial::configure(const std::string &command, const std::string &value)
-{
+void configSiteSpecial::configure(const std::string &command, const std::string &value) {
   if (command == "XSTART")
     xstart = atoi(value) + (MAPX >> 1);
   else if (command == "XEND")
@@ -1343,8 +1216,7 @@ void configSiteSpecial::configure(const std::string &command, const std::string 
     freq = atoi(value);
 }
 
-void configSiteSpecial::build()
-{
+void configSiteSpecial::build() {
   for (int x = xstart; x <= xend; x++)
     for (int y = ystart; y <= yend; y++)
       for (int z = zstart; z <= zend; z++)
@@ -1352,8 +1224,7 @@ void configSiteSpecial::build()
 }
 
 configSiteUnique::configSiteUnique(const std::string &value)
-    : xstart((MAPX >> 1) - 5), xend((MAPX >> 1) + 5), ystart(10), yend(20), zstart(0), zend(0)
-{
+    : xstart((MAPX >> 1) - 5), xend((MAPX >> 1) + 5), ystart(10), yend(20), zstart(0), zend(0) {
   if (value == "LAB_COSMETICS_CAGEDANIMALS")
     unique = SPECIAL_LAB_COSMETICS_CAGEDANIMALS;
   else if (value == "LAB_GENETIC_CAGEDANIMALS")
@@ -1412,37 +1283,31 @@ configSiteUnique::configSiteUnique(const std::string &value)
     unique = SPECIAL_CLUB_BOUNCER_SECONDVISIT;
 }
 
-void configSiteUnique::configure(const std::string &command, const std::string &value)
-{
+void configSiteUnique::configure(const std::string &command, const std::string &value) {
   if (command == "Z") zstart = zend = atoi(value);
 }
 
-struct coordinates
-{
+struct coordinates {
   coordinates(int x1, int y1, int z1) : x(x1), y(y1), z(z1) {}
   int x, y, z;
 };
 
-void configSiteUnique::build()
-{
+void configSiteUnique::build() {
   int x, y, z;
   //int count=0;
   vector<coordinates> secure, unsecure;
   //Clear out restrictions
   char acted;
-  do
-  {
+  do {
     acted = 0;
     for (int x = 2; x < MAPX - 2; x++)
       for (int y = 2; y < MAPY - 2; y++)
-        for (int z = 0; z < MAPZ; z++)
-        {
+        for (int z = 0; z < MAPZ; z++) {
           //Un-restrict blocks if they have neighboring
           //unrestricted blocks
           if (!(levelmap[x][y][z].flag & SITEBLOCK_DOOR) &&
               !(levelmap[x][y][z].flag & SITEBLOCK_BLOCK) &&
-              (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED))
-          {
+              (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED)) {
             if ((!(levelmap[x - 1][y][z].flag & SITEBLOCK_RESTRICTED) &&
                  !(levelmap[x - 1][y][z].flag & SITEBLOCK_BLOCK)) ||
                 (!(levelmap[x + 1][y][z].flag & SITEBLOCK_RESTRICTED) &&
@@ -1450,8 +1315,7 @@ void configSiteUnique::build()
                 (!(levelmap[x][y - 1][z].flag & SITEBLOCK_RESTRICTED) &&
                  !(levelmap[x][y - 1][z].flag & SITEBLOCK_BLOCK)) ||
                 (!(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED) &&
-                 !(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK)))
-            {
+                 !(levelmap[x][y + 1][z].flag & SITEBLOCK_BLOCK))) {
               levelmap[x][y][z].flag &= ~SITEBLOCK_RESTRICTED;
               acted = 1;
               continue;
@@ -1463,13 +1327,11 @@ void configSiteUnique::build()
           //them instead.
           else if ((levelmap[x][y][z].flag & SITEBLOCK_DOOR) &&
                    !(levelmap[x][y][z].flag & SITEBLOCK_BLOCK) &&
-                   (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED))
-          { //Unrestricted on two opposite sides?
+                   (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED)) { //Unrestricted on two opposite sides?
             if ((!(levelmap[x - 1][y][z].flag & SITEBLOCK_RESTRICTED) &&
                  !(levelmap[x + 1][y][z].flag & SITEBLOCK_RESTRICTED)) ||
                 (!(levelmap[x][y - 1][z].flag & SITEBLOCK_RESTRICTED) &&
-                 !(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED)))
-            {
+                 !(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED))) {
               //Unlock and unrestrict
               levelmap[x][y][z].flag &= ~SITEBLOCK_LOCKED;
               levelmap[x][y][z].flag &= ~SITEBLOCK_RESTRICTED;
@@ -1481,8 +1343,7 @@ void configSiteUnique::build()
                       !(levelmap[x + 1][y][z].flag & SITEBLOCK_RESTRICTED) ||
                       !(levelmap[x][y - 1][z].flag & SITEBLOCK_RESTRICTED) ||
                       !(levelmap[x][y + 1][z].flag & SITEBLOCK_RESTRICTED)) &&
-                     !(levelmap[x][y][z].flag & SITEBLOCK_LOCKED))
-            { //Lock doors leading to restricted areas
+                     !(levelmap[x][y][z].flag & SITEBLOCK_LOCKED)) { //Lock doors leading to restricted areas
               levelmap[x][y][z].flag |= SITEBLOCK_LOCKED;
               acted = 1;
               continue;
@@ -1495,32 +1356,26 @@ void configSiteUnique::build()
     for (y = ystart; y <= yend; y++)
       for (z = zstart; z <= zend; z++)
         if (!(levelmap[x][y][z].flag & (SITEBLOCK_DOOR | SITEBLOCK_BLOCK | SITEBLOCK_EXIT | SITEBLOCK_OUTDOOR)) &&
-            levelmap[x][y][z].special == SPECIAL_NONE)
-        {
+            levelmap[x][y][z].special == SPECIAL_NONE) {
           if (levelmap[x][y][z].flag & SITEBLOCK_RESTRICTED)
             secure.push_back(coordinates(x, y, z));
           else
             unsecure.push_back(coordinates(x, y, z));
         }
-  if (len(secure))
-  {
+  if (len(secure)) {
     coordinates &choice = pickrandom(secure);
     x = choice.x, y = choice.y, z = choice.z;
-  }
-  else if (len(unsecure))
-  {
+  } else if (len(unsecure)) {
     coordinates &choice = pickrandom(unsecure);
     x = choice.x, y = choice.y, z = choice.z;
-  }
-  else
+  } else
     return;
   levelmap[x][y][z].special = unique;
 }
 
 // Adds a loot type during map creation
 configSiteLoot::configSiteLoot(const std::string &value)
-    : weight(0)
-{
+    : weight(0) {
   if (value == "FINECLOTH")
     loot = "LOOT_FINECLOTH";
   else if (value == "CHEMICAL")
@@ -1567,12 +1422,10 @@ configSiteLoot::configSiteLoot(const std::string &value)
     loot = "LOOT_TRINKET";
 }
 
-void configSiteLoot::configure(const std::string &command, const std::string &value)
-{
+void configSiteLoot::configure(const std::string &command, const std::string &value) {
   if (command == "WEIGHT") weight = atoi(value);
 }
 
-void configSiteLoot::build()
-{
+void configSiteLoot::build() {
   // currently no-op until loot system is revised
 }
