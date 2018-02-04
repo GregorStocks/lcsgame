@@ -1648,14 +1648,20 @@ Please note that offsetx is the offset from the right of the screen, y is
 the offset from the top as always.
 */
 void printfunds(int y, int offsetx, const char *prefix) {
-  char moneystr[50], prefixbuffer[50];
+  char prefixbuffer[50];
 
   if (prefix == NULL)
     strncpy(prefixbuffer, "", 50);
   else
     strncpy(prefixbuffer, prefix, 50);
 
-  strcpy(moneystr, ledger.get_funds());
+  string moneystr = to_string(ledger.get_funds());
+  // add commas to moneystr
+  int insertPosition = moneystr.length() - 3;
+  while (insertPosition > 0) {
+	  moneystr.insert(insertPosition, ",");
+	  insertPosition -= 3;
+  }
 
   //Save screen coordinates for later.
   int begy, begx;
