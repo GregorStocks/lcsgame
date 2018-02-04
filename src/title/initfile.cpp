@@ -23,75 +23,75 @@ This file is part of Liberal Crime Squad.
 
 void setconfigoption(std::string name, std::string value)
 {
-   transform(name.begin(), name.end(), name.begin(), ::tolower);
-   transform(value.begin(), value.end(), value.begin(), ::tolower);
-   if(name == "pagekeys")
-   {
-      if(value == "azerty")
-      {
-         interface_pgup='.';
-         interface_pgdn='/';
-      }
-      else if(value == "brackets")
-      {
-         interface_pgup='[';
-         interface_pgdn=']';
-      }
-      else if(value == "page")
-      {
-         interface_pgup=-61;
-         interface_pgdn=-55;
-      }
-   }
-   else if(name == "autosave")
-   {
-      if(stringtobool(value)==0)
-         autosave=false;
-   }
-   #ifdef WIN32
-   else if(name == "fixcleartype") // this setting is only true if set in the file AND running Windows XP or later, otherwise it's false
-   {
-      if(stringtobool(value)==1)
-      { // it's set to true in init.txt, so now we check if we're running Windows XP or later, since earlier versions don't have ClearType
-         OSVERSIONINFO osvi;
-         ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-         osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-         GetVersionEx(&osvi);
-         fixcleartype=((osvi.dwMajorVersion>5)||((osvi.dwMajorVersion==5)&&(osvi.dwMinorVersion>=1))); // Windows XP is version 5.1
-      }
-   }
-   #endif
+  transform(name.begin(), name.end(), name.begin(), ::tolower);
+  transform(value.begin(), value.end(), value.begin(), ::tolower);
+  if (name == "pagekeys")
+  {
+    if (value == "azerty")
+    {
+      interface_pgup = '.';
+      interface_pgdn = '/';
+    }
+    else if (value == "brackets")
+    {
+      interface_pgup = '[';
+      interface_pgdn = ']';
+    }
+    else if (value == "page")
+    {
+      interface_pgup = -61;
+      interface_pgdn = -55;
+    }
+  }
+  else if (name == "autosave")
+  {
+    if (stringtobool(value) == 0)
+      autosave = false;
+  }
+#ifdef WIN32
+  else if (name == "fixcleartype") // this setting is only true if set in the file AND running Windows XP or later, otherwise it's false
+  {
+    if (stringtobool(value) == 1)
+    { // it's set to true in init.txt, so now we check if we're running Windows XP or later, since earlier versions don't have ClearType
+      OSVERSIONINFO osvi;
+      ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+      osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+      GetVersionEx(&osvi);
+      fixcleartype = ((osvi.dwMajorVersion > 5) || ((osvi.dwMajorVersion == 5) && (osvi.dwMinorVersion >= 1))); // Windows XP is version 5.1
+    }
+  }
+#endif
 }
 
 void loadinitfile()
 {
-   std::fstream file;
-   if(LCSOpenFileCPP("init.txt", ios::in, LCSIO_PRE_HOME, file))
-   {
-      std::string str;
-      int posequal;
+  std::fstream file;
+  if (LCSOpenFileCPP("init.txt", ios::in, LCSIO_PRE_HOME, file))
+  {
+    std::string str;
+    int posequal;
 
-      while(getline(file,str))
-      {
-         str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
-         str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
-         str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
-         str.erase(std::remove(str.begin(), str.end(), '\t'), str.end());
+    while (getline(file, str))
+    {
+      str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
+      str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+      str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+      str.erase(std::remove(str.begin(), str.end(), '\t'), str.end());
 
-         if(!len(str)) continue;
+      if (!len(str)) continue;
 
-         if(str[0] == '#') continue;
-         if(str[0] == ';') continue;
+      if (str[0] == '#') continue;
+      if (str[0] == ';') continue;
 
-         posequal=str.find('=');
-         if(posequal==(int)string::npos) continue;
+      posequal = str.find('=');
+      if (posequal == (int)string::npos) continue;
 
-         setconfigoption(str.substr(0,posequal),str.substr(posequal+1));
-      }
-   }
-   file.close();
+      setconfigoption(str.substr(0, posequal), str.substr(posequal + 1));
+    }
+  }
+  file.close();
 
-   #ifdef WIN32
-   begin_cleartype_fix(); // won't do anything unless fixcleartype is true
-   #endif
+#ifdef WIN32
+  begin_cleartype_fix(); // won't do anything unless fixcleartype is true
+#endif
 }

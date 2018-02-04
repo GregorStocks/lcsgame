@@ -69,17 +69,29 @@
    changed to make this function obsolete. */
 short translateGraphicsColor(short c)
 {
-    switch (c)
-    {
-        case 0: /*c = 0;*/ break; // Black
-        case 1:   c = 4;   break; // Blue
-        case 2: /*c = 2;*/ break; // Green
-        case 3:   c = 6;   break; // Cyan
-        case 4:   c = 1;   break; // Red
-        case 5: /*c = 5;*/ break; // Magenta
-        case 6:   c = 3;   break; // Yellow
-        case 7: /*c = 7;*/ break; // White
-    }
-    return c;
+  switch (c)
+  {
+  case 0:  /*c = 0;*/
+    break; // Black
+  case 1:
+    c = 4;
+    break; // Blue
+  case 2:  /*c = 2;*/
+    break; // Green
+  case 3:
+    c = 6;
+    break; // Cyan
+  case 4:
+    c = 1;
+    break; // Red
+  case 5:  /*c = 5;*/
+    break; // Magenta
+  case 6:
+    c = 3;
+    break; // Yellow
+  case 7:  /*c = 7;*/
+    break; // White
+  }
+  return c;
 }
 #endif // NCURSES

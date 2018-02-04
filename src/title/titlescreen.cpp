@@ -64,555 +64,558 @@ This file is part of Liberal Crime Squad.                                       
 
 void mode_title()
 {
-   //title screen
-   erase();
+  //title screen
+  erase();
 
-   char str[100];
+  char str[100];
 
-   set_color(COLOR_GREEN,COLOR_BLACK,1);
-   strcpy(str,"Liberal Crime Squad");
-   move(2,39-((len(str)-1)>>1));
-   addstr(str);
+  set_color(COLOR_GREEN, COLOR_BLACK, 1);
+  strcpy(str, "Liberal Crime Squad");
+  move(2, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
 
-   set_color(COLOR_WHITE,COLOR_BLACK,1);
-   strcpy(str,"Inspired by the 1983 version of Oubliette");
-   move(4,39-((len(str)-1)>>1));
-   addstr(str);
+  set_color(COLOR_WHITE, COLOR_BLACK, 1);
+  strcpy(str, "Inspired by the 1983 version of Oubliette");
+  move(4, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
 
-   if(loaded)
-   {
-      move(6,39-((len(slogan)-1)>>1));
-      addstr(slogan);
+  if (loaded)
+  {
+    move(6, 39 - ((len(slogan) - 1) >> 1));
+    addstr(slogan);
 
-      move(7,10);
+    move(7, 10);
 
-      addstr("Liberals Indoctrinated: ");
-      addstr(stat_recruits);
+    addstr("Liberals Indoctrinated: ");
+    addstr(stat_recruits);
 
-      move(8,10);
-      addstr("Liberals Martyred: ");
-      addstr(stat_dead);
+    move(8, 10);
+    addstr("Liberals Martyred: ");
+    addstr(stat_dead);
 
-      move(9,10);
-      addstr("Conservatives Killed: ");
-      addstr(stat_kills);
+    move(9, 10);
+    addstr("Conservatives Killed: ");
+    addstr(stat_kills);
 
-      move(7,47);
-      addstr("Funds Taxed: ");
-      addstr(ledger.total_income);
+    move(7, 47);
+    addstr("Funds Taxed: ");
+    addstr(ledger.total_income);
 
-      move(8,47);
-      addstr("Funds Spent: ");
-      addstr(ledger.total_expense);
+    move(8, 47);
+    addstr("Funds Spent: ");
+    addstr(ledger.total_expense);
 
-      move(9,47);
-      addstr("Conservatives Kidnapped: ");
-      addstr(stat_kidnappings);
-   }
-   else switch(LCSrandom(32))
-   {
-   case 0:
-      strcpy(str,"\"Unjust laws exist; shall we be content to obey them, or shall we");
-      move(6,39-((len(str)-1)>>1));
+    move(9, 47);
+    addstr("Conservatives Kidnapped: ");
+    addstr(stat_kidnappings);
+  }
+  else
+    switch (LCSrandom(32))
+    {
+    case 0:
+      strcpy(str, "\"Unjust laws exist; shall we be content to obey them, or shall we");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"endeavor to amend them, and obey them until we have succeeded, or");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "endeavor to amend them, and obey them until we have succeeded, or");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"shall we transgress them at once? ... I say, break the law.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "shall we transgress them at once? ... I say, break the law.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Henry David Thoreau");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 1:
-      strcpy(str,"\"One has not only a legal, but a moral");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"responsibility to obey just laws.  Conversely, one");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"has a moral responsibility to disobey unjust laws.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Martin Luther King, Jr.");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Henry David Thoreau");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 2:
-      strcpy(str,"\"Civil disobedience is not our problem. Our problem is");
-      move(6,39-((len(str)-1)>>1));
+    case 1:
+      strcpy(str, "\"One has not only a legal, but a moral");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"civil obedience... Protest beyond the law is not a");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "responsibility to obey just laws.  Conversely, one");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"departure from democracy; it is absolutely essential to it.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "has a moral responsibility to disobey unjust laws.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Howard Zinn");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 3:
-      strcpy(str,"\"We have to grasp, as Marx and Adam Smith did, that corporations are");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"not concerned with the common good... If we don't rebel, if we're");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"not physically in an active rebellion, then it's spiritual death.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Chris Hedges");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Martin Luther King, Jr.");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 4:
-      strcpy(str,"\"Civil disobedience becomes a sacred duty when the");
-      move(6,39-((len(str)-1)>>1));
+    case 2:
+      strcpy(str, "\"Civil disobedience is not our problem. Our problem is");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"state has become lawless or corrupt... Non-cooperation");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "civil obedience... Protest beyond the law is not a");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"with evil is as much a duty as cooperation with good.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "departure from democracy; it is absolutely essential to it.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Mahatma Gandhi");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 5:
-      strcpy(str,"\"Civil disobedience's main goal typically is to try");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"to arouse and inspire others to join and do something.");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"Well, sometimes that is a good tactic, sometimes not.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Noam Chomsky");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Howard Zinn");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 6:
-      strcpy(str,"\"Our enemies are innovative and resourceful, and so");
-      move(6,39-((len(str)-1)>>1));
+    case 3:
+      strcpy(str, "\"We have to grasp, as Marx and Adam Smith did, that corporations are");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"are we.  They never stop thinking about new ways to");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "not concerned with the common good... If we don't rebel, if we're");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"harm our country and our people, and neither do we.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "not physically in an active rebellion, then it's spiritual death.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 George W. Bush");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 7:
-      strcpy(str,"\"When you kill one, it is a");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"tragedy.  When you kill ten");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"million, it is a statistic.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Josef Stalin");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Chris Hedges");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 8:
-      strcpy(str,"\"There's an old saying in Tennessee 컴 I know it's in Texas,");
-      move(6,39-((len(str)-1)>>1));
+    case 4:
+      strcpy(str, "\"Civil disobedience becomes a sacred duty when the");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"probably in Tennessee 컴 that says, fool me once, shame on");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "state has become lawless or corrupt... Non-cooperation");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 shame on you. Fool me 컴 you can't get fooled again.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "with evil is as much a duty as cooperation with good.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 George W. Bush");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 9:
-      strcpy(str,"\"The great story here for anybody willing to find it and write about");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"it and explain it is this vast right-wing conspiracy that has been");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"conspiring against my husband since the day he announced for President.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Hillary Clinton");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Mahatma Gandhi");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 10:
-      strcpy(str,"\"But I don't want to put the");
-      move(6,39-((len(str)-1)>>1));
+    case 5:
+      strcpy(str, "\"Civil disobedience's main goal typically is to try");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"cart before the horse.  We");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "to arouse and inspire others to join and do something.");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"don't have a strategy yet.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "Well, sometimes that is a good tactic, sometimes not.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Barack Obama");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 11:
-      strcpy(str,"\"You know how dumb the average person");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"is?  Well, by definition, half of");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"'em are even dumber than THAT.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 J.R. \"Bob\" Dobbs");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Noam Chomsky");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 12:
-      strcpy(str,"\"I believe we are on an irreversible");
-      move(6,39-((len(str)-1)>>1));
+    case 6:
+      strcpy(str, "\"Our enemies are innovative and resourceful, and so");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"trend toward more freedom and");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "are we.  They never stop thinking about new ways to");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"democracy 컴 but that could change.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "harm our country and our people, and neither do we.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Dan Quayle");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 13:
-      strcpy(str,"\"We should invade their countries, kill their leaders and convert them to");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"Christianity.  We weren't punctilious about locating and punishing only Hitler");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"and his top officers.  We carpet-bombed German cities; we killed civilians.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Ann Coulter");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 George W. Bush");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 14:
-      strcpy(str,"\"Root out the counterrevolutionaries without mercy,");
-      move(6,39-((len(str)-1)>>1));
+    case 7:
+      strcpy(str, "\"When you kill one, it is a");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"lock up suspicious characters in concentration camps...");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "tragedy.  When you kill ten");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"Shirkers will be shot, regardless of past service.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "million, it is a statistic.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Leon Trotsky");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 15:
-      strcpy(str,"\"I want to see Fegelein at once!  If");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"he's gone AWOL, it's desertion!  Treason!");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"Bring me Fegelein!  Fegelein!  Fegelein!\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Adolf Hitler");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Josef Stalin");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 16:
-      strcpy(str,"\"My fellow Americans, I'm pleased to tell you");
-      move(6,39-((len(str)-1)>>1));
+    case 8:
+      strcpy(str, "\"There's an old saying in Tennessee 컴 I know it's in Texas,");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"today that I've signed legislation that will outlaw");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "probably in Tennessee 컴 that says, fool me once, shame on");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"Russia forever.  We begin bombing in five minutes.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "컴 shame on you. Fool me 컴 you can't get fooled again.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Ronald Reagan");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 17:
-      strcpy(str,"\"You go into some of these small towns... the jobs have been gone");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"now for 25 years and nothing's replaced them... It's not surprising,");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"then, they get bitter, they cling to guns or religion...\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Barack Obama");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 George W. Bush");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 18:
-      strcpy(str,"\"You don't have a peaceful revolution.");
-      move(6,39-((len(str)-1)>>1));
+    case 9:
+      strcpy(str, "\"The great story here for anybody willing to find it and write about");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"You don't have a turn-the-other-cheek revolution.");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "it and explain it is this vast right-wing conspiracy that has been");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"There's no such thing as a nonviolent revolution.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "conspiring against my husband since the day he announced for President.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Malcolm X");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 19:
-      strcpy(str,"\"Politics is war without");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"bloodshed, while war is");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"politics with bloodshed.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Chairman Mao");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Hillary Clinton");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 20:
-      strcpy(str,"\"Don't think that I have come to bring peace to the Earth.  I did not come to");
-      move(6,39-((len(str)-1)>>1));
+    case 10:
+      strcpy(str, "\"But I don't want to put the");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"bring peace, but a sword.  For I have come to turn a man against his father, a");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "cart before the horse.  We");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"daughter against her mother, a daughter-in-law against her mother-in-law...\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "don't have a strategy yet.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Jesus Christ");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 21:
-      strcpy(str,"\"What signify a few lives lost in a century or two?  The");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"tree of liberty must be refreshed from time to time with");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"the blood of patriots and tyrants.  It is its natural manure.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Thomas Jefferson");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Barack Obama");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 22:
-      strcpy(str,"\"Is it better to be loved or feared?  One might want to be");
-      move(6,39-((len(str)-1)>>1));
+    case 11:
+      strcpy(str, "\"You know how dumb the average person");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"both, but because it is hard to unite them in one person, it");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "is?  Well, by definition, half of");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"is far safer to be feared than loved, if you cannot be both.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "'em are even dumber than THAT.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Niccolo Machiavelli");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 23:
-      strcpy(str,"\"People that are really very weird");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"can get into sensitive positions and");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"have a tremendous impact on history.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Dan Quayle");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 J.R. \"Bob\" Dobbs");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 24:
-      strcpy(str,"\"The supreme art of war is to subdue the enemy without");
-      move(6,39-((len(str)-1)>>1));
+    case 12:
+      strcpy(str, "\"I believe we are on an irreversible");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"fighting... If you know the enemy and know yourself");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "trend toward more freedom and");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"you need not fear the results of a hundred battles.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "democracy 컴 but that could change.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Sun Tzu");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 25:
-      strcpy(str,"\"Only two things are infinite, the");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"universe and human stupidity, and");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"I'm not sure about the former.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Albert Einstein");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Dan Quayle");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 26:
-      strcpy(str,"\"As Putin rears his head and comes into the airspace of");
-      move(6,39-((len(str)-1)>>1));
+    case 13:
+      strcpy(str, "\"We should invade their countries, kill their leaders and convert them to");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"the United States of America, where 컴 where do they");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "Christianity.  We weren't punctilious about locating and punishing only Hitler");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"go?  It's Alaska.  It's just right over the border.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "and his top officers.  We carpet-bombed German cities; we killed civilians.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Sarah Palin");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 27:
-      strcpy(str,"\"The production of too many useful things results in too many useless people.");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"The only antidote to mental suffering is physical pain.");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"If anything is certain, it is that I myself am not a Marxist.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Karl Marx");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Ann Coulter");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 28:
-      strcpy(str,"\"If ignorant of the almighty Time Cube Creation Truth, you");
-      move(6,39-((len(str)-1)>>1));
+    case 14:
+      strcpy(str, "\"Root out the counterrevolutionaries without mercy,");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"deserve to be killed.  Killing you is not immoral 컴 but");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "lock up suspicious characters in concentration camps...");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"justified to save life on Earth for future generations.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "Shirkers will be shot, regardless of past service.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Gene Ray");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 29:
-      strcpy(str,"\"These hangman rope sneak deadly gangsters, judges & police, trick, trap, rob,");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"wreck, butcher, and murder the people to keep them terrorized in gangster");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"Frankenstein earphone radio slavery for the Communist gangster government.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Francis E. Dec");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Leon Trotsky");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   case 30:
-      strcpy(str,"\"If a political party tried to abolish Social Security, unemployment insurance,");
-      move(6,39-((len(str)-1)>>1));
+    case 15:
+      strcpy(str, "\"I want to see Fegelein at once!  If");
+      move(6, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"labor laws, or farm programs, you'd not hear of them again.  A tiny splinter");
-      move(7,39-((len(str)-1)>>1));
+      strcpy(str, "he's gone AWOL, it's desertion!  Treason!");
+      move(7, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"group thinks they can do it.  Their number is negligible and they are stupid.\"");
-      move(8,39-((len(str)-1)>>1));
+      strcpy(str, "Bring me Fegelein!  Fegelein!  Fegelein!\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
       addstr(str);
-      strcpy(str,"컴 Dwight D. Eisenhower");
-      move(9,39-((len(str)-1)>>1));
-      addstr(str);
-      break;
-   case 31:
-      strcpy(str,"\"If we see that Germany is winning we ought to help");
-      move(6,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"Russia and if Russia is winning we ought to help Germany,");
-      move(7,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"and that way let them kill as many as possible.\"");
-      move(8,39-((len(str)-1)>>1));
-      addstr(str);
-      strcpy(str,"컴 Harry S. Truman");
-      move(9,39-((len(str)-1)>>1));
+      strcpy(str, "컴 Adolf Hitler");
+      move(9, 39 - ((len(str) - 1) >> 1));
       addstr(str);
       break;
-   }
+    case 16:
+      strcpy(str, "\"My fellow Americans, I'm pleased to tell you");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "today that I've signed legislation that will outlaw");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "Russia forever.  We begin bombing in five minutes.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Ronald Reagan");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 17:
+      strcpy(str, "\"You go into some of these small towns... the jobs have been gone");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "now for 25 years and nothing's replaced them... It's not surprising,");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "then, they get bitter, they cling to guns or religion...\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Barack Obama");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 18:
+      strcpy(str, "\"You don't have a peaceful revolution.");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "You don't have a turn-the-other-cheek revolution.");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "There's no such thing as a nonviolent revolution.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Malcolm X");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 19:
+      strcpy(str, "\"Politics is war without");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "bloodshed, while war is");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "politics with bloodshed.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Chairman Mao");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 20:
+      strcpy(str, "\"Don't think that I have come to bring peace to the Earth.  I did not come to");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "bring peace, but a sword.  For I have come to turn a man against his father, a");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "daughter against her mother, a daughter-in-law against her mother-in-law...\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Jesus Christ");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 21:
+      strcpy(str, "\"What signify a few lives lost in a century or two?  The");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "tree of liberty must be refreshed from time to time with");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "the blood of patriots and tyrants.  It is its natural manure.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Thomas Jefferson");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 22:
+      strcpy(str, "\"Is it better to be loved or feared?  One might want to be");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "both, but because it is hard to unite them in one person, it");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "is far safer to be feared than loved, if you cannot be both.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Niccolo Machiavelli");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 23:
+      strcpy(str, "\"People that are really very weird");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "can get into sensitive positions and");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "have a tremendous impact on history.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Dan Quayle");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 24:
+      strcpy(str, "\"The supreme art of war is to subdue the enemy without");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "fighting... If you know the enemy and know yourself");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "you need not fear the results of a hundred battles.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Sun Tzu");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 25:
+      strcpy(str, "\"Only two things are infinite, the");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "universe and human stupidity, and");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "I'm not sure about the former.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Albert Einstein");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 26:
+      strcpy(str, "\"As Putin rears his head and comes into the airspace of");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "the United States of America, where 컴 where do they");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "go?  It's Alaska.  It's just right over the border.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Sarah Palin");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 27:
+      strcpy(str, "\"The production of too many useful things results in too many useless people.");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "The only antidote to mental suffering is physical pain.");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "If anything is certain, it is that I myself am not a Marxist.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Karl Marx");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 28:
+      strcpy(str, "\"If ignorant of the almighty Time Cube Creation Truth, you");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "deserve to be killed.  Killing you is not immoral 컴 but");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "justified to save life on Earth for future generations.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Gene Ray");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 29:
+      strcpy(str, "\"These hangman rope sneak deadly gangsters, judges & police, trick, trap, rob,");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "wreck, butcher, and murder the people to keep them terrorized in gangster");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "Frankenstein earphone radio slavery for the Communist gangster government.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Francis E. Dec");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 30:
+      strcpy(str, "\"If a political party tried to abolish Social Security, unemployment insurance,");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "labor laws, or farm programs, you'd not hear of them again.  A tiny splinter");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "group thinks they can do it.  Their number is negligible and they are stupid.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Dwight D. Eisenhower");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    case 31:
+      strcpy(str, "\"If we see that Germany is winning we ought to help");
+      move(6, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "Russia and if Russia is winning we ought to help Germany,");
+      move(7, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "and that way let them kill as many as possible.\"");
+      move(8, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      strcpy(str, "컴 Harry S. Truman");
+      move(9, 39 - ((len(str) - 1) >> 1));
+      addstr(str);
+      break;
+    }
 
-   strcpy(str,"v3.9 Copyright (C) 2002-4, Tarn Adams");
-   move(11,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"A Bay 12 Games Production");
-   move(12,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"http://bay12games.com/lcs/");
-   move(13,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"v" PACKAGE_VERSION " Maintained by the Open Source Community");
-   move(15,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"http://sourceforge.net/projects/lcsgame/");
-   move(16,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"http://www.bay12games.com/forum/index.php?board=3.0");
-   move(17,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"http://lcs.wikidot.com/");
-   move(18,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"Press ESC now to quit.  Quitting later causes your progress to be saved.");
-   move(20,39-((len(str)-1)>>1));
-   addstr(str);
-   strcpy(str,"Press any other key to pursue your Liberal Agenda!");
-   move(22,39-((len(str)-1)>>1));
-   addstr(str);
-   move(24,79);
-   addstr("+");
+  strcpy(str, "v3.9 Copyright (C) 2002-4, Tarn Adams");
+  move(11, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "A Bay 12 Games Production");
+  move(12, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "http://bay12games.com/lcs/");
+  move(13, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "v" PACKAGE_VERSION " Maintained by the Open Source Community");
+  move(15, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "http://sourceforge.net/projects/lcsgame/");
+  move(16, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "http://www.bay12games.com/forum/index.php?board=3.0");
+  move(17, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "http://lcs.wikidot.com/");
+  move(18, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "Press ESC now to quit.  Quitting later causes your progress to be saved.");
+  move(20, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  strcpy(str, "Press any other key to pursue your Liberal Agenda!");
+  move(22, 39 - ((len(str) - 1) >> 1));
+  addstr(str);
+  move(24, 79);
+  addstr("+");
 
-   int c=0;
-   do
-   {
-      if(c=='m') music.enableIf(!music.isEnabled());
-      if(music.isEnabled()) strcpy(str,"Press M to turn off the Music.");
-      else strcpy(str,"Press M to turn on some Music.");
-      move(21,39-((len(str)-1)>>1));
-      addstr(str);
-      if(c==ESC) end_game();
+  int c = 0;
+  do
+  {
+    if (c == 'm') music.enableIf(!music.isEnabled());
+    if (music.isEnabled())
+      strcpy(str, "Press M to turn off the Music.");
+    else
+      strcpy(str, "Press M to turn on some Music.");
+    move(21, 39 - ((len(str) - 1) >> 1));
+    addstr(str);
+    if (c == ESC) end_game();
 
-      c=getkey();
-   } while(c=='m'||c==ESC);
+    c = getkey();
+  } while (c == 'm' || c == ESC);
 
-   viewhighscores();
+  viewhighscores();
 
-   if(!loaded)
-   {
-      setup_newgame();
-      makecharacter();
-   }
-   mode=GAMEMODE_BASE;
-   mode_base();
+  if (!loaded)
+  {
+    setup_newgame();
+    makecharacter();
+  }
+  mode = GAMEMODE_BASE;
+  mode_base();
 
-   savegame("save.dat");
+  savegame("save.dat");
 }

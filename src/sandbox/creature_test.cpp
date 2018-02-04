@@ -1,168 +1,169 @@
 
-#include "alignment.h"
 #include "creature_test.h"
+#include "alignment.h"
 #include "lcscommon.h"
 
 creature::creature(int UniqueID) : ID(UniqueID)
 {
-   //enum creature_type      Type;
-   Type  = CREATURE_BUM;
-   //signed char             Align;
-   Align = ALIGN_LIBERAL;
-   //enum species            Species;
-   Species = SPECIES_HUMAN;
-   //enum gender             Gender;
-   if(LCSrandom(2))
-      Gender = GENDER_FEMALE;
-   else
-      Gender = GENDER_MALE;
-   //enum gender             BirthGender;
-   BirthGender = Gender;
-   
-   //string                  Name;
-   Name = "Transient";
-   //const string            ProperName;
-   GenerateName(ProperName,Gender);
+  //enum creature_type      Type;
+  Type = CREATURE_BUM;
+  //signed char             Align;
+  Align = ALIGN_LIBERAL;
+  //enum species            Species;
+  Species = SPECIES_HUMAN;
+  //enum gender             Gender;
+  if (LCSrandom(2))
+    Gender = GENDER_FEMALE;
+  else
+    Gender = GENDER_MALE;
+  //enum gender             BirthGender;
+  BirthGender = Gender;
 
+  //string                  Name;
+  Name = "Transient";
+  //const string            ProperName;
+  GenerateName(ProperName, Gender);
 
-   //const int               ID;
-   //int                     SquadID;
-   SquadID = -1;
-   //int                     HireID;
-   HireID = -1;
-   //class date*             JoinDate;
-   JoinDate = NULL;
-   //class criminal_record*  CriminalRecord;
-   CriminalRecord = NULL;
+  //const int               ID;
+  //int                     SquadID;
+  SquadID = -1;
+  //int                     HireID;
+  HireID = -1;
+  //class date*             JoinDate;
+  JoinDate = NULL;
+  //class criminal_record*  CriminalRecord;
+  CriminalRecord = NULL;
 
-   
+  //class date*             BirthDate;
+  BirthDate = NULL;
+  //class date*             DeathDate;
+  DeathDate = NULL;
 
-   //class date*             BirthDate;
-   BirthDate = NULL;
-   //class date*             DeathDate;
-   DeathDate = NULL;
+  //class weapon*           Weapon;
+  Weapon = NULL;
+  //class armor*            Armor;
+  Armor = NULL;
+  //class clothing*         Clothing;
+  Clothing = NULL;
+  //class special*          Special;
+  Special = NULL;
+  //class creature*         Hostage;
+  Hostage = NULL;
 
-   //class weapon*           Weapon;
-   Weapon = NULL;
-   //class armor*            Armor;
-   Armor  = NULL;
-   //class clothing*         Clothing;
-   Clothing = NULL;
-   //class special*          Special;
-   Special = NULL;
-   //class creature*         Hostage;
-   Hostage = NULL;
+  //int                     Clip[CLIPNUM];
+  std::memset(Clip, 0, sizeof(int) * CLIPNUM);
 
-   //int                     Clip[CLIPNUM];
-   std::memset(Clip,0,sizeof(int)*CLIPNUM);
+  //int                     Cash;
+  Cash = 0;
 
-   //int                     Cash;
-   Cash = 0;
+  //enum unarmed_style      UnarmedAttack;
+  UnarmedAttack = UNARMED_PUGILISM;
 
-   //enum unarmed_style      UnarmedAttack;
-   UnarmedAttack = UNARMED_PUGILISM;
+  //enum creature_status    Status;
+  Status = STATUS_FREE;
 
-   //enum creature_status    Status;
-   Status = STATUS_FREE;
+  //int                     Blood;
+  Blood = 100;
+  //bool                    Incapacitated;
+  Incapacitated = 0;
+  //class bodypart          Wound[BODYPARTNUM];
+  for (int i = 0; i < BODYPARTNUM; i++)
+    Wound[i].SetType(i);
 
-   //int                     Blood;
-   Blood = 100;
-   //bool                    Incapacitated;
-   Incapacitated = 0;
-   //class bodypart          Wound[BODYPARTNUM];
-   for(int i=0;i<BODYPARTNUM;i++)Wound[i].SetType(i);
+  //char                    SpecialWound[SPECIALWOUNDNUM];
+  SpecialWound[SPECIALWOUND_TEETH] = TOOTHNUM;
+  SpecialWound[SPECIALWOUND_RIGHTEYE] = 1;
+  SpecialWound[SPECIALWOUND_LEFTEYE] = 1;
+  SpecialWound[SPECIALWOUND_NOSE] = 1;
+  SpecialWound[SPECIALWOUND_TONGUE] = 1;
+  SpecialWound[SPECIALWOUND_RIGHTLUNG] = 1;
+  SpecialWound[SPECIALWOUND_LEFTLUNG] = 1;
+  SpecialWound[SPECIALWOUND_HEART] = 1;
+  SpecialWound[SPECIALWOUND_LIVER] = 1;
+  SpecialWound[SPECIALWOUND_STOMACH] = 1;
+  SpecialWound[SPECIALWOUND_RIGHTKIDNEY] = 1;
+  SpecialWound[SPECIALWOUND_LEFTKIDNEY] = 1;
+  SpecialWound[SPECIALWOUND_SPLEEN] = 1;
+  SpecialWound[SPECIALWOUND_RIBS] = RIBNUM;
+  SpecialWound[SPECIALWOUND_NECK] = 1;
+  SpecialWound[SPECIALWOUND_UPPERSPINE] = 1;
+  SpecialWound[SPECIALWOUND_LOWERSPINE] = 1;
 
-   //char                    SpecialWound[SPECIALWOUNDNUM];
-   SpecialWound[SPECIALWOUND_TEETH]=TOOTHNUM;
-   SpecialWound[SPECIALWOUND_RIGHTEYE]=1;
-   SpecialWound[SPECIALWOUND_LEFTEYE]=1;
-   SpecialWound[SPECIALWOUND_NOSE]=1;
-   SpecialWound[SPECIALWOUND_TONGUE]=1;
-   SpecialWound[SPECIALWOUND_RIGHTLUNG]=1;
-   SpecialWound[SPECIALWOUND_LEFTLUNG]=1;
-   SpecialWound[SPECIALWOUND_HEART]=1;
-   SpecialWound[SPECIALWOUND_LIVER]=1;
-   SpecialWound[SPECIALWOUND_STOMACH]=1;
-   SpecialWound[SPECIALWOUND_RIGHTKIDNEY]=1;
-   SpecialWound[SPECIALWOUND_LEFTKIDNEY]=1;
-   SpecialWound[SPECIALWOUND_SPLEEN]=1;
-   SpecialWound[SPECIALWOUND_RIBS]=RIBNUM;
-   SpecialWound[SPECIALWOUND_NECK]=1;
-   SpecialWound[SPECIALWOUND_UPPERSPINE]=1;
-   SpecialWound[SPECIALWOUND_LOWERSPINE]=1;
+  //long                    Attributes[ATTNUM];
+  for (int i = 0; i < ATTNUM; i++)
+    Attributes[i] = 0;
+  //int                     Skills[SKILLNUM];
+  for (int i = 0; i < SKILLNUM; i++)
+    Skills[i] = 0;
+  //int                     SkillExp[SKILLNUM];
+  for (int i = 0; i < SKILLNUM; i++)
+    SkillExp[i] = 0;
+  //int                     Juice;
+  Juice = 0;
 
-   //long                    Attributes[ATTNUM];
-   for(int i=0;i<ATTNUM;i++)Attributes[i] = 0;
-   //int                     Skills[SKILLNUM];
-   for(int i=0;i<SKILLNUM;i++)Skills[i] = 0;
-   //int                     SkillExp[SKILLNUM];
-   for(int i=0;i<SKILLNUM;i++)SkillExp[i] = 0;
-   //int                     Juice;
-   Juice = 0;
+  //int                     Location;
+  Location = -1;
+  //int                     WorkLocation;
+  WorkLocation = -1;
+  //int                     Safehouse;
+  Safehouse = -1;
 
-   //int                     Location;
-   Location = -1;
-   //int                     WorkLocation;
-   WorkLocation = -1;
-   //int                     Safehouse;
-   Safehouse = -1;
+  //bool                    CantBeBluffed;
+  CantBeBluffed = false;
 
-   //bool                    CantBeBluffed;
-   CantBeBluffed = false;
+  //class activity*         Activity;
+  Activity = NULL;
 
-   //class activity*         Activity;
-   Activity = NULL;
+  //int                     CarID;
+  CarID = -1;
+  //bool                    IsDriver;
+  IsDriver = false;
+  //int                     Prefer_CarID;
+  Prefer_CarID = -1;
+  //bool                    Prefer_IsDriver;
+  Prefer_IsDriver = false;
 
-   //int                     CarID;
-   CarID = -1;
-   //bool                    IsDriver;
-   IsDriver = false;
-   //int                     Prefer_CarID;
-   Prefer_CarID = -1;
-   //bool                    Prefer_IsDriver;
-   Prefer_IsDriver = false;
-
-   //unsigned short          Flags;
-   Flags = 0;
+  //unsigned short          Flags;
+  Flags = 0;
 }
 
-template<class Archive>
-void creature::serialize(Archive & ar, const unsigned int /* file_version */)
+template <class Archive>
+void creature::serialize(Archive &ar, const unsigned int /* file_version */)
 {
-   ar & Name & ProperName;
-   ar & ID & SquadID & HireID & JoinDate & CriminalRecord;
-   ar & Type & Align & Species & Gender & BirthGender;
-   ar & BirthDate & DeathDate;
-   ar & Weapon & Armor & Clothing & Special & Hostage;
-   ar & Clip & Cash;
-   ar & UnarmedAttack;
-   ar & Status;
-   ar & Blood & Incapacitated & Wound & SpecialWound;
-   ar & Attributes & Skills & SkillExp & Juice;
-   ar & Location & WorkLocation & Safehouse;
-   ar & CantBeBluffed;
-   ar & Activity;
-   ar & CarID & IsDriver & Prefer_CarID & Prefer_IsDriver;
-   ar & Flags;
+  ar &Name &ProperName;
+  ar &ID &SquadID &HireID &JoinDate &CriminalRecord;
+  ar &Type &Align &Species &Gender &BirthGender;
+  ar &BirthDate &DeathDate;
+  ar &Weapon &Armor &Clothing &Special &Hostage;
+  ar &Clip &Cash;
+  ar &UnarmedAttack;
+  ar &Status;
+  ar &Blood &Incapacitated &Wound &SpecialWound;
+  ar &Attributes &Skills &SkillExp &Juice;
+  ar &Location &WorkLocation &Safehouse;
+  ar &CantBeBluffed;
+  ar &Activity;
+  ar &CarID &IsDriver &Prefer_CarID &Prefer_IsDriver;
+  ar &Flags;
 }
 
 char creature::CanWalk(void)
 {
-   if(!Alive())return 0;
-   int legok=2;
-   if(Wound[BODYPART_LEG_RIGHT].IsGone())legok--;
-   if(Wound[BODYPART_LEG_LEFT].IsGone())legok--;
-   if(SpecialWound[SPECIALWOUND_NECK]!=1||
-      SpecialWound[SPECIALWOUND_UPPERSPINE]!=1||
-      SpecialWound[SPECIALWOUND_LOWERSPINE]!=1)return 0;
-   if(legok==0)return 0;
+  if (!Alive()) return 0;
+  int legok = 2;
+  if (Wound[BODYPART_LEG_RIGHT].IsGone()) legok--;
+  if (Wound[BODYPART_LEG_LEFT].IsGone()) legok--;
+  if (SpecialWound[SPECIALWOUND_NECK] != 1 ||
+      SpecialWound[SPECIALWOUND_UPPERSPINE] != 1 ||
+      SpecialWound[SPECIALWOUND_LOWERSPINE] != 1) return 0;
+  if (legok == 0) return 0;
 
-   return 1;
+  return 1;
 }
 
-int creature::Attribute(short a,char usejuice)
+int creature::Attribute(short a, char usejuice)
 {
-   return Attributes[a];
+  return Attributes[a];
 }
 
 /* ensures that the creature's work location is appropriate to its type */
@@ -625,8 +626,6 @@ int creature::Attribute(short a,char usejuice)
    }
 }*/
 
-
-
 /* turns a creature into a conservative */
 /*void conservatise(creaturest &cr)
 {
@@ -642,8 +641,6 @@ int creature::Attribute(short a,char usejuice)
          break;
    }
 }*/
-
-
 
 /* turns a creature into a liberal */
 /*void liberalize(creaturest &cr)

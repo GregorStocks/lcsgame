@@ -4,21 +4,22 @@
 class creature_factory
 {
 public:
-   creature* MakeCreature(enum CreatureType type);
+  creature *MakeCreature(enum CreatureType type);
+
 private:
-   creature_factory();
-   int CurrentCreatureID;
+  creature_factory();
+  int CurrentCreatureID;
 };
 
 /* rolls up a creature's stats and equipment */
-creature* creature_factory::MakeCreature(enum CreatureType type)
+creature *creature_factory::MakeCreature(enum CreatureType type)
 {
-   creature* cr = new creature(CurrentCreatureID++);
-   //int a = 0;
+  creature *cr = new creature(CurrentCreatureID++);
+  //int a = 0;
 
-   return cr;
+  return cr;
 
-   /*cr->exists=1;
+  /*cr->exists=1;
    cr->squadid=-1;
    cr->type=type;
    getrecruitcreature(cr.name,type);
