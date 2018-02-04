@@ -523,113 +523,137 @@ void investlocation()
     locheader();
     printlocation(loc);
 
-    if (location[loc]->can_be_fortified())
+    if (!location[loc]->upgradable)
     {
-      if (ledger.get_funds() >= 2000)
+      if (ledger.get_funds() >= 10000)
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
       else
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(8, 1);
-      if (location[loc]->type == SITE_OUTDOOR_BUNKER)
-        addstr("W - Repair the Bunker Fortifications ($2000)");
-      else if (location[loc]->type == SITE_RESIDENTIAL_BOMBSHELTER)
-        addstr("W - Fortify the Bomb Shelter Entrances ($2000)");
-      else
-        addstr("W - Fortify the Compound for a Siege ($2000)");
+      move(16, 1);
+      addstr("I - Invest in this location ($10000)");
     }
-
-    if (!(location[loc]->compound_walls & COMPOUND_CAMERAS))
+    else
     {
-      if (ledger.get_funds() >= 2000)
-        set_color(COLOR_WHITE, COLOR_BLACK, 0);
-      else
-        set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(9, 1);
-      addstr("C - Place Security Cameras around the Compound ($2000)");
-    }
-
-    if (location[loc]->can_be_trapped())
-    {
-      if (ledger.get_funds() >= 3000)
-        set_color(COLOR_WHITE, COLOR_BLACK, 0);
-      else
-        set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(10, 1);
-      addstr("B - Place Booby Traps throughout the Compound ($3000)");
-    }
-
-    if (location[loc]->can_install_tanktraps())
-    {
-      if (ledger.get_funds() >= 3000)
-        set_color(COLOR_WHITE, COLOR_BLACK, 0);
-      else
-        set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(11, 1);
-      addstr("T - Ring the Compound with Tank Traps ($3000)");
-    }
-
-    if (!(location[loc]->compound_walls & COMPOUND_GENERATOR))
-    {
-      if (ledger.get_funds() >= 3000)
-        set_color(COLOR_WHITE, COLOR_BLACK, 0);
-      else
-        set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(12, 1);
-      addstr("G - Buy a Generator for emergency electricity ($3000)");
-    }
-
-    if (!(location[loc]->compound_walls & COMPOUND_AAGUN))
-    {
-      if (law[LAW_GUNCONTROL] == ALIGN_ARCHCONSERVATIVE)
+      if (location[loc]->can_be_fortified())
       {
-        if (ledger.get_funds() >= 35000) set_color(COLOR_WHITE, COLOR_BLACK, 0);
-        move(13, 1);
-        addstr("A - Install a perfectly legal Anti-Aircraft gun on the roof ($35,000)");
-      }
-      else
-      {
-        if (ledger.get_funds() >= 200000)
+        if (ledger.get_funds() >= 2000)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
           set_color(COLOR_BLACK, COLOR_BLACK, 1);
-        move(13, 1);
-        addstr("A - Install and conceal an illegal Anti-Aircraft gun on the roof ($200,000)");
+        move(8, 1);
+        if (location[loc]->type == SITE_OUTDOOR_BUNKER)
+          addstr("W - Repair the Bunker Fortifications ($2000)");
+        else if (location[loc]->type == SITE_RESIDENTIAL_BOMBSHELTER)
+          addstr("W - Fortify the Bomb Shelter Entrances ($2000)");
+        else
+          addstr("W - Fortify the Compound for a Siege ($2000)");
       }
-    }
 
-    if (!(location[loc]->compound_walls & COMPOUND_PRINTINGPRESS))
-    {
-      if (ledger.get_funds() >= 3000)
+      if (!(location[loc]->compound_walls & COMPOUND_CAMERAS))
+      {
+        if (ledger.get_funds() >= 2000)
+          set_color(COLOR_WHITE, COLOR_BLACK, 0);
+        else
+          set_color(COLOR_BLACK, COLOR_BLACK, 1);
+        move(9, 1);
+        addstr("C - Place Security Cameras around the Compound ($2000)");
+      }
+
+      if (location[loc]->can_be_trapped())
+      {
+        if (ledger.get_funds() >= 3000)
+          set_color(COLOR_WHITE, COLOR_BLACK, 0);
+        else
+          set_color(COLOR_BLACK, COLOR_BLACK, 1);
+        move(10, 1);
+        addstr("B - Place Booby Traps throughout the Compound ($3000)");
+      }
+
+      if (location[loc]->can_install_tanktraps())
+      {
+        if (ledger.get_funds() >= 3000)
+          set_color(COLOR_WHITE, COLOR_BLACK, 0);
+        else
+          set_color(COLOR_BLACK, COLOR_BLACK, 1);
+        move(11, 1);
+        addstr("T - Ring the Compound with Tank Traps ($3000)");
+      }
+
+      if (!(location[loc]->compound_walls & COMPOUND_GENERATOR))
+      {
+        if (ledger.get_funds() >= 3000)
+          set_color(COLOR_WHITE, COLOR_BLACK, 0);
+        else
+          set_color(COLOR_BLACK, COLOR_BLACK, 1);
+        move(12, 1);
+        addstr("G - Buy a Generator for emergency electricity ($3000)");
+      }
+
+      if (!(location[loc]->compound_walls & COMPOUND_AAGUN))
+      {
+        if (law[LAW_GUNCONTROL] == ALIGN_ARCHCONSERVATIVE)
+        {
+          if (ledger.get_funds() >= 35000) set_color(COLOR_WHITE, COLOR_BLACK, 0);
+          move(13, 1);
+          addstr("A - Install a perfectly legal Anti-Aircraft gun on the roof ($35,000)");
+        }
+        else
+        {
+          if (ledger.get_funds() >= 200000)
+            set_color(COLOR_WHITE, COLOR_BLACK, 0);
+          else
+            set_color(COLOR_BLACK, COLOR_BLACK, 1);
+          move(13, 1);
+          addstr("A - Install and conceal an illegal Anti-Aircraft gun on the roof ($200,000)");
+        }
+      }
+
+      if (!(location[loc]->compound_walls & COMPOUND_PRINTINGPRESS))
+      {
+        if (ledger.get_funds() >= 3000)
+          set_color(COLOR_WHITE, COLOR_BLACK, 0);
+        else
+          set_color(COLOR_BLACK, COLOR_BLACK, 1);
+        move(14, 1);
+        addstr("P - Buy a Printing Press to start your own newspaper ($3000)");
+      }
+
+      if (location[loc]->can_have_businessfront())
+      {
+        if (ledger.get_funds() >= 3000)
+          set_color(COLOR_WHITE, COLOR_BLACK, 0);
+        else
+          set_color(COLOR_BLACK, COLOR_BLACK, 1);
+        move(15, 1);
+        addstr("F - Set up a Business Front to ward off suspicion ($3000)");
+      }
+
+      if (ledger.get_funds() >= 150)
         set_color(COLOR_WHITE, COLOR_BLACK, 0);
       else
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(14, 1);
-      addstr("P - Buy a Printing Press to start your own newspaper ($3000)");
+      move(17, 1);
+      addstr("R - Stockpile 20 daily rations of food ($150)");
     }
 
-    if (location[loc]->can_have_businessfront())
-    {
-      if (ledger.get_funds() >= 3000)
-        set_color(COLOR_WHITE, COLOR_BLACK, 0);
-      else
-        set_color(COLOR_BLACK, COLOR_BLACK, 1);
-      move(15, 1);
-      addstr("F - Set up a Business Front to ward off suspicion ($3000)");
-    }
-
-    if (ledger.get_funds() >= 150)
-      set_color(COLOR_WHITE, COLOR_BLACK, 0);
-    else
-      set_color(COLOR_BLACK, COLOR_BLACK, 1);
-    move(16, 1);
-    addstr("R - Stockpile 20 daily rations of food ($150)");
-
-    move(17, 1);
+    move(19, 1);
     addstr("Enter - Done");
 
     int c = getkey();
 
     if (c == 'x' || c == ENTER || c == ESC || c == SPACEBAR) break;
+    if (!location[loc]->upgradable)
+    {
+      if (c == 'i')
+      {
+        if (ledger.get_funds() >= 10000)
+        {
+          ledger.subtract_funds(10000, EXPENSE_COMPOUND);
+          location[loc]->upgradable = true;
+        }
+      }
+      continue;
+    }
 
     if (c == 'w')
     {

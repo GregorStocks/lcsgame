@@ -393,8 +393,7 @@ void mode_base()
       {
         printlocation(selectedsiege);
 
-        if (location[selectedsiege]->can_be_upgraded() &&
-            !location[selectedsiege]->siege.siege)
+        if (!location[selectedsiege]->siege.siege)
         {
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
           mvaddstr(8, 1, "I - Invest in this location");
@@ -614,7 +613,7 @@ void mode_base()
       return;
     case 'i':
       if (selectedsiege != -1)
-        if (location[selectedsiege]->can_be_upgraded() && !location[selectedsiege]->siege.siege)
+        if (!location[selectedsiege]->siege.siege)
           investlocation();
       break;
     case 'l':

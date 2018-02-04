@@ -256,7 +256,6 @@ public:
    void init();
    void update_heat_protection();
    bool duplicatelocation();
-   bool can_be_upgraded() { return upgradable; }
    bool can_be_fortified();
    bool fortified();
    bool can_be_trapped();

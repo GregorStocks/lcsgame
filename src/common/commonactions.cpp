@@ -117,6 +117,7 @@ void hospitalize(int loc, Creature &patient)
     patient.location = loc;
 
     // Inform about the hospitalization
+    clear();
     makedelimiter();
     set_color(COLOR_WHITE, COLOR_BLACK, 1);
     move(8, 1);

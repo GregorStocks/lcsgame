@@ -559,119 +559,116 @@ void printlocation(long loc)
     mvaddstr(2, 1, "You are not under siege...  yet.");
   }
 
-  if (location[loc]->can_be_upgraded())
+  if (numbereating(loc) > 0)
   {
-    if (numbereating(loc) > 0)
+    if (fooddaysleft(loc))
     {
-      if (fooddaysleft(loc))
-      {
-        if (fooddaysleft(loc) < 4)
-        {
-          if (!location[loc]->siege.siege)
-            set_color(COLOR_WHITE, COLOR_BLACK, 0);
-          else
-            set_color(COLOR_YELLOW, COLOR_BLACK, 1);
-          mvaddstr(3, 1, "This location has food for only a few days.");
-        }
-      }
-      else
+      if (fooddaysleft(loc) < 4)
       {
         if (!location[loc]->siege.siege)
           set_color(COLOR_WHITE, COLOR_BLACK, 0);
         else
-          set_color(COLOR_RED, COLOR_BLACK, 1);
-        mvaddstr(3, 1, "This location has insufficient food stores.");
+          set_color(COLOR_YELLOW, COLOR_BLACK, 1);
+        mvaddstr(3, 1, "This location has food for only a few days.");
       }
     }
-
-    if (location[loc]->compound_walls & COMPOUND_BASIC)
+    else
     {
-      set_color(COLOR_WHITE, COLOR_BLACK, 1);
-      mvaddstr(4, 1, "FORTIFIED COMPOUND");
-    }
-
-    if (location[loc]->compound_walls & COMPOUND_PRINTINGPRESS)
-    {
-      set_color(COLOR_BLUE, COLOR_BLACK, 1);
-      mvaddstr(4, 31, "PRINTING PRESS");
-    }
-
-    if (location[loc]->front_business != -1)
-    {
-      set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
-      mvaddstr(4, 54, "BUSINESS FRONT");
-    }
-
-    if (location[loc]->compound_walls & COMPOUND_CAMERAS)
-    {
-      if (location[loc]->siege.siege && location[loc]->siege.cameras_off)
-      {
-        set_color(COLOR_RED, COLOR_BLACK, 0);
-        mvaddstr(5, 1, "CAMERAS OFF");
-      }
+      if (!location[loc]->siege.siege)
+        set_color(COLOR_WHITE, COLOR_BLACK, 0);
       else
-      {
-        set_color(COLOR_GREEN, COLOR_BLACK, 1);
-        mvaddstr(5, 1, "CAMERAS ON");
-      }
+        set_color(COLOR_RED, COLOR_BLACK, 1);
+      mvaddstr(3, 1, "This location has insufficient food stores.");
     }
+  }
 
-    if (location[loc]->compound_walls & COMPOUND_TRAPS)
+  if (location[loc]->compound_walls & COMPOUND_BASIC)
+  {
+    set_color(COLOR_WHITE, COLOR_BLACK, 1);
+    mvaddstr(4, 1, "FORTIFIED COMPOUND");
+  }
+
+  if (location[loc]->compound_walls & COMPOUND_PRINTINGPRESS)
+  {
+    set_color(COLOR_BLUE, COLOR_BLACK, 1);
+    mvaddstr(4, 31, "PRINTING PRESS");
+  }
+
+  if (location[loc]->front_business != -1)
+  {
+    set_color(COLOR_MAGENTA, COLOR_BLACK, 1);
+    mvaddstr(4, 54, "BUSINESS FRONT");
+  }
+
+  if (location[loc]->compound_walls & COMPOUND_CAMERAS)
+  {
+    if (location[loc]->siege.siege && location[loc]->siege.cameras_off)
     {
-      set_color(COLOR_RED, COLOR_BLACK, 1);
-      mvaddstr(5, 16, "BOOBY TRAPS");
+      set_color(COLOR_RED, COLOR_BLACK, 0);
+      mvaddstr(5, 1, "CAMERAS OFF");
     }
-
-    if (location[loc]->compound_walls & COMPOUND_AAGUN)
+    else
     {
-      set_color(COLOR_CYAN, COLOR_BLACK, 1);
-      mvaddstr(5, 33, "AA GUN");
+      set_color(COLOR_GREEN, COLOR_BLACK, 1);
+      mvaddstr(5, 1, "CAMERAS ON");
     }
+  }
 
-    if (location[loc]->compound_walls & COMPOUND_TANKTRAPS)
-    {
-      set_color(COLOR_YELLOW, COLOR_BLACK, 1);
-      mvaddstr(5, 46, "TANK TRAPS");
-    }
+  if (location[loc]->compound_walls & COMPOUND_TRAPS)
+  {
+    set_color(COLOR_RED, COLOR_BLACK, 1);
+    mvaddstr(5, 16, "BOOBY TRAPS");
+  }
 
-    if (location[loc]->siege.siege && location[loc]->siege.lights_off)
+  if (location[loc]->compound_walls & COMPOUND_AAGUN)
+  {
+    set_color(COLOR_CYAN, COLOR_BLACK, 1);
+    mvaddstr(5, 33, "AA GUN");
+  }
+
+  if (location[loc]->compound_walls & COMPOUND_TANKTRAPS)
+  {
+    set_color(COLOR_YELLOW, COLOR_BLACK, 1);
+    mvaddstr(5, 46, "TANK TRAPS");
+  }
+
+  if (location[loc]->siege.siege && location[loc]->siege.lights_off)
+  {
+    set_color(COLOR_WHITE, COLOR_BLACK, 0);
+    mvaddstr(5, 60, "LIGHTS OUT");
+  }
+  else if (location[loc]->compound_walls & COMPOUND_GENERATOR)
+  {
+    set_color(COLOR_WHITE, COLOR_BLACK, 1);
+    mvaddstr(5, 61, "GENERATOR");
+  }
+
+  int eaters = numbereating(loc), days = fooddaysleft(loc);
+
+  if (eaters > 0)
+  {
+    if (days >= 1)
     {
       set_color(COLOR_WHITE, COLOR_BLACK, 0);
-      mvaddstr(5, 60, "LIGHTS OUT");
+      mvaddstr(6, 50, days);
+      addstr(" Day");
+      if (days != 1) addchar('s');
+      addstr(" of Food Left");
     }
-    else if (location[loc]->compound_walls & COMPOUND_GENERATOR)
+    else if (days == 0)
     {
-      set_color(COLOR_WHITE, COLOR_BLACK, 1);
-      mvaddstr(5, 61, "GENERATOR");
+      set_color(COLOR_RED, COLOR_BLACK, 0);
+      mvaddstr(6, 50, "Not Enough Food");
     }
-
-    int eaters = numbereating(loc), days = fooddaysleft(loc);
-
-    if (eaters > 0)
-    {
-      if (days >= 1)
-      {
-        set_color(COLOR_WHITE, COLOR_BLACK, 0);
-        mvaddstr(6, 50, days);
-        addstr(" Day");
-        if (days != 1) addchar('s');
-        addstr(" of Food Left");
-      }
-      else if (days == 0)
-      {
-        set_color(COLOR_RED, COLOR_BLACK, 0);
-        mvaddstr(6, 50, "Not Enough Food");
-      }
-    }
-    set_color(COLOR_WHITE, COLOR_BLACK, 0);
-    mvaddstr(6, 1, location[loc]->compound_stores);
-    addstr(" Daily Ration");
-    if (location[loc]->compound_stores != 1) addstr("s");
-
-    set_color(COLOR_WHITE, COLOR_BLACK, 0);
-    mvaddstr(6, 30, eaters);
-    addstr(" Eating");
   }
+  set_color(COLOR_WHITE, COLOR_BLACK, 0);
+  mvaddstr(6, 1, location[loc]->compound_stores);
+  addstr(" Daily Ration");
+  if (location[loc]->compound_stores != 1) addstr("s");
+
+  set_color(COLOR_WHITE, COLOR_BLACK, 0);
+  mvaddstr(6, 30, eaters);
+  addstr(" Eating");
 }
 
 /* character info at top of screen */
