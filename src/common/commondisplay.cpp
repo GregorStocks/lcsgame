@@ -1024,52 +1024,43 @@ void printliberalskills(Creature &cr) {
 
 /* full screen character sheet */
 void printliberalstats(Creature &cr) {
-  set_color(COLOR_WHITE, COLOR_BLACK, 0);
+	set_color(COLOR_WHITE, COLOR_BLACK, 0);
 
-  // Add name
-  move(2, 0);
-  addstr("Name: ");
-  set_color(COLOR_WHITE, COLOR_BLACK, 1);
-  addstr(cr.name);
-  set_color(COLOR_WHITE, COLOR_BLACK, 0);
-  if (strcmp(cr.propername, cr.name) != 0) {
-    //The names do not match, print real name as well
-    addstr(" (");
-    addstr(cr.propername);
-    addstr(")");
-  }
-  addstr(", ");
-  addstr(gettitle(cr));
-  addstr(" (");
-  addstr(cr.get_type_name());
-  addstr(")");
-  move(3, 0);
+	// Add name
+	move(2, 0);
+	addstr("Name: ");
+	set_color(COLOR_WHITE, COLOR_BLACK, 1);
+	addstr(cr.name);
+	set_color(COLOR_WHITE, COLOR_BLACK, 0);
+	if (strcmp(cr.propername, cr.name) != 0) {
+		//The names do not match, print real name as well
+		addstr(" (");
+		addstr(cr.propername);
+		addstr(")");
+	}
+	addstr(", ");
+	addstr(gettitle(cr));
+	addstr(" (");
+	addstr(cr.get_type_name());
+	addstr(")");
+	move(3, 0);
 
-  // Add birthdate
-  addstr("Born ");
-  addstr(getmonth(cr.birthday_month));
-  addstr(" ");
-  addstr(cr.birthday_day);
-  addstr(", ");
-  if (cr.birthday_month < month ||
-      (cr.birthday_month == month && cr.birthday_day <= day))
-    addstr(year - cr.age);
-  else
-    addstr(year - 1 - cr.age);
-  // Add age
-  addstr(" (Age ");
-  addstr(cr.age);
-  // Assess their gender in an Elite Liberal way
-  if (cr.gender_liberal == GENDER_MALE)
-    addstr(", Male");
-  else if (cr.gender_liberal == GENDER_FEMALE)
-    addstr(", Female");
-  else
-    addstr(", Genderqueer");
-  // DON'T Note if there's some conflict with Conservative society's perceptions
-  //if(cr.gender_liberal != cr.gender_conservative && cr.gender_liberal != GENDER_NEUTRAL)
-  //   addstr("*");
-  addstr(")");
+	addstr("Age ");
+	addstr(cr.age);
+	// Assess their gender in an Elite Liberal way
+	if (cr.gender_liberal == GENDER_MALE)
+		addstr(", Male");
+	else if (cr.gender_liberal == GENDER_FEMALE)
+		addstr(", Female");
+	else
+		addstr(", Genderqueer");
+
+	if (cr.align == ALIGN_LIBERAL)
+	{
+		move(3, 25);
+		addstr("Heat: ");
+		addstr(cr.heat);
+	}
 
   move(3, 46);
   statebrokenlaws(cr);
