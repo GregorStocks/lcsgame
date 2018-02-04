@@ -614,7 +614,7 @@ void investlocation()
       else
         set_color(COLOR_BLACK, COLOR_BLACK, 1);
       move(15, 1);
-      addstr("F - Setup a Business Front to ward off suspicion ($3000)");
+      addstr("F - Set up a Business Front to ward off suspicion ($3000)");
     }
 
     if (ledger.get_funds() >= 150)
