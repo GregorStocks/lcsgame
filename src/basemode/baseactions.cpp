@@ -567,6 +567,7 @@ void investlocation() {
         if (ledger.get_funds() >= 10000) {
           ledger.subtract_funds(10000, EXPENSE_COMPOUND);
           location[loc]->upgradable = true;
+		  location[loc]->renting = RENTING_PERMANENT;
         }
       }
       continue;
