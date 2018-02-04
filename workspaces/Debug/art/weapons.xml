@@ -211,7 +211,7 @@
     <weapontype idname="WEAPON_SEMIPISTOL_45">
         <name>.45 Semiauto</name>
         <name_future>.45 Laser Pistol</name_future>
-        <shortname>.45 Semi.</shortname>
+        <shortname>.45 Semi</shortname>
         <shortname_future>.45 Las.</shortname_future>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
@@ -246,7 +246,7 @@
     <weapontype idname="WEAPON_SEMIPISTOL_9MM">
         <name>9mm Semiauto</name>
         <name_future>9mm Laser Pistol</name_future>
-        <shortname>9mm Semi.</shortname>
+        <shortname>9mm Semi</shortname>
         <shortname_future>9mm Las.</shortname_future>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
