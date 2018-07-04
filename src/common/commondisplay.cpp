@@ -1655,7 +1655,9 @@ void printfunds(int y, int offsetx, const char *prefix) {
   else
     strncpy(prefixbuffer, prefix, 50);
 
-  string moneystr = to_string(ledger.get_funds());
+  stringstream ss;
+  ss << ledger.get_funds();
+  string moneystr = ss.str();
   // add commas to moneystr
   int insertPosition = moneystr.length() - 3;
   while (insertPosition > 0) {
